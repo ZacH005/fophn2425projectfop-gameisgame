@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.HashMap;
 
-public class RenderMap extends ApplicationAdapter {
+public class RenderMap  {
     private SpriteBatch batch;
     private Texture wallTexture, pathTexture, entryTexture, enemyTexture, exitTexture, keyTexture;
     private HashMap<String, Integer> mapData;
@@ -15,10 +15,6 @@ public class RenderMap extends ApplicationAdapter {
 
     public RenderMap() {
         this.tileSize = 32;
-    }
-
-    @Override
-    public void create() {
         batch = new SpriteBatch();
         wallTexture = new Texture("wallTile.png");
         pathTexture = new Texture("pathTile.png");
@@ -31,7 +27,8 @@ public class RenderMap extends ApplicationAdapter {
         mapData = MapParser.parseMap("maps/level-5.properties");
     }
 
-    @Override
+
+
     public void render() {
         batch.begin();
 
@@ -76,7 +73,7 @@ public class RenderMap extends ApplicationAdapter {
     }
 
     //basically just removes the assets
-    @Override
+
     public void dispose() {
         batch.dispose();
         wallTexture.dispose();
