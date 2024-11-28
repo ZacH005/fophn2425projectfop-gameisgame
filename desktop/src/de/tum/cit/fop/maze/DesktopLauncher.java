@@ -31,6 +31,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(120); // Set the foreground frames per second
 
 		// Launch the game
-		new Lwjgl3Application(new MazeRunnerGame(new DesktopFileChooser()), config);
+		new Lwjgl3Application(new RenderMap(), config);
+		//new Lwjgl3Application(new MazeRunnerGame(new DesktopFileChooser()), config);
 	}
 }

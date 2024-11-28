@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class MapParser {
+
     //working with hashmaps because Jay said so
     //System.getProperty("user.dir")
     public static HashMap<String, Integer> parseMap(String filePath) {
@@ -18,9 +19,9 @@ public class MapParser {
                 String[] joe = line.split("="); // splits based on the = as divisor and now stores it into an array
                 String xy = joe[0]; // coordinate pair
                 int key = Integer.parseInt(joe[1]); //special number
-                String[] mama = xy.split(",");
-                int x = Integer.parseInt(mama[0]); //x value
-                int y = Integer.parseInt(mama[1]); //y value
+//                String[] mama = xy.split(",");
+//                int x = Integer.parseInt(mama[0]); //x value
+//                int y = Integer.parseInt(mama[1]); //y value
 
                 mapData.put(xy, key);
             }
