@@ -29,6 +29,12 @@ public class MazeRunnerGame extends Game {
 
     // Character animation downwards
     private Animation<TextureRegion> characterDownAnimation;
+    private Animation<TextureRegion> characterUpAnimation;
+    private Animation<TextureRegion> characterRightAnimation;
+    private Animation<TextureRegion> characterLeftAnimation;
+    private Animation<TextureRegion> characterIdleAnimation;
+
+
 
     /**
      * Constructor for MazeRunnerGame.
@@ -90,16 +96,33 @@ public class MazeRunnerGame extends Game {
         int frameWidth = 16;
         int frameHeight = 32;
         int animationFrames = 4;
+        int y = 0;
 
-        // libGDX internal Array instead of ArrayList because of performance
-        Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
+        for (int i = 0; i <= 3; i++)    {
+            // libGDX internal Array instead of ArrayList because of performance
+            Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
 
-        // Add all frames to the animation
-        for (int col = 0; col < animationFrames; col++) {
-            walkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
+            // Add all frames to the animation
+            for (int col = 0; col < animationFrames; col++) {
+                walkFrames.add(new TextureRegion(walkSheet, col * frameWidth, y, frameWidth, frameHeight));
+            }
+            switch (y)  {
+                case 0:
+                    characterDownAnimation = new Animation<>(0.1f, walkFrames);
+                    characterIdleAnimation = new Animation<>(0.0f, new TextureRegion(walkSheet, 0, y, frameWidth, frameHeight));
+                    break;
+                case 32:
+                    characterRightAnimation = new Animation<>(0.1f, walkFrames);
+                    break;
+                case 64:
+                    characterUpAnimation = new Animation<>(0.1f, walkFrames);
+                    break;
+                case 96:
+                    characterLeftAnimation = new Animation<>(0.1f, walkFrames);
+                    break;
+            }
+            y += 32;
         }
-
-        characterDownAnimation = new Animation<>(0.1f, walkFrames);
     }
 
     /**
@@ -120,6 +143,22 @@ public class MazeRunnerGame extends Game {
 
     public Animation<TextureRegion> getCharacterDownAnimation() {
         return characterDownAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterUpAnimation() {
+        return characterUpAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterRightAnimation() {
+        return characterRightAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterLeftAnimation() {
+        return characterLeftAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterIdleAnimation() {
+        return characterIdleAnimation;
     }
 
     public SpriteBatch getSpriteBatch() {

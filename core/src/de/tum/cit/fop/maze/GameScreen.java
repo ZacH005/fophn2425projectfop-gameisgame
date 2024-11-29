@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 /**
@@ -41,6 +43,7 @@ public class GameScreen implements Screen {
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
+        Animation<TextureRegion> currentAnimation = game.getCharacterIdleAnimation();
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
@@ -48,15 +51,19 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             camera.translate(-10, 0);
+            currentAnimation = game.getCharacterLeftAnimation();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             camera.translate(10, 0);
+            currentAnimation = game.getCharacterRightAnimation();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             camera.translate(0, 10);
+            currentAnimation = game.getCharacterUpAnimation();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             camera.translate(0, -10);
+            currentAnimation = game.getCharacterDownAnimation();
         }
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
@@ -64,7 +71,7 @@ public class GameScreen implements Screen {
         camera.update(); // Update the camera
 
         // Move text in a circular path to have an example of a moving object
-//        sinusInput += delta;
+        sinusInput += delta;
 //        float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
 //        float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
 //
@@ -75,16 +82,10 @@ public class GameScreen implements Screen {
 
         // Render the text
 //        font.draw(game.getSpriteBatch(), "Press ESC to go to menu", textX, textY);
+        map.render();
 
         // Draw the character next to the text :) / We can reuse sinusInput here
-//        game.getSpriteBatch().draw(
-//                game.getCharacterDownAnimation().getKeyFrame(sinusInput, true),
-//                textX - 96,
-//                textY - 64,
-//                64,
-//                128
-//        );
-        map.render();
+        game.getSpriteBatch().draw(currentAnimation.getKeyFrame(sinusInput, true), camera.position.x-16, camera.position.y -32, 64, 128);
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
