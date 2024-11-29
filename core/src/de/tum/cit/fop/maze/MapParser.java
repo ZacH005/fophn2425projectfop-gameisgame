@@ -10,6 +10,7 @@ public class MapParser {
     public static HashMap<String, Integer> parseMap(String filePath) {
         HashMap<String, Integer> mapData = new HashMap<>();
 
+
         try  {
             //https://www.baeldung.com/java-buffered-reader where im reading from
             // maps/level-1.properties

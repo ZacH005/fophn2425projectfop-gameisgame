@@ -51,26 +51,26 @@ public class GameScreen implements Screen {
         camera.update(); // Update the camera
 
         // Move text in a circular path to have an example of a moving object
-//        sinusInput += delta;
-//        float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
-//        float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
+        sinusInput += delta;
+        float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
+        float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
 //
 //        // Set up and begin drawing with the sprite batch
-//        game.getSpriteBatch().setProjectionMatrix(camera.combined);
+        game.getSpriteBatch().setProjectionMatrix(camera.combined);
 
         game.getSpriteBatch().begin(); // Important to call this before drawing anything
 
         // Render the text
-//        font.draw(game.getSpriteBatch(), "Press ESC to go to menu", textX, textY);
+        font.draw(game.getSpriteBatch(), "Press ESC to go to menu", textX, textY);
 
         // Draw the character next to the text :) / We can reuse sinusInput here
-//        game.getSpriteBatch().draw(
-//                game.getCharacterDownAnimation().getKeyFrame(sinusInput, true),
-//                textX - 96,
-//                textY - 64,
-//                64,
-//                128
-//        );
+        game.getSpriteBatch().draw(
+                game.getCharacterDownAnimation().getKeyFrame(sinusInput, true),
+                textX - 96,
+                textY - 64,
+                64,
+                128
+        );
         map.render();
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
