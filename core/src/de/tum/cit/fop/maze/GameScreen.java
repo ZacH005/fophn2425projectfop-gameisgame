@@ -27,11 +27,11 @@ public class GameScreen implements Screen {
      */
     public GameScreen(MazeRunnerGame game) {
         this.game = game;
-        this.map = new RenderMap();
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         camera.zoom = 0.75f;
+        this.map = new RenderMap(game, camera);
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
@@ -46,14 +46,27 @@ public class GameScreen implements Screen {
             game.goToMenu();
         }
 
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            camera.translate(-10, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            camera.translate(10, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            camera.translate(0, 10);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            camera.translate(0, -10);
+        }
+
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
 
         camera.update(); // Update the camera
 
         // Move text in a circular path to have an example of a moving object
-        sinusInput += delta;
-        float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
-        float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
+//        sinusInput += delta;
+//        float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
+//        float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
 //
 //        // Set up and begin drawing with the sprite batch
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
@@ -61,16 +74,16 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().begin(); // Important to call this before drawing anything
 
         // Render the text
-        font.draw(game.getSpriteBatch(), "Press ESC to go to menu", textX, textY);
+//        font.draw(game.getSpriteBatch(), "Press ESC to go to menu", textX, textY);
 
         // Draw the character next to the text :) / We can reuse sinusInput here
-        game.getSpriteBatch().draw(
-                game.getCharacterDownAnimation().getKeyFrame(sinusInput, true),
-                textX - 96,
-                textY - 64,
-                64,
-                128
-        );
+//        game.getSpriteBatch().draw(
+//                game.getCharacterDownAnimation().getKeyFrame(sinusInput, true),
+//                textX - 96,
+//                textY - 64,
+//                64,
+//                128
+//        );
         map.render();
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }

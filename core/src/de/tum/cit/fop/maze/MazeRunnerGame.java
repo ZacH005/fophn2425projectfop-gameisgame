@@ -19,6 +19,7 @@ public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
+    private RenderMap renderMap;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -51,7 +52,9 @@ public class MazeRunnerGame extends Game {
         // Background sound
         Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background.mp3"));
         backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+
+        //Paused music cause it was annoying
+        //backgroundMusic.play();
 
         goToMenu(); // Navigate to the menu screen
     }
