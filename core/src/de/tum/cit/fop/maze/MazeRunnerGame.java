@@ -34,8 +34,6 @@ public class MazeRunnerGame extends Game {
     private Animation<TextureRegion> characterLeftAnimation;
     private Animation<TextureRegion> characterIdleAnimation;
 
-
-
     /**
      * Constructor for MazeRunnerGame.
      *

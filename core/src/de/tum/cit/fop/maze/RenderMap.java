@@ -11,9 +11,13 @@ public class RenderMap  {
     private final Texture wallTexture, pathTexture, entryTexture, enemyTexture, exitTexture, keyTexture, trapTexture;
     private HashMap<String, Integer> mapData;
     private final int tileSize;
+    private int startPointx;
+    private int startPointy;
+    private OrthographicCamera camera;
+
 
     public RenderMap(MazeRunnerGame game, OrthographicCamera camera) {
-        this.tileSize = 32;
+        this.tileSize = 128;
         wallTexture = new Texture("wallTile.png");
         pathTexture = new Texture("pathTile.png");
         enemyTexture = new Texture("enemyTile.png");
@@ -22,7 +26,7 @@ public class RenderMap  {
         keyTexture = new Texture("keyTile.png");
         trapTexture = new Texture("trapTile.png");
         batch = game.getSpriteBatch();
-
+        this.camera = camera;
         //get the map data
         mapData = MapParser.parseMap("maps/level-3.properties");
     }
@@ -69,6 +73,14 @@ public class RenderMap  {
                 case 5 -> keyTexture;
                 default -> pathTexture;
             };
+
+            if (key == 1)   {
+                startPointx = x*tileSize;
+                startPointy = y*tileSize;
+                //does work, but the render method is being updated and called every frame thus the player can't move
+//                camera.position.x = x*tileSize;
+//                camera.position.y = y*tileSize;
+            }
 
             //should draw it using the SpriteBatch, on each coordinate for the tile size
             batch.draw(textureToDraw, x*tileSize, y*tileSize);
@@ -128,6 +140,14 @@ public class RenderMap  {
 
     public int getTileSize() {
         return tileSize;
+    }
+
+    public int getStartPointx() {
+        return startPointx;
+    }
+
+    public int getStartPointy() {
+        return startPointy;
     }
 }
 

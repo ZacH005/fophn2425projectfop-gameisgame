@@ -37,32 +37,36 @@ public class GameScreen implements Screen {
 
         // Get the font from the game's skin
         font = game.getSkin().getFont("font");
+
     }
 
 
     // Screen interface methods with necessary functionality
     @Override
     public void render(float delta) {
+
         Animation<TextureRegion> currentAnimation = game.getCharacterIdleAnimation();
         // Check for escape key press to go back to the menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.goToMenu();
         }
 
+        int movementSpeed = 5;
+
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            camera.translate(-10, 0);
+            camera.translate(-movementSpeed, 0);
             currentAnimation = game.getCharacterLeftAnimation();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            camera.translate(10, 0);
+            camera.translate(movementSpeed, 0);
             currentAnimation = game.getCharacterRightAnimation();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            camera.translate(0, 10);
+            camera.translate(0, movementSpeed);
             currentAnimation = game.getCharacterUpAnimation();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            camera.translate(0, -10);
+            camera.translate(0, -movementSpeed);
             currentAnimation = game.getCharacterDownAnimation();
         }
 
