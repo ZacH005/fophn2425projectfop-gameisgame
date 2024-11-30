@@ -17,7 +17,7 @@ public class RenderMap  {
 
 
     public RenderMap(MazeRunnerGame game, OrthographicCamera camera) {
-        this.tileSize = 128;
+        this.tileSize = 32;
         wallTexture = new Texture("wallTile.png");
         pathTexture = new Texture("pathTile.png");
         enemyTexture = new Texture("enemyTile.png");

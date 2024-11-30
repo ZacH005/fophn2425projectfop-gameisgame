@@ -32,7 +32,7 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-        camera.zoom = 0.75f;
+        camera.zoom = 0.45f;
         this.map = new RenderMap(game, camera);
 
         // Get the font from the game's skin
@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
             game.goToMenu();
         }
 
-        int movementSpeed = 5;
+        int movementSpeed = 2;
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             camera.translate(-movementSpeed, 0);
@@ -89,7 +89,7 @@ public class GameScreen implements Screen {
         map.render();
 
         // Draw the character next to the text :) / We can reuse sinusInput here
-        game.getSpriteBatch().draw(currentAnimation.getKeyFrame(sinusInput, true), camera.position.x-16, camera.position.y -32, 64, 128);
+        game.getSpriteBatch().draw(currentAnimation.getKeyFrame(sinusInput, true), camera.position.x-16, camera.position.y -32, 16, 32);
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
