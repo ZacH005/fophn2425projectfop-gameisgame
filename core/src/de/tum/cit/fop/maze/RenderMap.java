@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.*;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 import java.util.*;
 
@@ -15,6 +17,8 @@ public class RenderMap  {
     private int startPointx;
     private int startPointy;
     private OrthographicCamera camera;
+    private BoundingBox mapBounds;
+    private int xMini, xMaxi, yMini, yMaxi;
 
 
     public RenderMap(MazeRunnerGame game, OrthographicCamera camera) {
@@ -30,10 +34,10 @@ public class RenderMap  {
         this.camera = camera;
         //get the map data
         mapData = MapParser.parseMap("maps/level-3.properties");
+        calculateMapBounds();
     }
 
-    public void render() {
-
+    public void calculateMapBounds()    {
         //finds the max and min values of the map from the hashmMap
         Set<Integer> xMax = new HashSet<>();
         Set<Integer> yMax = new HashSet<>();
@@ -48,9 +52,20 @@ public class RenderMap  {
             xMax.add(x);
             yMax.add(x);
         }
+
+        xMini = Collections.min(xMax);
+        xMaxi = Collections.max(xMax);
+        yMini = Collections.min(yMax);
+        yMaxi = Collections.max(yMax);
+
+        mapBounds = new BoundingBox(new Vector3(xMini * tileSize, yMini * tileSize, 0), new Vector3(xMaxi * tileSize, yMaxi * tileSize, 0));
+    }
+
+    public void render() {
+
         //draws all of the path textures in the size of the min and max
-        for (int x = Collections.min(xMax); x <= Collections.max(xMax); x++) {
-            for (int y = Collections.min(yMax); y <= Collections.max(yMax); y++) {
+        for (int x = xMini; x <= xMaxi; x++) {
+            for (int y = yMini; y <= yMaxi; y++) {
                 batch.draw(pathTexture, x * tileSize, y * tileSize);
             }
         }
@@ -155,6 +170,10 @@ public class RenderMap  {
 
     public int getStartPointy() {
         return startPointy;
+    }
+
+    public BoundingBox getMapBounds() {
+        return mapBounds;
     }
 }
 
