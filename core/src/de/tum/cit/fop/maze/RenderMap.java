@@ -3,7 +3,6 @@ package de.tum.cit.fop.maze;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -58,6 +57,7 @@ public class RenderMap  {
         yMini = Collections.min(yMax);
         yMaxi = Collections.max(yMax);
 
+        //creates a bounding Box for all of this
         mapBounds = new BoundingBox(new Vector3(xMini * tileSize, yMini * tileSize, 0), new Vector3(xMaxi * tileSize, yMaxi * tileSize, 0));
     }
 

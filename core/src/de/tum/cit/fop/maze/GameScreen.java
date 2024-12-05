@@ -43,8 +43,8 @@ public class GameScreen implements Screen {
         float playerX = map.getStartPointx();
         float playerY = map.getStartPointy();
         float playerWidth = map.getTileSize();
-        float playerHeight = map.getTileSize();
-        player = new Player(playerX, playerY, playerWidth, playerHeight, 100);
+        float playerHeight = 64;
+        player = new Player(playerX, playerY, playerWidth, playerHeight, 200);
 
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
     }

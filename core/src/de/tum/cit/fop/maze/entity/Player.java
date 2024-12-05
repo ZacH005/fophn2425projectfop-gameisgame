@@ -22,6 +22,7 @@ public class Player {
     private float width;
     private float height;
 
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
