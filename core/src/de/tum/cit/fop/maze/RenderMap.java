@@ -3,6 +3,7 @@ package de.tum.cit.fop.maze;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.*;
 
 import java.util.*;
 
@@ -80,6 +81,12 @@ public class RenderMap  {
                 //does work, but the render method is being updated and called every frame thus the player can't move
 //                camera.position.x = x*tileSize;
 //                camera.position.y = y*tileSize;
+            }
+
+
+            //going to add collisions to every wall box, but lowkey if we use tiled there is no reason for this
+            if (textureToDraw == wallTexture)   {
+                
             }
 
             //should draw it using the SpriteBatch, on each coordinate for the tile size
