@@ -1,6 +1,8 @@
 package de.tum.cit.fop.maze.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,6 +23,8 @@ public class Player {
 
     private float width;
     private float height;
+
+    private Rectangle collider;
 
 
     public enum Direction {
@@ -51,6 +55,10 @@ public class Player {
                 position.x = newX;
                 position.y = newY;
             }
+
+
+
+            //make a set of all x, y coordinates of walls. check if the set of walls includes those x, y coordinates. set player position to current position
 
             animationTime += delta;
         } else {
@@ -90,6 +98,11 @@ public class Player {
         isMoving = false;
         velocity.set(0, 0);
     }
+
+//    public boolean isCollided(Rectangle rect) {
+//        Gdx.app.log("Collision Detected", "" + collider.overlaps(rect));
+//        return rect.overlaps(collider);
+//    }
 
     public Vector2 getPosition() {
         return position;

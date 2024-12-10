@@ -18,6 +18,7 @@ public class RenderMap  {
     private OrthographicCamera camera;
     private BoundingBox mapBounds;
     private int xMini, xMaxi, yMini, yMaxi;
+//    private Set<>
 
 
     public RenderMap(MazeRunnerGame game, OrthographicCamera camera) {
@@ -34,32 +35,44 @@ public class RenderMap  {
         //get the map data
         mapData = MapParser.parseMap("maps/level-3.properties");
         calculateMapBounds();
-    }
-
-    public void calculateMapBounds()    {
-        //finds the max and min values of the map from the hashmMap
-        Set<Integer> xMax = new HashSet<>();
-        Set<Integer> yMax = new HashSet<>();
-
+        //finde the startpoint
         for (String element : mapData.keySet()) {
-            String[] coords = element.split(","); // split xy
-            if (coords.length <= 1)
-                continue;
-            int x = Integer.parseInt(coords[0]); //x value
-            int y = Integer.parseInt(coords[1]); //y value
-
-            xMax.add(x);
-            yMax.add(x);
+            int key = mapData.get(element);
+            if (key == 1) {
+                String[] coords = element.split(",");
+                startPointx = Integer.parseInt(coords[0]) * tileSize;
+                startPointy = Integer.parseInt(coords[1]) * tileSize;
+                break;
+            }
         }
 
-        xMini = Collections.min(xMax);
-        xMaxi = Collections.max(xMax);
-        yMini = Collections.min(yMax);
-        yMaxi = Collections.max(yMax);
-
-        //creates a bounding Box for all of this
-        mapBounds = new BoundingBox(new Vector3(xMini * tileSize, yMini * tileSize, 0), new Vector3(xMaxi * tileSize, yMaxi * tileSize, 0));
     }
+
+    public void calculateMapBounds() {
+        xMini = Integer.MAX_VALUE;
+        xMaxi = Integer.MIN_VALUE;
+        yMini = Integer.MAX_VALUE;
+        yMaxi = Integer.MIN_VALUE;
+
+        for (String element : mapData.keySet()) {
+            String[] coords = element.split(",");
+            if (coords.length <= 1) continue;
+
+            int x = Integer.parseInt(coords[0]);
+            int y = Integer.parseInt(coords[1]);
+
+            xMini = Math.min(xMini, x);
+            xMaxi = Math.max(xMaxi, x);
+            yMini = Math.min(yMini, y);
+            yMaxi = Math.max(yMaxi, y);
+        }
+
+        mapBounds = new BoundingBox(
+                new Vector3(xMini * tileSize, yMini * tileSize, 0),
+                new Vector3(xMaxi * tileSize, yMaxi * tileSize, 0)
+        );
+    }
+
 
     public void render() {
 
@@ -90,19 +103,7 @@ public class RenderMap  {
                 default -> pathTexture;
             };
 
-            if (key == 1)   {
-                startPointx = x*tileSize;
-                startPointy = y*tileSize;
-                //does work, but the render method is being updated and called every frame thus the player can't move
-//                camera.position.x = x*tileSize;
-//                camera.position.y = y*tileSize;
-            }
-
-
             //going to add collisions to every wall box, but lowkey if we use tiled there is no reason for this
-            if (textureToDraw == wallTexture)   {
-                
-            }
 
             //should draw it using the SpriteBatch, on each coordinate for the tile size
             batch.draw(textureToDraw, x*tileSize, y*tileSize);

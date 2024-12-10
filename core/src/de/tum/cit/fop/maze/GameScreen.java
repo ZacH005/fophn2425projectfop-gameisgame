@@ -96,6 +96,7 @@ public class GameScreen implements Screen {
         map.render();
         player.render(game.getSpriteBatch());
 
+
         // Draw the character next to the text :) / We can reuse sinusInput here
 //        game.getSpriteBatch().draw(currentAnimation.getKeyFrame(sinusInput, true), camera.position.x-16, camera.position.y -32, 16, 32);
         game.getSpriteBatch().end(); // Important to call this after drawing everything
@@ -129,4 +130,37 @@ public class GameScreen implements Screen {
     }
 
     // Additional methods and logic can be added as needed for the game screen
+
+
+    public MazeRunnerGame getGame() {
+        return game;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public BitmapFont getFont() {
+        return font;
+    }
+
+    public RenderMap getMap() {
+        return map;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public float getSinusInput() {
+        return sinusInput;
+    }
+
+    public void setSinusInput(float sinusInput) {
+        this.sinusInput = sinusInput;
+    }
 }
