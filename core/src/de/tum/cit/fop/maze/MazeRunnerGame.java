@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import de.tum.cit.fop.maze.arbitrarymap.RenderMap;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 //bananas comment
 /**
@@ -54,7 +55,7 @@ public class MazeRunnerGame extends Game {
 
         // Play some background music
         // Background sound
-        Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background.mp3"));
+        Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
         backgroundMusic.setLooping(true);
 
         //Paused music cause it was annoying
@@ -89,7 +90,7 @@ public class MazeRunnerGame extends Game {
      * Loads the character animation from the character.png file.
      */
     private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
+        Texture walkSheet = new Texture(Gdx.files.internal("templateAssets/character.png"));
 
         int frameWidth = 16;
         int frameHeight = 32;

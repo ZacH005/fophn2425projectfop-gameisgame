@@ -2,6 +2,8 @@ package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -24,6 +26,9 @@ public class Player {
     private float width;
     private float height;
 
+    private TiledMap tiledMap;
+    private int tileSize;
+
     private Rectangle collider;
 
 
@@ -31,11 +36,13 @@ public class Player {
         UP, DOWN, LEFT, RIGHT
     }
 
-    public Player(float x, float y, float width, float height, float speed) {
+    public Player(float x, float y, float speed, TiledMap tiledMap) {
+        this.tileSize = 16;
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
-        this.width = width;
-        this.height = height;
+        this.tiledMap = tiledMap;
+        this.width = tileSize;
+        this.height = tileSize*2;
         this.speed = speed;
         this.isMoving = false;
         this.direction = Direction.DOWN;
@@ -46,17 +53,15 @@ public class Player {
         this.currentAnimation = animation;
     }
 
-    public void update(float delta, BoundingBox mapBounds) {
+    public void update(float delta) {
         if (isMoving) {
             float newX = position.x + velocity.x * speed * delta;
             float newY = position.y + velocity.y * speed * delta;
 
-            if (mapBounds.contains(new Vector3(newX, newY, 0))) {
+            if (!checkCollision(newX, newY)) {
                 position.x = newX;
                 position.y = newY;
             }
-
-
 
             //make a set of all x, y coordinates of walls. check if the set of walls includes those x, y coordinates. set player position to current position
 
@@ -70,7 +75,7 @@ public class Player {
     public void render(SpriteBatch batch) {
         if (currentAnimation != null) {
             TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
-            batch.draw(frame, position.x, position.y, width, height);
+            batch.draw(frame, position.x-(width/2), position.y-(height/2), width, height);
         }
     }
 
@@ -97,6 +102,30 @@ public class Player {
     public void stop() {
         isMoving = false;
         velocity.set(0, 0);
+    }
+
+    private boolean checkCollision(float newX, float newY) {
+        TiledMapTileLayer.Cell cell = null;
+
+        //gets the next tile xy value
+        int tileX = (int) newX / tileSize;
+        int tileY = (int) newY / tileSize;
+
+        //trying to figure out how to render the bottom walls over the player
+        if (direction == Direction.DOWN)    {
+            TiledMapTileLayer wallsLayer = (TiledMapTileLayer) tiledMap.getLayers().get("BottomWalls");
+            //actually gets the tile
+            cell = wallsLayer.getCell(tileX, tileY);
+        } else  {
+            TiledMapTileLayer wallsLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Walls");
+            //actually gets the tile
+            cell = wallsLayer.getCell(tileX, tileY);
+        }
+
+
+
+        //since its checking the walls, basically if the tile is there it's a wall
+        return cell != null;
     }
 
 //    public boolean isCollided(Rectangle rect) {
