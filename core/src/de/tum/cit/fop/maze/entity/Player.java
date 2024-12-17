@@ -2,6 +2,7 @@ package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -10,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Player {
 
@@ -31,6 +36,7 @@ public class Player {
 
     private Rectangle collider;
 
+    private List<TiledMapTileLayer> wallLayers;
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -47,6 +53,8 @@ public class Player {
         this.isMoving = false;
         this.direction = Direction.DOWN;
         this.animationTime = 0f;
+        //added in order that they are shown in the map file, not in the id order
+        this.wallLayers = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
     }
 
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
@@ -58,7 +66,7 @@ public class Player {
             float newX = position.x + velocity.x * speed * delta;
             float newY = position.y + velocity.y * speed * delta;
 
-            if (!checkCollision(newX, newY)) {
+            if (!isColliding(newX, newY)) {
                 position.x = newX;
                 position.y = newY;
             }
@@ -104,7 +112,22 @@ public class Player {
         velocity.set(0, 0);
     }
 
-    private boolean checkCollision(float newX, float newY) {
+    public boolean isColliding(float newX, float newY)  {
+        boolean colliding = false;
+        int i = 0;
+        //checks through all wall layers, (alse checks for an offset to avoid entering walls)
+        while (!colliding && i < wallLayers.size())  {
+            colliding = colliding || checkCollision(newX+6, newY, wallLayers.get(i));
+            colliding = colliding || checkCollision(newX-6, newY, wallLayers.get(i));
+            //skipping the back walls to it keeps the current overlap
+            if (i != 2)
+                colliding = colliding || checkCollision(newX, newY - 9, wallLayers.get(i));
+            i++;
+        }
+        return colliding;
+    }
+
+    private boolean checkCollision(float newX, float newY, TiledMapTileLayer wallLayer) {
         TiledMapTileLayer.Cell cell = null;
 
         //gets the next tile xy value
@@ -112,17 +135,11 @@ public class Player {
         int tileY = (int) newY / tileSize;
 
         //trying to figure out how to render the bottom walls over the player
-        if (direction == Direction.DOWN)    {
-            TiledMapTileLayer wallsLayer = (TiledMapTileLayer) tiledMap.getLayers().get("BottomWalls");
-            //actually gets the tile
-            cell = wallsLayer.getCell(tileX, tileY);
-        } else  {
-            TiledMapTileLayer wallsLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Walls");
-            //actually gets the tile
-            cell = wallsLayer.getCell(tileX, tileY);
-        }
 
-
+        //have a second collision check which puts the layer in as a parameter and calls this method
+        //check x-5 and x+5 in the check collisions at thre same time
+        //actually gets the tile
+        cell = wallLayer.getCell(tileX, tileY);
 
         //since its checking the walls, basically if the tile is there it's a wall
         return cell != null;

@@ -83,8 +83,8 @@ public class GameScreen implements Screen {
 
         //basically its just saying the map should be shown in (camera)
         mapRenderer.setView(camera);
-        //literally just renders the map. that's it...
-        mapRenderer.render();
+        //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
+        mapRenderer.render(new int[]{0, 3});
 
         //I don't get projectionmatrices, needed to be attached to the spritebatch
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
@@ -94,6 +94,8 @@ public class GameScreen implements Screen {
         player.render(game.getSpriteBatch());
 
         game.getSpriteBatch().end();
+
+        mapRenderer.render(new int[]{1, 2});
     }
 
     private void handleInput() {
