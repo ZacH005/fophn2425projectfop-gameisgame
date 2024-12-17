@@ -134,21 +134,12 @@ public class Player {
         int tileX = (int) newX / tileSize;
         int tileY = (int) newY / tileSize;
 
-        //trying to figure out how to render the bottom walls over the player
-
-        //have a second collision check which puts the layer in as a parameter and calls this method
-        //check x-5 and x+5 in the check collisions at thre same time
         //actually gets the tile
         cell = wallLayer.getCell(tileX, tileY);
 
         //since its checking the walls, basically if the tile is there it's a wall
         return cell != null;
     }
-
-//    public boolean isCollided(Rectangle rect) {
-//        Gdx.app.log("Collision Detected", "" + collider.overlaps(rect));
-//        return rect.overlaps(collider);
-//    }
 
     public Vector2 getPosition() {
         return position;
