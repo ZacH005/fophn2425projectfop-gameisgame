@@ -1,4 +1,4 @@
-package de.tum.cit.fop.maze;
+package de.tum.cit.fop.maze.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,13 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import de.tum.cit.fop.maze.MazeRunnerGame;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 
-/**
- * The MenuScreen class is responsible for displaying the main menu of the game.
- * It extends the LibGDX Screen class and sets up the UI components for the menu.
- */
-public class MenuScreen implements Screen {
-
+public class SettingsScreen implements Screen {
     private final Stage stage;
 
     /**
@@ -26,9 +23,9 @@ public class MenuScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(MazeRunnerGame game) {
+    public SettingsScreen(MazeRunnerGame game) {
         var camera = new OrthographicCamera();
-        camera.zoom = 1.5f; // Set camera zoom for a closer view
+        camera.zoom = 1.5f;
 
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
@@ -38,15 +35,33 @@ public class MenuScreen implements Screen {
         stage.addActor(table); // Add the table to the stage
 
         // Add a label as a title
-        table.add(new Label("Hello World from the Menu!", game.getSkin(), "title")).padBottom(80).row();
+        table.add(new Label("Settings", game.getSkin(), "title")).padBottom(80).row();
 
-        // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Go To Game", game.getSkin());
-        table.add(goToGameButton).width(300).row();
-        goToGameButton.addListener(new ChangeListener() {
+        Slider music = new Slider(0, 1, 0.01f, false, game.getSkin());
+        music.setValue(game.getBackgroundMusic().getVolume());
+        table.add(music).width(300);
+        music.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame(); // Change to the game screen when button is pressed
+                game.getBackgroundMusic().setVolume(music.getValue());
+            }
+        });
+
+        TextButton muteMusicButton = new TextButton("Mute Music", game.getSkin());
+        table.add(muteMusicButton).width(300).row();
+        muteMusicButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                music.setValue(0);
+            }
+        });
+
+        TextButton goToMenuButton = new TextButton("Back To Menu", game.getSkin());
+        table.add(goToMenuButton).width(300).row();
+        goToMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToMenu(); // Change to the game screen when button is pressed
             }
         });
     }

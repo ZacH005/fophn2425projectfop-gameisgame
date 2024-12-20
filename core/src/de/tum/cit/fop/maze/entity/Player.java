@@ -36,7 +36,9 @@ public class Player {
 
     private Rectangle collider;
 
-    private List<TiledMapTileLayer> wallLayers;
+    private List<TiledMapTileLayer> collidable;
+
+
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -54,7 +56,7 @@ public class Player {
         this.direction = Direction.DOWN;
         this.animationTime = 0f;
         //added in order that they are shown in the map file, not in the id order
-        this.wallLayers = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
+        this.collidable = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
     }
 
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
@@ -116,12 +118,12 @@ public class Player {
         boolean colliding = false;
         int i = 0;
         //checks through all wall layers, (alse checks for an offset to avoid entering walls)
-        while (!colliding && i < wallLayers.size())  {
-            colliding = colliding || checkCollision(newX+6, newY, wallLayers.get(i));
-            colliding = colliding || checkCollision(newX-6, newY, wallLayers.get(i));
+        while (!colliding && i < collidable.size())  {
+            colliding = colliding || checkCollision(newX+6, newY, collidable.get(i)) || checkCollision(newX-6, newY, collidable.get(i));
+            //colliding = colliding || checkCollision(newX-6, newY, collidable.get(i));
             //skipping the back walls to it keeps the current overlap
             if (i != 2)
-                colliding = colliding || checkCollision(newX, newY - 9, wallLayers.get(i));
+                colliding = colliding || checkCollision(newX, newY - 9, collidable.get(i));
             i++;
         }
         return colliding;

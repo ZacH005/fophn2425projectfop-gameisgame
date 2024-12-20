@@ -10,6 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import de.tum.cit.fop.maze.arbitrarymap.RenderMap;
+import de.tum.cit.fop.maze.screens.GameScreen;
+import de.tum.cit.fop.maze.screens.MenuScreen;
+import de.tum.cit.fop.maze.screens.PauseScreen;
+import de.tum.cit.fop.maze.screens.SettingsScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 //bananas comment
 /**
@@ -20,7 +24,8 @@ public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
-    private RenderMap renderMap;
+    private SettingsScreen settingsScreen;
+    private PauseScreen pauseScreen;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -34,6 +39,9 @@ public class MazeRunnerGame extends Game {
     private Animation<TextureRegion> characterRightAnimation;
     private Animation<TextureRegion> characterLeftAnimation;
     private Animation<TextureRegion> characterIdleAnimation;
+
+    // Music
+    private Music backgroundMusic;
 
     /**
      * Constructor for MazeRunnerGame.
@@ -55,11 +63,11 @@ public class MazeRunnerGame extends Game {
 
         // Play some background music
         // Background sound
-        Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
         backgroundMusic.setLooping(true);
 
         //Paused music cause it was annoying
-        //backgroundMusic.play();
+        backgroundMusic.play();
 
         goToMenu(); // Navigate to the menu screen
     }
@@ -84,6 +92,22 @@ public class MazeRunnerGame extends Game {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
         }
+        if (pauseScreen != null)    {
+            pauseScreen.dispose();
+            pauseScreen = null;
+        }
+    }
+
+    public void goToSettings()  {
+        this.setScreen(new SettingsScreen(this));
+        if (menuScreen != null) {
+            menuScreen.dispose(); // Dispose the menu screen if it exists
+            menuScreen = null;
+        }
+    }
+
+    public void goToPause() {
+        this.setScreen(new PauseScreen(this));
     }
 
     /**
@@ -162,5 +186,13 @@ public class MazeRunnerGame extends Game {
 
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
+    }
+
+    public Music getBackgroundMusic() {
+        return backgroundMusic;
+    }
+
+    public void setBackgroundMusic(Music backgroundMusic) {
+        this.backgroundMusic = backgroundMusic;
     }
 }

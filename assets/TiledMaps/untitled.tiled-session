@@ -9,10 +9,10 @@
     "fileStates": {
         "CaveMap.tmx": {
             "scale": 1.8325,
-            "selectedLayer": 0,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 171.07776261937244,
-                "y": 178.44474761255117
+                "x": 170.8049113233288,
+                "y": 178.17189631650749
             }
         },
         "Caves-Tileset.tsx": {
