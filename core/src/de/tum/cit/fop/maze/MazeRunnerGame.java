@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import de.tum.cit.fop.maze.arbitrarymap.RenderMap;
@@ -87,7 +88,8 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
-        this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+            this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
@@ -107,7 +109,11 @@ public class MazeRunnerGame extends Game {
     }
 
     public void goToPause() {
-        this.setScreen(new PauseScreen(this));
+//        Vector2 positionOfThePlayerBeforePause = gameScreen.getPlayer().getPosition();
+        if (pauseScreen == null) {
+            pauseScreen = new PauseScreen(this); // Reuse existing PauseScreen
+        }
+        this.setScreen(pauseScreen);
     }
 
     /**

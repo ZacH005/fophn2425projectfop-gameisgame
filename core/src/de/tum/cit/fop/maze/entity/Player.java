@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Player {
+public class Player implements Entity {
 
-    private Vector2 position;
     private Vector2 velocity;
     private float speed;
     private boolean isMoving;
@@ -37,16 +36,20 @@ public class Player {
     private Rectangle collider;
 
     private List<TiledMapTileLayer> collidable;
-
+    ///Entitiy's variables
+    private Vector2 position;
+    private int health;
+    private int armor;
+    private List<String> powerups;
+    private int money;
 
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
-    public Player(float x, float y, float speed, TiledMap tiledMap) {
+    public Player(float x, float y, float speed, TiledMap tiledMap, int health,int armor, List<String> powerups, int money) {
         this.tileSize = 16;
-        this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
         this.tiledMap = tiledMap;
         this.width = tileSize;
@@ -57,6 +60,12 @@ public class Player {
         this.animationTime = 0f;
         //added in order that they are shown in the map file, not in the id order
         this.collidable = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
+        ///Entities variables
+        this.position = new Vector2(x, y);
+        this.health = health;
+        this.armor = armor;
+        this.money = money;
+        this.powerups = new ArrayList<>();
     }
 
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
@@ -142,10 +151,72 @@ public class Player {
         //since its checking the walls, basically if the tile is there it's a wall
         return cell != null;
     }
+/// Entity's methods
+    @Override
+    public int getHealth() {
+        return health;
+    }
+
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
     public Vector2 getPosition() {
         return position;
     }
+
+    @Override
+    public void setPosition(Vector2 position) {
+        this.position = position;
+    }
+
+    @Override
+    public int getArmor() {
+        return armor;
+    }
+
+    @Override
+    public void setArmor(int armor) {
+        this.armor = armor;
+    }
+
+    @Override
+    public List<String> getPowerUps() {
+        return powerups;
+    }
+
+    @Override
+    public void setPowerUps(List<String> powerUps) {
+        this.powerups = powerUps;
+    }
+
+    @Override
+    public int getMoney() {
+        return money;
+    }
+
+    @Override
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    @Override
+    public void saveState(String filename) {
+        EntityUtils.saveToFile(this, filename);
+    }
+
+    @Override
+    public void loadState(String filename) {
+        Entity loaded = EntityUtils.loadFromFile(filename,this);
+        if (loaded instanceof Player) {
+            Player loadedPlayer = (Player) loaded;
+            this.health = loadedPlayer.health;
+            this.position = loadedPlayer.position;
+            this.armor = loadedPlayer.armor;
+            this.money = loadedPlayer.money;
+            this.powerups = loadedPlayer.powerups;
+     }}
 
     public Direction getDirection() {
         return direction;

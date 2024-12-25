@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.fop.maze.MazeRunnerGame;
 import de.tum.cit.fop.maze.entity.Player;
 
+import java.util.ArrayList;
+
 /**
  * The GameScreen class handles gameplay, rendering the Tiled map and the player.
  */
@@ -59,7 +61,7 @@ public class GameScreen implements Screen {
         float startPlayerX = (2*tileSize)+tileSize/2;
         float startPlayerY = (2*tileSize);
         //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, 150, tiledMap);
+        player = new Player(startPlayerX, startPlayerY, 150, tiledMap,100,100,new ArrayList<String>(),0);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
 
         // LIGHTING TEXTURE
@@ -70,6 +72,8 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         //options/pause button
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            ///saving the player state to a txt file before pausing
+            player.saveState("playerstate.txt");
             game.goToPause();
         }
 
@@ -238,7 +242,10 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void show() { }
+    public void show() {
+        ///loading the player state from a txt file after resuming
+        player.loadState("playerstate.txt");
+    }
 
     @Override
     public void hide() { }
