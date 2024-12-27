@@ -15,6 +15,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.MazeRunnerGame;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
  * It extends the LibGDX Screen class and sets up the UI components for the menu.
@@ -42,13 +46,29 @@ public class MenuScreen implements Screen {
         // Add a label as a title
         table.add(new Label("Blind Cave Game!", game.getSkin(), "title")).padBottom(80).row();
 
+        TextButton startNewGameButton = new TextButton("Start New Game", game.getSkin());
+        table.add(startNewGameButton).width(300).row();
+        startNewGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (Files.exists(Path.of("playerstate.txt"))) {
+                    try {
+                        Files.delete(Path.of("playerstate.txt"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                game.goToGame();
+            }
+        });
+
         // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Go To Game", game.getSkin());
+        TextButton goToGameButton = new TextButton("Continue Game", game.getSkin());
         table.add(goToGameButton).width(300).row();
         goToGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame(); // Change to the game screen when button is pressed
+                game.goToGame();
             }
         });
 

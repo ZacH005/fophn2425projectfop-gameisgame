@@ -68,6 +68,7 @@ public class MazeRunnerGame extends Game {
         backgroundMusic.setLooping(true);
 
         //Paused music cause it was annoying
+        backgroundMusic.setVolume(0);
         backgroundMusic.play();
 
         goToMenu(); // Navigate to the menu screen
@@ -116,41 +117,62 @@ public class MazeRunnerGame extends Game {
         this.setScreen(pauseScreen);
     }
 
-    /**
-     * Loads the character animation from the character.png file.
-     */
     private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("templateAssets/character.png"));
+        Texture walkSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/walk.png"));
 
-        int frameWidth = 16;
-        int frameHeight = 32;
-        int animationFrames = 4;
-        int y = 0;
+        int frameWidth = 16, frameHeight = 16, walkAnimationFrames = 8, y = 32, idleAnimationFrames = 4;
 
-        for (int i = 0; i <= 3; i++)    {
+        for (int i = 0; i <= 2; i++)    {
             // libGDX internal Array instead of ArrayList because of performance
             Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
 
             // Add all frames to the animation
-            for (int col = 0; col < animationFrames; col++) {
-                walkFrames.add(new TextureRegion(walkSheet, col * frameWidth, y, frameWidth, frameHeight));
+            int offset = 32;
+
+            for (int col = 0; col < walkAnimationFrames; col++) {
+                walkFrames.add(new TextureRegion(walkSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
             }
             switch (y)  {
-                case 0:
-                    characterDownAnimation = new Animation<>(0.1f, walkFrames);
-                    characterIdleAnimation = new Animation<>(0.0f, new TextureRegion(walkSheet, 0, y, frameWidth, frameHeight));
+                case 112:
+                    characterDownAnimation = new Animation<>(0.05f, walkFrames);
                     break;
                 case 32:
-                    characterRightAnimation = new Animation<>(0.1f, walkFrames);
+                    characterRightAnimation = new Animation<>(0.05f, walkFrames);
+                    Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
+                    for (TextureRegion t : walkFrames)  {
+                        TextureRegion flippedFrame = new TextureRegion(t);
+                        flippedFrame.flip(true, false);
+                        leftWalkFrames.add(flippedFrame);
+                    }
+                    characterLeftAnimation = new Animation<>(0.05f, leftWalkFrames);
                     break;
-                case 64:
-                    characterUpAnimation = new Animation<>(0.1f, walkFrames);
-                    break;
-                case 96:
-                    characterLeftAnimation = new Animation<>(0.1f, walkFrames);
+                case 192:
+
+                    characterUpAnimation = new Animation<>(0.05f, walkFrames);
                     break;
             }
-            y += 32;
+            y += frameHeight + 64;
+        }
+
+        y=32;
+        Texture idleSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/idle.png"));
+
+        for (int i = 0; i <= 2; i++)    {
+            // libGDX internal Array instead of ArrayList because of performance
+            Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
+
+            // Add all frames to the animation
+            int offset = 32;
+
+            for (int col = 0; col < idleAnimationFrames; col++) {
+                idleFrames.add(new TextureRegion(idleSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
+            }
+            switch (y)  {
+                case 32:
+                    characterIdleAnimation = new Animation<>(0.1f, idleFrames);
+                    break;
+            }
+            y += frameHeight + 64;
         }
     }
 

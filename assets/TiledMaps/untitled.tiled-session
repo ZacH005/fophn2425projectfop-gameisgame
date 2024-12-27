@@ -11,7 +11,7 @@
             "scale": 1.8325,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 170.8049113233288,
+                "x": 158.52660300136424,
                 "y": 178.17189631650749
             }
         },
@@ -36,10 +36,12 @@
             "scaleInEditor": 1
         }
     },
-    "last.imagePath": "/Users/zach/IdeaProjects/fophn2425projectfop-gameisgame/assets/TiledMaps",
+    "last.imagePath": "/Users/zach/IdeaProjects/fophn2425projectfop-gameisgame/assets/TiledMaps/tilesets/newCaves/Hana Caraka - Topdown Tileset [sample]/Tileset",
+    "map.height": 40,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
+    "map.width": 40,
     "openFiles": [
         "cavesTileset.tsx",
         "CaveMap.tmx"

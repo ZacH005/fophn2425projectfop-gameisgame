@@ -53,13 +53,14 @@ public class Player implements Entity {
         this.velocity = new Vector2(0, 0);
         this.tiledMap = tiledMap;
         this.width = tileSize;
-        this.height = tileSize*2;
+        this.height = tileSize;
         this.speed = speed;
         this.isMoving = false;
         this.direction = Direction.DOWN;
         this.animationTime = 0f;
         //added in order that they are shown in the map file, not in the id order
         this.collidable = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
+
         ///Entities variables
         this.position = new Vector2(x, y);
         this.health = health;
@@ -128,11 +129,11 @@ public class Player implements Entity {
         int i = 0;
         //checks through all wall layers, (alse checks for an offset to avoid entering walls)
         while (!colliding && i < collidable.size())  {
-            colliding = colliding || checkCollision(newX+6, newY, collidable.get(i)) || checkCollision(newX-6, newY, collidable.get(i));
+            colliding = colliding || checkCollision(newX+5, newY, collidable.get(i)) || checkCollision(newX-5, newY, collidable.get(i));
             //colliding = colliding || checkCollision(newX-6, newY, collidable.get(i));
             //skipping the back walls to it keeps the current overlap
             if (i != 2)
-                colliding = colliding || checkCollision(newX, newY - 9, collidable.get(i));
+                colliding = colliding || checkCollision(newX, newY - 7, collidable.get(i));
             i++;
         }
         return colliding;
@@ -209,14 +210,14 @@ public class Player implements Entity {
     @Override
     public void loadState(String filename) {
         Entity loaded = EntityUtils.loadFromFile(filename,this);
-        if (loaded instanceof Player) {
-            Player loadedPlayer = (Player) loaded;
+        if (loaded instanceof Player loadedPlayer) {
             this.health = loadedPlayer.health;
             this.position = loadedPlayer.position;
             this.armor = loadedPlayer.armor;
             this.money = loadedPlayer.money;
             this.powerups = loadedPlayer.powerups;
-     }}
+        }
+    }
 
     public Direction getDirection() {
         return direction;

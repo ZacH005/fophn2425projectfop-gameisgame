@@ -33,10 +33,6 @@ public class GameScreen implements Screen {
 
     private Texture lightTexture;
 
-
-    /**
-     * Constructor for GameScreen. Sets up camera, map, and player.
-     */
     public GameScreen(MazeRunnerGame game) {
         //game is game
         this.game = game;
@@ -65,7 +61,7 @@ public class GameScreen implements Screen {
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
 
         // LIGHTING TEXTURE
-        lightTexture = createConeLightTexture(256, 256);
+        //lightTexture = createConeLightTexture(256, 256);
     }
 
     @Override
@@ -102,112 +98,16 @@ public class GameScreen implements Screen {
         player.render(game.getSpriteBatch());
 
         // LIGHTING: Darken the screen and draw the light texture
-        renderLighting();
+        //renderLighting();
 
         game.getSpriteBatch().end();
+
+        if (delta % 1000 == 0)
+            player.saveState("playerstate.txt");
 
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
     }
-
-    /**
-     * Renders the lighting effect by drawing the light texture over a dark screen.
-     */
-    private void renderLighting() {
-        // Enable additive blending for light
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-
-        // Determine light position and rotation based on direction
-        float x = player.getPosition().x;
-        float y = player.getPosition().y;
-
-        float lightWidth = 70;
-        float lightHeight = 256;
-
-        float lightx = x;
-        float lighty = y;
-
-        float rotation = getRotationForDirection(player.getDirection());
-        //down == y - lightHeight
-        //up == y
-        //right == x + lightWidth + 1.7f*tileSize, y - lightHeight / 2 + 2
-        //left == x - 2*lightWidth - tileSize - 8, y - lightHeight / 2 + 2
-
-        switch (player.getDirection())  {
-            case DOWN -> {
-                lighty = y - lightHeight;
-                lightx = x - lightWidth / 2;
-            }
-            case RIGHT -> {
-                lightx = x + lightWidth + 1.7f*tileSize;
-                lighty = y - lightHeight / 2 + 2;
-            }
-            case LEFT -> {
-                lightx = x - 2*lightWidth - tileSize - 8;
-                lighty = y - lightHeight / 2 + 2;
-            }
-            default -> {
-                lightx = x - lightWidth / 2;
-                lighty = y;
-            }
-        }
-
-        game.getSpriteBatch().draw(lightTexture,
-                lightx, lighty,   // Position
-                lightWidth / 2, lightHeight / 2,           // Origin of rotation
-                lightWidth, lightHeight,                   // Size
-                1, 1,                                      // Scaling
-                rotation,                                  // Rotation
-                0, 0, lightTexture.getWidth(), lightTexture.getHeight(), false, false);
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-    }
-
-    private float getRotationForDirection(Player.Direction direction) {
-        switch (direction) {
-            case UP:
-                return 180f;   // Default orientation (cone pointing up)
-            case DOWN:
-                return 0f; // Rotate 180 degrees
-            case LEFT:
-                return -90f;  // Rotate 90 degrees counter-clockwise
-            case RIGHT:
-                return 90f; // Rotate 90 degrees clockwise
-            default:
-                return 0f;
-        }
-    }
-
-
-
-    /**
-     * Creates a circular light texture with a radial gradient.
-     */
-    private Texture createConeLightTexture(int width, int height) {
-        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
-        pixmap.setBlending(Pixmap.Blending.None);
-
-        int tipX = width / 2;  // Tip of the cone (centered horizontally)
-        int tipY = 0;          // Tip of the cone (top of the texture)
-
-        for (int y = 0; y < height; y++) {
-            float alpha = 1 - (y / (float) height); // Fade transparency as it moves down
-            int coneWidth = (int) ((y / (float) height) * width); // Width of the cone at each y
-
-            for (int x = tipX - coneWidth / 2; x < tipX + coneWidth / 2; x++) {
-                if (x >= 0 && x < width) { // Ensure within bounds
-                    pixmap.setColor(1, 0.8f, 0.5f, alpha);
-                    pixmap.drawPixel(x, y);
-                }
-            }
-        }
-
-        Texture texture = new Texture(pixmap);
-        pixmap.dispose();
-        return texture;
-    }
-
 
 
     private void handleInput() {
