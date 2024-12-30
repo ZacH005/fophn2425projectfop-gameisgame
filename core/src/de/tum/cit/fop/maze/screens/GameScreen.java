@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * The GameScreen class handles gameplay, rendering the Tiled map and the player.
  */
 public class GameScreen implements Screen {
+    //Map Path
 
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
@@ -32,8 +33,9 @@ public class GameScreen implements Screen {
     private float tileSize;
 
     private Texture lightTexture;
+    /// updated the constructor to take a map path
+    public GameScreen(MazeRunnerGame game, String mapPath ) {
 
-    public GameScreen(MazeRunnerGame game) {
         //game is game
         this.game = game;
         this.tileSize = 16.0f;
@@ -49,7 +51,8 @@ public class GameScreen implements Screen {
 
         //MAP STUFF::
         //decided to load map in the game screen since it's super simple in libgdx with tiled
-        tiledMap = new TmxMapLoader().load("TiledMaps/CaveMap.tmx");
+        // I modified this to load a map from a selector
+        tiledMap = new TmxMapLoader().load(mapPath);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         //THIS IS ALL PLAYER THINGS:

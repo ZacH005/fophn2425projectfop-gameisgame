@@ -61,6 +61,16 @@ public class MenuScreen implements Screen {
                 game.goToGame();
             }
         });
+/// map selector button
+        TextButton goToLevelSelectorButton = new TextButton("Levels", game.getSkin());
+        table.add(goToLevelSelectorButton).width(300).row();
+        goToLevelSelectorButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToLevelSelector();
+            }
+        });
+
 
         // Create and add a button to go to the game screen
         TextButton goToGameButton = new TextButton("Continue Game", game.getSkin());

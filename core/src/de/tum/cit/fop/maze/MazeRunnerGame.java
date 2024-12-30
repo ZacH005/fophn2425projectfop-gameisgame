@@ -7,14 +7,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import de.tum.cit.fop.maze.arbitrarymap.RenderMap;
-import de.tum.cit.fop.maze.screens.GameScreen;
-import de.tum.cit.fop.maze.screens.MenuScreen;
-import de.tum.cit.fop.maze.screens.PauseScreen;
-import de.tum.cit.fop.maze.screens.SettingsScreen;
+import de.tum.cit.fop.maze.screens.*;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 //bananas comment
 /**
@@ -27,6 +26,7 @@ public class MazeRunnerGame extends Game {
     private GameScreen gameScreen;
     private SettingsScreen settingsScreen;
     private PauseScreen pauseScreen;
+    private LevelSelectorScreen levelSelectorScreen;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -89,7 +89,8 @@ public class MazeRunnerGame extends Game {
      * Switches to the game screen.
      */
     public void goToGame() {
-            this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+
+        this.setScreen(new GameScreen(this,"TiledMaps/CaveMap.tmx")); // Set the current screen to GameScreen
 
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
@@ -115,6 +116,22 @@ public class MazeRunnerGame extends Game {
             pauseScreen = new PauseScreen(this); // Reuse existing PauseScreen
         }
         this.setScreen(pauseScreen);
+    }
+/// go to map selector
+    public void goToLevelSelector() {
+        if (levelSelectorScreen == null) {
+            levelSelectorScreen = new LevelSelectorScreen(this); // Create the level selector screen
+        }
+        this.setScreen(levelSelectorScreen); // Set the current screen to LevelSelectorScreen
+    }
+    /// map loader
+    public void loadLevel(String levelName) {
+        // Load the level by loading the .tmx file
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        TiledMap map = mapLoader.load("assets/TiledMaps/" + levelName + ".tmx");
+
+
+        this.setScreen(new GameScreen(this, "assets/TiledMaps/" + levelName + ".tmx")); // Change to a GameScreen that uses the loaded map
     }
 
     private void loadCharacterAnimation() {
