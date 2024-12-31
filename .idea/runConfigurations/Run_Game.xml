@@ -1,8 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Game" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="de.tum.cit.fop.maze.DesktopLauncher" />
-<!--I'm windows, so yeah.. I need to do this to run it-->
-    <module name="Semster_Project.desktop.main" />
+    <module name="fophn2425projectfop-gameisgame3_-_Copy.desktop.main" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="de.tum.cit.ase.maze.*" />

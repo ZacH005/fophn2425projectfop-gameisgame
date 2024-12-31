@@ -33,7 +33,7 @@ public class Player implements Entity {
     private TiledMap tiledMap;
     private int tileSize;
 
-    private Rectangle collider;
+    public Rectangle collider;
 
     private List<TiledMapTileLayer> collidable;
     ///Entitiy's variables
@@ -67,8 +67,8 @@ public class Player implements Entity {
         this.armor = armor;
         this.money = money;
         this.powerups = new ArrayList<>();
-        /// at the start no completed levels will be there
-        }
+        this.collider = new Rectangle(x, y, width, height);
+    }
 
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
         this.currentAnimation = animation;
@@ -82,6 +82,8 @@ public class Player implements Entity {
             if (!isColliding(newX, newY)) {
                 position.x = newX;
                 position.y = newY;
+                collider.x = newX;
+                collider.y = newY;
             }
 
             //make a set of all x, y coordinates of walls. check if the set of walls includes those x, y coordinates. set player position to current position
