@@ -97,7 +97,8 @@ public class MenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.exit(); // exit game
-                System.exit(-1);
+                //System.exit(-1); this is a force shut, which we don't need because we need to
+                // do cleanups and to save userdata.
             }
         });
 

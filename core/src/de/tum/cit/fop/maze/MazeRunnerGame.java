@@ -13,8 +13,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import de.tum.cit.fop.maze.arbitrarymap.RenderMap;
+import de.tum.cit.fop.maze.entity.Entity;
+import de.tum.cit.fop.maze.entity.Player;
+import de.tum.cit.fop.maze.entity.User;
 import de.tum.cit.fop.maze.screens.*;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+import jdk.jfr.StackTrace;
+
+import java.util.Map;
 //bananas comment
 /**
  * The MazeRunnerGame class represents the core of the Maze Runner game.
@@ -43,6 +49,8 @@ public class MazeRunnerGame extends Game {
 
     // Music
     private Music backgroundMusic;
+    //A User
+    private User user;
 
     /**
      * Constructor for MazeRunnerGame.
@@ -58,6 +66,12 @@ public class MazeRunnerGame extends Game {
      */
     @Override
     public void create() {
+        user = User.loadUserData("user_data.ser"); // Load existing user data, or use a default constructor to create a new one
+
+        if (user == null) {
+            user = new User("Player1");  // Set default username if no data found
+        }
+
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
         this.loadCharacterAnimation(); // Load character animation
@@ -73,7 +87,19 @@ public class MazeRunnerGame extends Game {
 
         goToMenu(); // Navigate to the menu screen
     }
-
+    /** saves user data **/
+    public void saveUserData() {
+        if (user != null) {
+            user.saveUserData("user_data.ser");
+        }
+    }
+    /** sets user preferences **/
+    public void setPreferences(Map<String, Object> preferences) {
+        if (user != null) {
+            user.setPreferences(preferences);
+            saveUserData();  // Save preferences after setting them
+        }
+    }
     /**
      * Switches to the menu screen.
      */
@@ -192,16 +218,28 @@ public class MazeRunnerGame extends Game {
             y += frameHeight + 64;
         }
     }
-
+    // completing a certain level
+    public void markLevelAsCompleted(String levelFileName) {
+        if (user != null) {
+            user.addCompletedLevel(levelFileName);
+            user.saveUserData("user_data.ser");  // Save after adding a completed level
+        }
+    }
     /**
      * Cleans up resources when the game is disposed.
      */
     @Override
     public void dispose() {
-        getScreen().hide(); // Hide the current screen
-        getScreen().dispose(); // Dispose the current screen
-        spriteBatch.dispose(); // Dispose the spriteBatch
-        skin.dispose(); // Dispose the skin
+
+            if (user != null) {
+                user.saveUserData("user_data.ser");
+            }
+
+            getScreen().hide(); // Hide the current screen
+            getScreen().dispose(); // Dispose the current screen
+            spriteBatch.dispose(); // Dispose the spriteBatch
+            skin.dispose(); // Dispose the skin
+
     }
 
     // Getter methods
@@ -239,5 +277,9 @@ public class MazeRunnerGame extends Game {
 
     public void setBackgroundMusic(Music backgroundMusic) {
         this.backgroundMusic = backgroundMusic;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

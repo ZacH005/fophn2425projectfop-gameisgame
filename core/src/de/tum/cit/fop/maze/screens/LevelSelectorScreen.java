@@ -1,31 +1,31 @@
 package de.tum.cit.fop.maze.screens;
 
 import com.badlogic.gdx.Gdx;
-
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.MazeRunnerGame;
-
+import de.tum.cit.fop.maze.entity.User;
 
 public class LevelSelectorScreen extends ScreenAdapter {
     private Stage stage;
     private MazeRunnerGame game;
+    private User user;
 
     public LevelSelectorScreen(MazeRunnerGame game) {
         this.game = game;
+        this.user = game.getUser(); // Assume the game class provides access to the user
+
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f;
 
@@ -67,15 +67,23 @@ public class LevelSelectorScreen extends ScreenAdapter {
         for (FileHandle file : tmxFiles) {
             final String levelName = file.nameWithoutExtension(); // Get the level name without extension
             TextButton levelButton = new TextButton(levelName, game.getSkin());
+
+            // Disable the button if the level is completed
+            if (!user.getCompletedLevels().contains(levelName)) {
+                levelButton.setDisabled(true); // Disable button for completed level
+            }
+
             table.add(levelButton).width(300).padBottom(10).row();
 
             // Set listener for each level button
             levelButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    // Load the corresponding level by its .tmx file
-                    game.loadLevel(levelName);
-                    System.out.println("Level " + levelName + " selected");
+                    if (!levelButton.isDisabled()) {
+                        // Load the corresponding level by its .tmx file
+                        game.loadLevel(levelName);
+                        System.out.println("Level " + levelName + " selected");
+                    }
                 }
             });
         }

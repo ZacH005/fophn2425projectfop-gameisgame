@@ -67,7 +67,8 @@ public class Player implements Entity {
         this.armor = armor;
         this.money = money;
         this.powerups = new ArrayList<>();
-    }
+        /// at the start no completed levels will be there
+        }
 
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
         this.currentAnimation = animation;
@@ -153,6 +154,8 @@ public class Player implements Entity {
         return cell != null;
     }
 /// Entity's methods
+
+
     @Override
     public int getHealth() {
         return health;
@@ -216,6 +219,7 @@ public class Player implements Entity {
             this.armor = loadedPlayer.armor;
             this.money = loadedPlayer.money;
             this.powerups = loadedPlayer.powerups;
+
         }
     }
 
@@ -226,4 +230,5 @@ public class Player implements Entity {
     public boolean isMoving() {
         return isMoving;
     }
+
 }

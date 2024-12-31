@@ -32,6 +32,8 @@ public class EntityUtils {
             dataToSave.put("powerUps", entity.getPowerUps());
             dataToSave.put("money", entity.getMoney());
 
+
+
             // Write the map to file
             out.writeObject(dataToSave);
             System.out.println("Entity saved to " + filename );
@@ -61,6 +63,7 @@ public class EntityUtils {
                 entity.setArmor((int) loadedData.get("armor"));
                 entity.setPowerUps((List<String>) loadedData.get("powerUps"));
                 entity.setMoney((int) loadedData.get("money"));
+
                 System.out.println("Entity loaded from " + filename);
             }
         } catch (IOException | ClassNotFoundException e) {

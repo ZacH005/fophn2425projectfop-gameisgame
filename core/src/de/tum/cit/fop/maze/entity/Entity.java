@@ -20,6 +20,7 @@ public interface Entity {
     int getMoney();
     void setMoney(int money);
 
+
     void saveState(String filename);  // Save state to file
     void loadState(String filename); // Load state from file
 }
