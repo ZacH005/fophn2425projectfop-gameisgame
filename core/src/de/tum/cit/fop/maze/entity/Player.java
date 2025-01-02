@@ -70,6 +70,8 @@ public class Player implements Entity {
         this.collider = new Rectangle(x, y, width, height);
     }
 
+    //use collider for the thingy, remove the object, place it into the array list.
+
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
         this.currentAnimation = animation;
     }

@@ -1,6 +1,8 @@
 package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+
 import java.io.*;
 import java.util.*;
 

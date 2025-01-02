@@ -95,6 +95,7 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             ///saving the player state to a txt file before pausing
             player.saveState("playerstate.txt");
+            enemy.saveState("enemystate.txt");
             game.goToPause();
         }
 
@@ -125,7 +126,6 @@ public class GameScreen implements Screen {
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
-//        shapeRenderer.setProjectionMatrix(camera.combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //        shapeRenderer.setColor(1, 0, 0, 1); // Red color
 //        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
@@ -198,6 +198,7 @@ public class GameScreen implements Screen {
     public void show() {
         ///loading the player state from a txt file after resuming
         player.loadState("playerstate.txt");
+        enemy.loadState("enemystate.txt");
     }
 
     @Override
