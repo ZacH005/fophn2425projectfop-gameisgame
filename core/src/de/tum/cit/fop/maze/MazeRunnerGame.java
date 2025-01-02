@@ -3,6 +3,7 @@ package de.tum.cit.fop.maze;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -111,9 +112,6 @@ public class MazeRunnerGame extends Game {
         }
     }
 
-    /**
-     * Switches to the game screen.
-     */
     public void goToGame() {
 
         this.setScreen(new GameScreen(this,"TiledMaps/CaveMap.tmx")); // Set the current screen to GameScreen
@@ -131,7 +129,7 @@ public class MazeRunnerGame extends Game {
     public void goToSettings()  {
         this.setScreen(new SettingsScreen(this));
         if (menuScreen != null) {
-            menuScreen.dispose(); // Dispose the menu screen if it exists
+            menuScreen.dispose();
             menuScreen = null;
         }
     }
@@ -201,10 +199,8 @@ public class MazeRunnerGame extends Game {
         Texture idleSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/idle.png"));
 
         for (int i = 0; i <= 2; i++)    {
-            // libGDX internal Array instead of ArrayList because of performance
             Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
 
-            // Add all frames to the animation
             int offset = 32;
 
             for (int col = 0; col < idleAnimationFrames; col++) {
