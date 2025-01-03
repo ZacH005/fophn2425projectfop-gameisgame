@@ -1,7 +1,7 @@
 package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import de.tum.cit.fop.maze.abilities.Powerup;
 
 import java.io.*;
 import java.util.*;
@@ -63,7 +63,7 @@ public class EntityUtils {
                 entity.setHealth((int) loadedData.get("health"));
                 entity.setPosition((Vector2) loadedData.get("position"));
                 entity.setArmor((int) loadedData.get("armor"));
-                entity.setPowerUps((List<String>) loadedData.get("powerUps"));
+                entity.setPowerUps((List<Powerup>) loadedData.get("powerUps"));
                 entity.setMoney((int) loadedData.get("money"));
 
                 System.out.println("Entity loaded from " + filename);

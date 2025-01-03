@@ -1,22 +1,25 @@
 package de.tum.cit.fop.maze.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
+import de.tum.cit.fop.maze.abilities.Collectable;
+import de.tum.cit.fop.maze.abilities.Powerup;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Player implements Entity {
+public class Player implements Entity, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
 
     private Vector2 velocity;
     private float speed;
@@ -41,7 +44,7 @@ public class Player implements Entity {
     public final Vector2 resetpos;
     private int health;
     private int armor;
-    private List<String> powerups;
+    private List<Powerup> powerups;
     private int money;
 
     private float flickerAlpha = 1.0f;  // Initialize alpha to full visibility
@@ -51,22 +54,26 @@ public class Player implements Entity {
     private float flickertotaltime = 0f; //Timer to keep track of time for whole flicker animation
     private float totalflickerduration; //Total animation duration
 
+    private boolean isSprinting;
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
-    public Player(float x, float y, float speed, TiledMap tiledMap, int health,int armor, List<String> powerups, int money) {
+    public Player(float x, float y, TiledMap tiledMap, int health,int armor, List<String> powerups, int money) {
         this.tileSize = 16;
         this.velocity = new Vector2(0, 0);
         this.tiledMap = tiledMap;
         this.width = tileSize;
         this.height = tileSize;
-        this.speed = speed;
+        this.speed = 150;
         this.isMoving = false;
         this.direction = Direction.DOWN;
         this.animationTime = 0f;
         //added in order that they are shown in the map file, not in the id order
         this.collidable = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
+
+        this.isSprinting = false;
 
         ///Entities variables
         this.position = new Vector2(x, y);
@@ -169,10 +176,6 @@ public class Player implements Entity {
         velocity.set(0, 0);
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
-
     public boolean isColliding(float newX, float newY)  {
         boolean colliding = false;
         int i = 0;
@@ -236,12 +239,12 @@ public class Player implements Entity {
     }
 
     @Override
-    public List<String> getPowerUps() {
+    public List<Powerup> getPowerUps() {
         return powerups;
     }
 
     @Override
-    public void setPowerUps(List<String> powerUps) {
+    public void setPowerUps(List<Powerup> powerUps) {
         this.powerups = powerUps;
     }
 
@@ -268,8 +271,12 @@ public class Player implements Entity {
             this.position = loadedPlayer.position;
             this.armor = loadedPlayer.armor;
             this.money = loadedPlayer.money;
-            this.powerups = loadedPlayer.powerups;
-
+            loadedPlayer.getPowerUps().forEach(powerup -> {
+                powerup.initializeTransientFields(loadedPlayer);
+                if (powerup instanceof Collectable<?> collectable) {
+                    collectable.applyEffect();
+                }
+            });
         }
     }
 
@@ -281,4 +288,19 @@ public class Player implements Entity {
         return isMoving;
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public boolean isSprinting() {
+        return isSprinting;
+    }
+
+    public void setSprinting(boolean sprinting) {
+        isSprinting = sprinting;
+    }
 }

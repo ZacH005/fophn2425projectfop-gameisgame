@@ -1,6 +1,7 @@
 package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.math.Vector2;
+import de.tum.cit.fop.maze.abilities.Powerup;
 
 import java.util.List;
 
@@ -14,12 +15,11 @@ public interface Entity {
     int getArmor();
     void setArmor(int armor);
 
-    List<String> getPowerUps(); // we can do a list of powerups that based on the name of them we modify the variables of the player
-    void setPowerUps(List<String> powerUps);
+    List<Powerup> getPowerUps(); // we can do a list of powerups that based on the name of them we modify the variables of the player
+    void setPowerUps(List<Powerup> powerUps);
 
     int getMoney();
     void setMoney(int money);
-
 
     void saveState(String filename);  // Save state to file
     void loadState(String filename); // Load state from file

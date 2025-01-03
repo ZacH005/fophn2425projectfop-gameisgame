@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import de.tum.cit.fop.maze.abilities.Powerup;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.List;
@@ -91,12 +91,12 @@ public class Enemy implements Entity {
     }
 
     @Override
-    public List<String> getPowerUps() {
+    public List<Powerup> getPowerUps() {
         return List.of();
     }
 
     @Override
-    public void setPowerUps(List<String> powerUps) {
+    public void setPowerUps(List<Powerup> powerUps) {
 
     }
 

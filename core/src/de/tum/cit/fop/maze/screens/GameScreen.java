@@ -13,11 +13,18 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.abilities.Collectable;
+import de.tum.cit.fop.maze.abilities.SpeedUp;
 import de.tum.cit.fop.maze.entity.Enemy;
 import de.tum.cit.fop.maze.entity.Player;
+import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.shaders.Light;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * The GameScreen class handles gameplay, rendering the Tiled map and the player.
@@ -36,6 +43,8 @@ public class GameScreen implements Screen {
 
     private Player player;
     private Enemy enemy;
+    private List<Powerup> mapPowerups;
+
     private float tileSize;
     private boolean following=false;
 
@@ -57,7 +66,7 @@ public class GameScreen implements Screen {
         //CAMERA THINGS:
         camera = new OrthographicCamera();
         //this was kinda from before, i don't understand all this
-        camera.setToOrtho(false, Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 3f);
+        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         camera.zoom = 1f;
         backgroundoverlay=new Texture("DK.png");
 
@@ -75,10 +84,13 @@ public class GameScreen implements Screen {
         float startPlayerX = (2*tileSize)+tileSize/2;
         float startPlayerY = (2*tileSize);
         //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, 100, tiledMap,100,100,new ArrayList<String>(),0);
+        player = new Player(startPlayerX, startPlayerY, tiledMap,100,100,new ArrayList<String>(),0);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
 
         this.enemy=new Enemy(200,250,player);
+        mapPowerups = new ArrayList<>();
+        mapPowerups.add(new SpeedUp(player, "SpeedUp", "Fast Power", 4*tileSize, 3*tileSize));
+
         // LIGHTING
         lights = new ArrayList<>();
         lights.add(new Light(new Vector2(player.getPosition().x, player.getPosition().y), 300f));
@@ -123,16 +135,13 @@ public class GameScreen implements Screen {
 //        lightBuffer.begin();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);  // Clear the framebuffer
 
-
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
-//        shapeRenderer.setProjectionMatrix(camera.combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //        shapeRenderer.setColor(1, 0, 0, 1); // Red color
 //        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
 //        shapeRenderer.end();
-
 
         //I don't get projectionmatrices, needed to be attached to the spritebatch
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
@@ -152,6 +161,20 @@ public class GameScreen implements Screen {
         // Draw the framebuffer with lighting effects
 //        game.getSpriteBatch().draw(lightBuffer.getColorBufferTexture(), 0, 0);
 
+        if (!mapPowerups.isEmpty()) {
+            Iterator<Powerup> iterator = mapPowerups.iterator();
+            while (iterator.hasNext()) {
+                Powerup powerup = iterator.next();
+                Vector2 position = powerup.getPosition();
+                game.getSpriteBatch().draw(powerup.getTexture(), position.x, position.y);
+
+                if (powerup instanceof Collectable<?> collectable) {
+                    if (collectable.checkPickUp())
+                        iterator.remove();
+                }
+            }
+        }
+
         //renders the player, pretty chill
         player.render(game.getSpriteBatch());
         game.getSpriteBatch().draw(enemy.getEnemy(),enemy.position.x,enemy.position.y);
@@ -160,12 +183,6 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().setColor(1,1,1,1);
 
         game.getSpriteBatch().end();
-
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.setColor(1, 0, 0, 1); // Red color
-//        shapeRenderer.rect(enemy.damageCollider.getX(),enemy.damageCollider.getY(), enemy.damageCollider.width, enemy.damageCollider.height);
-//        shapeRenderer.end();
 
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
@@ -185,23 +202,30 @@ public class GameScreen implements Screen {
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             player.move(Player.Direction.DOWN);
             player.setCurrentAnimation(game.getCharacterDownAnimation());
-        }
-        else {
+        } else {
             player.stop();
             player.setCurrentAnimation(game.getCharacterIdleAnimation());
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-        player.setSpeed(150);
+            if (!player.isSprinting())  {
+                player.setSpeed(player.getSpeed()*1.50f);
+                player.setSprinting(true);
+                System.out.println(player.getSpeed());
+            }
         }else{
-            player.setSpeed(100);
+            if (player.isSprinting())   {
+                player.setSpeed(player.getSpeed()/1.50f);
+                player.setSprinting(false);
+                System.out.println(player.getSpeed());
+            }
         }
     }
 
 
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false, width / 3f, height / 3f);
+        camera.setToOrtho(false, width / 2f, height / 2f);
     }
 
     @Override
