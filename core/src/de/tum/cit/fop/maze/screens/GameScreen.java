@@ -87,7 +87,7 @@ public class GameScreen implements Screen {
         float startPlayerX = (2*tileSize)+tileSize/2;
         float startPlayerY = (2*tileSize);
         //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, tiledMap,100,100,new ArrayList<String>(),0);
+        player = new Player(startPlayerX, startPlayerY, tiledMap,5,100,new ArrayList<String>(),0);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
         hud=new HUD(game.getSpriteBatch(),game);
 

@@ -91,6 +91,7 @@ public class Enemy implements Entity {
             if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
                 // proceed with damage logic
                 player.setHealth(player.getHealth()-1);
+                System.out.println(player.getHealth());
                 player.respawn();// Reset player position
                 setPosition(new Vector2(initialposx,initialposy));
                 hud.hitHeart();
