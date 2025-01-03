@@ -58,6 +58,13 @@ public class MenuScreen implements Screen {
                         throw new RuntimeException(e);
                     }
                 }
+                if (Files.exists(Path.of("enemystate.txt"))) {
+                    try {
+                        Files.delete(Path.of("enemystate.txt"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 game.goToGame();
             }
         });

@@ -38,11 +38,18 @@ public class Player implements Entity {
     private List<TiledMapTileLayer> collidable;
     ///Entitiy's variables
     private Vector2 position;
+    public final Vector2 resetpos;
     private int health;
     private int armor;
     private List<String> powerups;
     private int money;
 
+    private float flickerAlpha = 1.0f;  // Initialize alpha to full visibility
+    private boolean isFlickering = false;  // Track if the player is flickering
+    private float flickerTime = 0f;  // Timer for a single flickering effect
+    private static final float FLICKER_DURATION = 0.1f;  // Duration for each flicker step
+    private float flickertotaltime = 0f; //Timer to keep track of time for whole flicker animation
+    private float totalflickerduration; //Total animation duration
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
@@ -63,20 +70,48 @@ public class Player implements Entity {
 
         ///Entities variables
         this.position = new Vector2(x, y);
+        this.resetpos = new Vector2(50, 50);
         this.health = health;
         this.armor = armor;
         this.money = money;
         this.powerups = new ArrayList<>();
-        this.collider = new Rectangle(x, y, width, height);
+        this.collider = new Rectangle(position.x-8, position.y-8, width, height);
+    }
+    public void startFlickering(float time) {
+        isFlickering = true;
+        flickerTime = 0f;
+        totalflickerduration = time;
     }
 
-    //use collider for the thingy, remove the object, place it into the array list.
+    public void stopFlickering() {
+        isFlickering = false;
+        flickerAlpha = 1.0f;  // Reset alpha to normal
+    }
+
+    public void updateFlickerEffect(float delta) {
+        if (isFlickering) {
+            flickertotaltime += delta;
+            flickerTime += delta;
+            //stops flickering when time is greater than total animation duration (Ik the variable names could be confusing sorry.)
+            if(flickertotaltime>totalflickerduration){
+                stopFlickering();
+                flickertotaltime=0f;
+            }
+            //basically toggles the alphe value that each flicker duration the value swaps from 0 to 1 or from 1 to 0 which is then used as the opacity for the spritebatch
+            if (flickerTime >= FLICKER_DURATION) {
+                // Toggle alpha between 1.0 (visible) and 0.0 (invisible)
+                flickerAlpha = (flickerAlpha == 1.0f) ? 0.0f : 1.0f;
+                flickerTime = 0f;  // Reset flicker time
+            }
+        }
+    }
 
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
         this.currentAnimation = animation;
     }
 
     public void update(float delta) {
+        updateFlickerEffect(delta);
         if (isMoving) {
             float newX = position.x + velocity.x * speed * delta;
             float newY = position.y + velocity.y * speed * delta;
@@ -84,8 +119,8 @@ public class Player implements Entity {
             if (!isColliding(newX, newY)) {
                 position.x = newX;
                 position.y = newY;
-                collider.x = newX;
-                collider.y = newY;
+                collider.x = newX-8;
+                collider.y = newY-8;
             }
 
             //make a set of all x, y coordinates of walls. check if the set of walls includes those x, y coordinates. set player position to current position
@@ -99,9 +134,14 @@ public class Player implements Entity {
 
     public void render(SpriteBatch batch) {
         if (currentAnimation != null) {
+            batch.setColor(1,1,1,flickerAlpha);
             TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
             batch.draw(frame, position.x-(width/2), position.y-(height/2), width, height);
+            batch.setColor(1,1,1,1);
         }
+    }
+    public void respawn(){
+        setPosition(new Vector2(50,50));
     }
 
     public void move(Direction direction) {
@@ -127,6 +167,10 @@ public class Player implements Entity {
     public void stop() {
         isMoving = false;
         velocity.set(0, 0);
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public boolean isColliding(float newX, float newY)  {
@@ -177,6 +221,8 @@ public class Player implements Entity {
     @Override
     public void setPosition(Vector2 position) {
         this.position = position;
+        collider.x = position.x-8;
+        collider.y = position.y-8;
     }
 
     @Override

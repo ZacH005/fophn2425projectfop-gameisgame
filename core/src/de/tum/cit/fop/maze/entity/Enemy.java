@@ -1,10 +1,13 @@
 package de.tum.cit.fop.maze.entity;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.List;
 
@@ -14,17 +17,29 @@ public class Enemy implements Entity {
     private Texture texture;
     private Animation animation;
     public Rectangle scanRange;
+    private Player player;
+    private boolean following;
+    public Rectangle damageCollider;
+    private Music chaseMusic;;
+    private float lastDamageTime; // To track the last damage time
+    private float cooldownTime=2f;
 
-    public Enemy(int x, int y){
+    public Enemy(int x, int y,Player player) {
+        this.player = player;
         position = new Vector2(x,y);
         texture=new Texture("TiledMaps/SlimeA.png");
         animation=new Animation(new TextureRegion(texture),16,3f);
-        int scanrangewidth = 64;
-        int scanrangeheight = 64;
-        scanRange = new Rectangle(position.x-24,position.y-30,64,64);
+        int scanrangewidth = 100;
+        int scanrangeheight = 100;
+        scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
+        damageCollider = new Rectangle(position.x+6,position.y+3,2,2);
+        chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
+        chaseMusic.setLooping(true);
     }
     public void update(float delta){
         animation.update(delta);
+        checkfollows();
+        checkDamaging(delta);
     }
     public TextureRegion getEnemy(){
         return animation.getFrame();
@@ -42,12 +57,27 @@ public class Enemy implements Entity {
 
     @Override
     public Vector2 getPosition() {
-        return null;
+        return position;
     }
 
     @Override
     public void setPosition(Vector2 position) {
+        this.position.x=position.x;
+        this.position.y=position.y;
+    }
+    private void checkDamaging(float delta) {
+        if (damageCollider.overlaps(player.collider)) {
+            // only process if cooldown has passed
+            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
+                // proceed with damage logic
+                player.respawn();  // Reset player position
+                System.out.println("restarted");
+                player.startFlickering(cooldownTime);
 
+                // update last damage time
+                lastDamageTime = TimeUtils.nanoTime();
+            }
+        }
     }
 
     @Override
@@ -90,6 +120,47 @@ public class Enemy implements Entity {
         Entity loaded = EntityUtils.loadFromFile(filename,this);
         if (loaded instanceof Enemy loadedEnemy) {
             this.position = loadedEnemy.position;
+        }
+    }
+    public void checkfollows() {
+        // calculates x and y distance
+        float distanceX = player.getPosition().x - this.position.x;
+        float distanceY = player.getPosition().y - this.position.y;
+
+        // calculate the total distance (Pythagoras)
+        float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        // check if the player is in range
+        if (this.scanRange.overlaps(player.collider)) {
+            if (!following) {
+                following = true; // Start following
+                chaseMusic.play(); // Play suspenseful music
+            }
+        }
+
+        if (following) {
+            // if close enough or escaped, stop moving
+            if (distance < 5.0f||distance > 100.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
+                following = false;
+                chaseMusic.stop();
+                return;
+            }
+
+            // moves the enemy towards the player
+            float speed = 90 * Gdx.graphics.getDeltaTime(); // Speed in units per second
+            float directionX = distanceX / distance; // Basic Vector Math to get unit vector direction without any extra magnitude
+            float directionY = distanceY / distance;
+
+            // Update enemy position
+            this.position.x += directionX * speed;
+            this.position.y += directionY * speed;
+
+            // Update scan range based on the enemy's new position
+            this.scanRange.setX(this.position.x - scanRange.getWidth()/2f+8);
+            this.scanRange.setY(this.position.y - scanRange.getHeight()/2f+4);
+
+            this.damageCollider.setX(this.position.x +6);
+            this.damageCollider.setY(this.position.y + 3);
         }
     }
 }
