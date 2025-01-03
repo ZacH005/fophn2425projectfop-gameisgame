@@ -33,6 +33,7 @@ public class EntityUtils {
             dataToSave.put("armor", entity.getArmor());
             dataToSave.put("powerUps", entity.getPowerUps());
             dataToSave.put("money", entity.getMoney());
+            dataToSave.put("isFollowing",entity.isFollowing());
 
 
 
@@ -65,6 +66,7 @@ public class EntityUtils {
                 entity.setArmor((int) loadedData.get("armor"));
                 entity.setPowerUps((List<Powerup>) loadedData.get("powerUps"));
                 entity.setMoney((int) loadedData.get("money"));
+                entity.setFollowing((boolean) loadedData.get("isFollowing"));
 
                 System.out.println("Entity loaded from " + filename);
             }

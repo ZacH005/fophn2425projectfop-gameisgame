@@ -176,6 +176,10 @@ public class Player implements Entity, Serializable {
         velocity.set(0, 0);
     }
 
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
     public boolean isColliding(float newX, float newY)  {
         boolean colliding = false;
         int i = 0;
@@ -226,6 +230,16 @@ public class Player implements Entity, Serializable {
         this.position = position;
         collider.x = position.x-8;
         collider.y = position.y-8;
+    }
+
+    @Override
+    public boolean isFollowing() {
+        return false;
+    }
+
+    @Override
+    public void setFollowing(boolean following) {
+
     }
 
     @Override
@@ -292,9 +306,6 @@ public class Player implements Entity, Serializable {
         return speed;
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
-    }
 
     public boolean isSprinting() {
         return isSprinting;

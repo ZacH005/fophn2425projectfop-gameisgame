@@ -12,6 +12,9 @@ public interface Entity {
     Vector2 getPosition();
     void setPosition(Vector2 position);
 
+    boolean isFollowing();
+    void setFollowing(boolean following);
+
     int getArmor();
     void setArmor(int armor);
 

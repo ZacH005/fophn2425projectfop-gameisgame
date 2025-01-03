@@ -23,18 +23,27 @@ public class Enemy implements Entity {
     private Music chaseMusic;;
     private float lastDamageTime; // To track the last damage time
     private float cooldownTime=2f;
+    private HUD hud;
+    int scanrangewidth;
+    int scanrangeheight;
+    //for some reason if I just create a Vector2 initial position it does not work dk why
+    private int initialposx;
+    private int initialposy;
 
-    public Enemy(int x, int y,Player player) {
+    public Enemy(int x, int y,Player player,HUD hud) {
         this.player = player;
         position = new Vector2(x,y);
+        initialposx = x;
+        initialposy = y;
         texture=new Texture("TiledMaps/SlimeA.png");
         animation=new Animation(new TextureRegion(texture),16,3f);
-        int scanrangewidth = 100;
-        int scanrangeheight = 100;
+         scanrangewidth = 100;
+         scanrangeheight = 100;
         scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
         damageCollider = new Rectangle(position.x+6,position.y+3,2,2);
         chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
         chaseMusic.setLooping(true);
+        this.hud=hud;
     }
     public void update(float delta){
         animation.update(delta);
@@ -48,6 +57,15 @@ public class Enemy implements Entity {
     @Override
     public int getHealth() {
         return 0;
+    }
+
+    public boolean isFollowing() {
+        return following;
+    }
+
+    @Override
+    public void setFollowing(boolean following) {
+        this.following=following;
     }
 
     @Override
@@ -64,13 +82,18 @@ public class Enemy implements Entity {
     public void setPosition(Vector2 position) {
         this.position.x=position.x;
         this.position.y=position.y;
+        scanRange.setPosition(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4);
+        damageCollider.setPosition(position.x+6,position.y+3);
     }
     private void checkDamaging(float delta) {
         if (damageCollider.overlaps(player.collider)) {
             // only process if cooldown has passed
             if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
                 // proceed with damage logic
-                player.respawn();  // Reset player position
+                player.setHealth(player.getHealth()-1);
+                player.respawn();// Reset player position
+                setPosition(new Vector2(initialposx,initialposy));
+                hud.hitHeart();
                 System.out.println("restarted");
                 player.startFlickering(cooldownTime);
 
@@ -140,7 +163,7 @@ public class Enemy implements Entity {
 
         if (following) {
             // if close enough or escaped, stop moving
-            if (distance < 5.0f||distance > 100.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
+            if (distance > 100.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
                 following = false;
                 chaseMusic.stop();
                 return;

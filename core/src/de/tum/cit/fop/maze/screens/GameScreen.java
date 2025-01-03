@@ -16,6 +16,7 @@ import de.tum.cit.fop.maze.MazeRunnerGame;
 import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.SpeedUp;
 import de.tum.cit.fop.maze.entity.Enemy;
+import de.tum.cit.fop.maze.entity.HUD;
 import de.tum.cit.fop.maze.entity.Player;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.shaders.Light;
@@ -54,7 +55,8 @@ public class GameScreen implements Screen {
     private ShaderProgram lightingShader;
     private ArrayList<Light> lights;
     private Texture backgroundoverlay;// Store all lights
-
+    private HUD hud;
+    private boolean isGameOver;
 
     private Texture lightTexture;
     /// updated the constructor to take a map path
@@ -66,7 +68,7 @@ public class GameScreen implements Screen {
         //CAMERA THINGS:
         camera = new OrthographicCamera();
         //this was kinda from before, i don't understand all this
-        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        camera.setToOrtho(false, Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 3f);
         camera.zoom = 1f;
         backgroundoverlay=new Texture("DK.png");
 
@@ -78,6 +80,7 @@ public class GameScreen implements Screen {
         // I modified this to load a map from a selector
         tiledMap = new TmxMapLoader().load(mapPath);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        isGameOver=false;
 
         //THIS IS ALL PLAYER THINGS:
         //need to make it so when the map loads, it chooses the specific location of the starting block
@@ -86,8 +89,9 @@ public class GameScreen implements Screen {
         //just initializing the player
         player = new Player(startPlayerX, startPlayerY, tiledMap,100,100,new ArrayList<String>(),0);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
+        hud=new HUD(game.getSpriteBatch(),game);
 
-        this.enemy=new Enemy(200,250,player);
+        this.enemy=new Enemy(200,250,player,hud);
         mapPowerups = new ArrayList<>();
         mapPowerups.add(new SpeedUp(player, "SpeedUp", "Fast Power", 4*tileSize, 3*tileSize));
 
@@ -105,6 +109,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if (player.getHealth()==0){
+            isGameOver=true;
+            game.setScreen(new GameoverScreen(game.getSpriteBatch()));
+        }
         //options/pause button
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             ///saving the player state to a txt file before pausing
@@ -138,6 +146,7 @@ public class GameScreen implements Screen {
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
+//        shapeRenderer.setProjectionMatrix(camera.combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //        shapeRenderer.setColor(1, 0, 0, 1); // Red color
 //        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
@@ -184,6 +193,15 @@ public class GameScreen implements Screen {
 
         game.getSpriteBatch().end();
 
+        game.getSpriteBatch().setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
+
+//        shapeRenderer.setProjectionMatrix(camera.combined);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        shapeRenderer.setColor(1, 0, 0, 1); // Red color
+//        shapeRenderer.rect(enemy.damageCollider.getX(),enemy.damageCollider.getY(), enemy.damageCollider.width, enemy.damageCollider.height);
+//        shapeRenderer.end();
+
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
     }
@@ -225,7 +243,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false, width / 2f, height / 2f);
+        camera.setToOrtho(false, width / 3f, height / 3f);
     }
 
     @Override
