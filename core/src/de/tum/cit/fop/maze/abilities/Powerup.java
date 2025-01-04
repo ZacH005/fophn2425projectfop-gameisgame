@@ -2,6 +2,7 @@ package de.tum.cit.fop.maze.abilities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,7 +23,7 @@ public abstract class Powerup implements Serializable {
     private transient Texture texture;
     private transient Player player;
     private boolean isEquipped;
-    private transient Music pickUpSound;
+    private transient Sound pickUpSound;
 
     public Powerup(Player player, String name, String description, float x, float y) {
         this.player = player;
@@ -34,7 +35,7 @@ public abstract class Powerup implements Serializable {
         this.animation = new Animation(new TextureRegion(texture),1,3f);
         this.collider = new Rectangle(position.x,position.y,16,16);
         this.isEquipped = false;
-        this.pickUpSound = Gdx.audio.newMusic(Gdx.files.internal("music/powerUp.wav"));
+        this.pickUpSound = Gdx.audio.newSound(Gdx.files.internal("music/powerUp.wav"));
     }
 
     public void initializeTransientFields(Player player) {
@@ -42,7 +43,7 @@ public abstract class Powerup implements Serializable {
         this.texture = new Texture("icons/speedUp.png");
         this.animation = new Animation(new TextureRegion(texture), 1, 3f);
         this.collider = new Rectangle(position.x, position.y, 16, 16);
-        this.pickUpSound = Gdx.audio.newMusic(Gdx.files.internal("music/powerUp.wav"));
+        this.pickUpSound = Gdx.audio.newSound(Gdx.files.internal("music/powerUp.wav"));
     }
 
     public boolean isEquipped() {
@@ -117,11 +118,11 @@ public abstract class Powerup implements Serializable {
         this.player = player;
     }
 
-    public Music getPickUpSound() {
+    public Sound getPickUpSound() {
         return pickUpSound;
     }
 
-    public void setPickUpSound(Music pickUpSound) {
+    public void setPickUpSound(Sound pickUpSound) {
         this.pickUpSound = pickUpSound;
     }
 }

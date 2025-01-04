@@ -1,5 +1,8 @@
 package de.tum.cit.fop.maze.entity;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -208,7 +211,16 @@ public class Player implements Entity, Serializable {
         //since its checking the walls, basically if the tile is there it's a wall
         return cell != null;
     }
-/// Entity's methods
+
+    @Override
+    public void takeDamage() {
+        health -= 1;
+        System.out.println(health);
+        Sound hurtSFX = Gdx.audio.newSound(Gdx.files.internal("music/hitHurt.wav"));
+        hurtSFX.play();
+    }
+
+    /// Entity's methods
 
 
     @Override

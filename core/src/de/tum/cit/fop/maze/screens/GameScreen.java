@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
         //CAMERA THINGS:
         camera = new OrthographicCamera();
         //this was kinda from before, i don't understand all this
-        camera.setToOrtho(false, Gdx.graphics.getWidth() / 3f, Gdx.graphics.getHeight() / 3f);
+        camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         camera.zoom = 1f;
         backgroundoverlay=new Texture("DK.png");
 
@@ -241,7 +241,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false, width / 3f, height / 3f);
+        camera.setToOrtho(false, width / 2f, height / 2f);
     }
 
     @Override

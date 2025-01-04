@@ -55,6 +55,11 @@ public class Enemy implements Entity {
     }
 
     @Override
+    public void takeDamage() {
+
+    }
+
+    @Override
     public int getHealth() {
         return 0;
     }
@@ -90,14 +95,12 @@ public class Enemy implements Entity {
             // only process if cooldown has passed
             if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
                 // proceed with damage logic
-                player.setHealth(player.getHealth()-1);
-                System.out.println(player.getHealth());
+                player.takeDamage();
                 player.respawn();// Reset player position
                 setPosition(new Vector2(initialposx,initialposy));
-                hud.hitHeart();
                 System.out.println("restarted");
                 player.startFlickering(cooldownTime);
-
+                hud.hitHeart();
                 // update last damage time
                 lastDamageTime = TimeUtils.nanoTime();
             }

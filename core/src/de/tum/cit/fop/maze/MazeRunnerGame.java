@@ -184,27 +184,27 @@ public class MazeRunnerGame extends Game {
 
     /** restart game**/
     /// helper method to clear temporary files.
-//    public static void resetFile(String filePath) {
-//
-//        try {
-//            BufferedWriter writer = new BufferedWriter(new FileWriter("playerstate.txt", false));
-//            // Open the file in non-append mode and write nothing to it
-//            writer.write("");
-//            writer.close();
-//        } catch (IOException e) {
-//            System.out.println("An error occurred while resetting the file: " + e.getMessage());
-//        }
-//
-//    }
+    public static void resetFile(String filePath) {
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("playerstate.txt", false));
+            // Open the file in non-append mode and write nothing to it
+            writer.write("");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while resetting the file: " + e.getMessage());
+        }
+
+    }
 
     public void restartGame() {
         /// dispose of the current game screen if necessary
         if (getScreen() != null) {
             getScreen().dispose();
         }
-///// reset objects-states in the map
-//        resetFile("playerstate.txt");
-//        resetFile("enemystate.txt");
+/// reset objects-states in the map
+        resetFile("playerstate.txt");
+        resetFile("enemystate.txt");
 
         goToGame();
     }
