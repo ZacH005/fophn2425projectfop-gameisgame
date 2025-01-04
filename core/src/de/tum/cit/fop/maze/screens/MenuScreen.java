@@ -46,11 +46,13 @@ public class MenuScreen implements Screen {
         // Add a label as a title
         table.add(new Label("Blind Cave Game!", game.getSkin(), "title")).padBottom(80).row();
 
-        TextButton startNewGameButton = new TextButton("Start New Game", game.getSkin());
-        table.add(startNewGameButton).width(300).row();
-        startNewGameButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
+        if(game.getUser().getCompletedLevels().isEmpty()){
+            TextButton startNewGameButton = new TextButton("Start New Game", game.getSkin());
+            table.add(startNewGameButton).width(300).row();
+            startNewGameButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+
                 if (Files.exists(Path.of("playerstate.txt"))) {
                     try {
                         Files.delete(Path.of("playerstate.txt"));
@@ -65,9 +67,20 @@ public class MenuScreen implements Screen {
                         throw new RuntimeException(e);
                     }
                 }
-                game.goToGame();
-            }
-        });
+                    game.goToGame();
+                }
+            });
+        }
+        else{
+            TextButton ContinueButton = new TextButton("Continue", game.getSkin());
+            table.add(ContinueButton).width(300).row();
+            ContinueButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    game.goToGame();
+                }
+            });
+        }
 /// map selector button
         TextButton goToLevelSelectorButton = new TextButton("Levels", game.getSkin());
         table.add(goToLevelSelectorButton).width(300).row();

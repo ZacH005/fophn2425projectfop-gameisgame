@@ -193,6 +193,7 @@ public class MazeRunnerGame extends Game {
              FileLock lock = channel.lock()) {
             // Truncate the file to zero length
             raf.setLength(0);
+
         } catch (IOException e) {
             System.out.println("An error occurred while resetting the file: " + e.getMessage());
         }
@@ -205,7 +206,9 @@ public class MazeRunnerGame extends Game {
         }
         /// reset objects-states in the map
         resetFile("playerstate.txt");
+        System.out.println("wrote to file");
         resetFile("enemystate.txt");
+        System.out.println("wrote to file");
         // if the level isn't completed the goToGame will just go to the last unplayed level
         goToGame();
     }
