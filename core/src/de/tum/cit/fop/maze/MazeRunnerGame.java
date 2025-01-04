@@ -3,6 +3,7 @@ package de.tum.cit.fop.maze;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -21,6 +22,9 @@ import de.tum.cit.fop.maze.screens.*;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 import jdk.jfr.StackTrace;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 //bananas comment
 /**
@@ -52,6 +56,7 @@ public class MazeRunnerGame extends Game {
     private Music backgroundMusic;
     //A User
     private User user;
+    private int indexOfTheMapBeingPlayed;
 
     /**
      * Constructor for MazeRunnerGame.
@@ -88,6 +93,8 @@ public class MazeRunnerGame extends Game {
 
         goToMenu(); // Navigate to the menu screen
     }
+    /** restarts game **/
+
     /** saves user data **/
     public void saveUserData() {
         if (user != null) {
@@ -113,8 +120,31 @@ public class MazeRunnerGame extends Game {
     }
 
     public void goToGame() {
+        // loading all maps
+        FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
+        Array<FileHandle> tmxFiles = new Array<>();
+        for (FileHandle file : levelsDirectory.list()) {
+            if (file.extension().equals("tmx")) {
+                tmxFiles.add(file);
+            }
+        }
+        //getting the first map that isn't completed by the user.
+        for(FileHandle file : tmxFiles) {
 
-        this.setScreen(new GameScreen(this,"TiledMaps/CaveMap.tmx")); // Set the current screen to GameScreen
+            if(user.getCompletedLevels().contains(file.name())){
+                continue;
+            }
+            else if(user.getCompletedLevels().size()==tmxFiles.size){
+                user.getCompletedLevels().clear();
+                user.saveUserData("user_data.ser");
+                this.setScreen(new MenuScreen(this));
+            }
+            else{
+                indexOfTheMapBeingPlayed = tmxFiles.indexOf(file,false);
+                this.setScreen(new GameScreen(this, ("TiledMaps/"+file.name()) ));
+            }
+        }
+         // Set the current screen to GameScreen
 
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
@@ -125,6 +155,60 @@ public class MazeRunnerGame extends Game {
             pauseScreen = null;
         }
     }
+
+
+    /** go to next level **/
+    public void goToNextLevel() {
+        //get the files
+        FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
+        Array<FileHandle> tmxFiles = new Array<>();
+        for (FileHandle file : levelsDirectory.list()) {
+            if (file.extension().equals("tmx")) {
+                tmxFiles.add(file);
+            }
+        }
+        // get the one we played, add it to the user data, load the next one in the array and update the pointer to the current level being played
+        try{
+            user.getCompletedLevels().add(tmxFiles.get(indexOfTheMapBeingPlayed).name());
+            user.saveUserData("user_data.ser");
+            indexOfTheMapBeingPlayed++;
+            System.out.println("finished"+ tmxFiles.get(indexOfTheMapBeingPlayed).name());
+            this.setScreen(new GameScreen(this, ("TiledMaps/"+tmxFiles.get(indexOfTheMapBeingPlayed).name())));
+            System.out.println("started" + tmxFiles.get(indexOfTheMapBeingPlayed+1).name());
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    /** restart game**/
+    /// helper method to clear temporary files.
+//    public static void resetFile(String filePath) {
+//
+//        try {
+//            BufferedWriter writer = new BufferedWriter(new FileWriter("playerstate.txt", false));
+//            // Open the file in non-append mode and write nothing to it
+//            writer.write("");
+//            writer.close();
+//        } catch (IOException e) {
+//            System.out.println("An error occurred while resetting the file: " + e.getMessage());
+//        }
+//
+//    }
+
+    public void restartGame() {
+        /// dispose of the current game screen if necessary
+        if (getScreen() != null) {
+            getScreen().dispose();
+        }
+///// reset objects-states in the map
+//        resetFile("playerstate.txt");
+//        resetFile("enemystate.txt");
+
+        goToGame();
+    }
+
 
     public void goToSettings()  {
         this.setScreen(new SettingsScreen(this));

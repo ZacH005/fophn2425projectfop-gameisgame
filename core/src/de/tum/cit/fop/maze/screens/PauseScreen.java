@@ -60,12 +60,24 @@ public class PauseScreen implements Screen {
             }
         });
 
+
         TextButton goToMenuButton = new TextButton("Back To Menu", game.getSkin());
         table.add(goToMenuButton).width(300).row();
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToMenu(); // Change to the game screen when button is pressed
+            }
+        });
+
+
+
+        TextButton restartButton = new TextButton("Restart", game.getSkin());
+        table.add(restartButton).width(300).row();
+        restartButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.restartGame(); // Change to the game screen when button is pressed
             }
         });
     }

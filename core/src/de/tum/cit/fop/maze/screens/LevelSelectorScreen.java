@@ -69,7 +69,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
             TextButton levelButton = new TextButton(levelName, game.getSkin());
 
             // Disable the button if the level is completed
-            if (!user.getCompletedLevels().contains(levelName)) {
+            if (!user.getCompletedLevels().contains(levelName+".tmx")) {
                 levelButton.setDisabled(true); // Disable button for completed level
             }
 

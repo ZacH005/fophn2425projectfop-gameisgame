@@ -24,8 +24,6 @@ import de.tum.cit.fop.maze.shaders.Light;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * The GameScreen class handles gameplay, rendering the Tiled map and the player.
@@ -111,7 +109,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         if (player.getHealth()==0){
             isGameOver=true;
-            game.setScreen(new GameoverScreen(game.getSpriteBatch()));
+            game.setScreen(new GameOverScreen(game));
         }
         //options/pause button
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
