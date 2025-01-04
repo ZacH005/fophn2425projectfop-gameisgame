@@ -2,6 +2,7 @@ package de.tum.cit.fop.maze.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -53,7 +54,16 @@ public class VictoryScreen implements Screen {
         });
         table.add(nextLevelButton).width(300).row();
 
-/// Menu Button
+    /// Menu Button
+        FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
+        System.out.println(levelsDirectory);
+        int counter = 0;
+        for (FileHandle file : levelsDirectory.list()) {
+            if (file.extension().equals("tmx")) {
+                counter++;
+            }
+        }
+        if(game.getUser().getCompletedLevels().size()!=counter){
         TextButton levelSelectorButton = new TextButton("Go to Levels", game.getSkin());
         levelSelectorButton.addListener(new ChangeListener() {
             @Override
@@ -62,7 +72,7 @@ public class VictoryScreen implements Screen {
             }
         });
         table.add(levelSelectorButton).width(300).row();
-    }
+    }}
 
     @Override
     public void render(float delta) {
