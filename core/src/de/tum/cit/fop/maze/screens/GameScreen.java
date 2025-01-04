@@ -3,6 +3,7 @@ package de.tum.cit.fop.maze.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -30,7 +31,6 @@ import java.util.List;
  */
 public class GameScreen implements Screen {
     //Map Path
-
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
     //private final BitmapFont font;
@@ -59,6 +59,8 @@ public class GameScreen implements Screen {
     private Texture lightTexture;
     /// updated the constructor to take a map path
     private String mapPath;
+
+
     public GameScreen(MazeRunnerGame game, String mapPath ) {
         this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
@@ -71,6 +73,7 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         camera.zoom = 1f;
         backgroundoverlay=new Texture("DK.png");
+
 
         //this is from the template should be good later
 //        font = game.getSkin().getFont("font");
@@ -235,6 +238,7 @@ public class GameScreen implements Screen {
             player.move(Player.Direction.LEFT);
             player.setCurrentAnimation(game.getCharacterLeftAnimation());
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+
             player.move(Player.Direction.RIGHT);
             player.setCurrentAnimation(game.getCharacterRightAnimation());
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
