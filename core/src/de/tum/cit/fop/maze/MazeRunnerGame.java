@@ -25,6 +25,9 @@ import jdk.jfr.StackTrace;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.Map;
 //bananas comment
 /**
@@ -185,16 +188,14 @@ public class MazeRunnerGame extends Game {
     /** restart game**/
     /// helper method to clear temporary files.
     public static void resetFile(String filePath) {
-
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("playerstate.txt", false));
-            // Open the file in non-append mode and write nothing to it
-            writer.write("");
-            writer.close();
+        try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
+             FileChannel channel = raf.getChannel();
+             FileLock lock = channel.lock()) {
+            // Truncate the file to zero length
+            raf.setLength(0);
         } catch (IOException e) {
             System.out.println("An error occurred while resetting the file: " + e.getMessage());
         }
-
     }
 
     public void restartGame() {
