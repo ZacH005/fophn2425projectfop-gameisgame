@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.ArrayList;
 import java.util.Map;
 //bananas comment
 /**
@@ -80,7 +81,6 @@ public class MazeRunnerGame extends Game {
         if (user == null) {
             user = new User("Player1");  // Set default username if no data found
         }
-
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
         this.loadCharacterAnimation(); // Load character animation
@@ -131,19 +131,16 @@ public class MazeRunnerGame extends Game {
                 tmxFiles.add(file);
             }
         }
+
         //getting the first map that isn't completed by the user.
         for(FileHandle file : tmxFiles) {
-
+            // if the level is completed don't open it
             if(user.getCompletedLevels().contains(file.name())){
                 continue;
             }
-            else if(user.getCompletedLevels().size()==tmxFiles.size){
-                user.getCompletedLevels().clear();
-                user.saveUserData("user_data.ser");
-                this.setScreen(new MenuScreen(this));
-            }
+            // if a level isn't played then this the one we go to intuitively
             else{
-                indexOfTheMapBeingPlayed = tmxFiles.indexOf(file,false);
+                System.out.println("loaded :"+file.name()+" map");
                 this.setScreen(new GameScreen(this, ("TiledMaps/"+file.name()) ));
             }
         }
@@ -162,32 +159,35 @@ public class MazeRunnerGame extends Game {
 
     /** go to next level **/
     public void goToNextLevel() {
-        //get the files
         FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
-        Array<FileHandle> tmxFiles = new Array<>();
+        System.out.println(levelsDirectory);
+        int counter = 0;
         for (FileHandle file : levelsDirectory.list()) {
             if (file.extension().equals("tmx")) {
-                tmxFiles.add(file);
+             counter++;
             }
         }
-        // get the one we played, add it to the user data, load the next one in the array and update the pointer to the current level being played
-        try{
-            user.getCompletedLevels().add(tmxFiles.get(indexOfTheMapBeingPlayed).name());
+
+        System.out.println(user.getCompletedLevels());
+        System.out.println(levelsDirectory);
+        System.out.println(counter);
+
+        if(user.getCompletedLevels().size()>=counter){
+            user.resetCompletedLevels();
             user.saveUserData("user_data.ser");
-            indexOfTheMapBeingPlayed++;
-            System.out.println("finished"+ tmxFiles.get(indexOfTheMapBeingPlayed).name());
-            this.setScreen(new GameScreen(this, ("TiledMaps/"+tmxFiles.get(indexOfTheMapBeingPlayed).name())));
-            System.out.println("started" + tmxFiles.get(indexOfTheMapBeingPlayed+1).name());
+            goToMenu();
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
+
+        else {
+            goToGame();
         }
-    }
+        }
 
 
     /** restart game**/
     /// helper method to clear temporary files.
     public static void resetFile(String filePath) {
+        // added the channel lock to restrict access to this file while rewriting it
         try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
              FileChannel channel = raf.getChannel();
              FileLock lock = channel.lock()) {
@@ -203,10 +203,10 @@ public class MazeRunnerGame extends Game {
         if (getScreen() != null) {
             getScreen().dispose();
         }
-/// reset objects-states in the map
+        /// reset objects-states in the map
         resetFile("playerstate.txt");
         resetFile("enemystate.txt");
-
+        // if the level isn't completed the goToGame will just go to the last unplayed level
         goToGame();
     }
 

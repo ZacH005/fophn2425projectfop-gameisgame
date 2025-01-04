@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.fop.maze.abilities.Powerup;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.*;
 
 public class EntityUtils {
@@ -12,7 +14,7 @@ public class EntityUtils {
     public static void saveToFile(Entity entity, String filename) {
         File file = new File(filename);
 
-        // /check if the file exists; create it if not
+        // Check if the file exists; create it if not
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
@@ -24,8 +26,12 @@ public class EntityUtils {
             }
         }
 
-        /// Save the entity's state to the file
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+        // Save the entity's state to the file with locking
+        try (FileOutputStream fos = new FileOutputStream(file);
+             FileChannel fileChannel = fos.getChannel();
+             FileLock lock = fileChannel.lock();
+             ObjectOutputStream out = new ObjectOutputStream(fos)) {
+
             // Create a map to hold only the relevant variables
             Map<String, Object> dataToSave = new HashMap<>();
             dataToSave.put("health", entity.getHealth());
@@ -33,18 +39,16 @@ public class EntityUtils {
             dataToSave.put("armor", entity.getArmor());
             dataToSave.put("powerUps", entity.getPowerUps());
             dataToSave.put("money", entity.getMoney());
-            dataToSave.put("isFollowing",entity.isFollowing());
-
-
+            dataToSave.put("isFollowing", entity.isFollowing());
 
             // Write the map to file
             out.writeObject(dataToSave);
-            System.out.println("Entity saved to " + filename );
+            System.out.println("Entity saved to " + filename);
+
         } catch (IOException e) {
             System.err.println("Error saving entity to file: " + e.getMessage());
         }
     }
-
     // load only the specific variables from the file
     public static Entity loadFromFile(String filename, Entity entity) {
         File file = new File(filename);

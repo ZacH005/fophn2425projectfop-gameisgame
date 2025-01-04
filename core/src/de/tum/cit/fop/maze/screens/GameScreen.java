@@ -58,7 +58,9 @@ public class GameScreen implements Screen {
 
     private Texture lightTexture;
     /// updated the constructor to take a map path
+    private String mapPath;
     public GameScreen(MazeRunnerGame game, String mapPath ) {
+        this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
         //game is game
         this.game = game;
@@ -104,7 +106,12 @@ public class GameScreen implements Screen {
             Gdx.app.error("Shader", "Shader compilation failed: " + lightingShader.getLog());
         }
     }
-
+//    public void completeLevel(){
+//        //updates the index of the map being played
+//        game.setIndexOfTheMapBeingPlayed(game.getIndexOfTheMapBeingPlayed()+1);
+//
+//
+//    }
     @Override
     public void render(float delta) {
         if (player.getHealth()==0){
@@ -118,7 +125,25 @@ public class GameScreen implements Screen {
             enemy.saveState("enemystate.txt");
             game.goToPause();
         }
-
+        /// testing the victory screen by adding a button that finishes levels
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            // when a level is finished
+            // we first add it to the completed levels in the user data
+            // the map path is of form TiledMaps/mapName
+            // so we need to strip it just to the mapName
+            String mapName = mapPath.substring(mapPath.lastIndexOf('/') + 1);
+            if(!game.getUser().getCompletedLevels().contains(mapName)){
+                game.getUser().getCompletedLevels().add(mapName);
+                game.getUser().saveUserData("user_data.ser");
+                System.out.println(mapName+" is added to completed levels");
+            }
+            //now when the goToGame is called, we make sure it does not go to a finished map
+            // we already did that, so we can call goToGame in the MazeRunnerGame
+            // and it won't load an level that's added to the completed levels
+            // we debug by prinitng which level we complete by pressing X
+            // and which levels are we loading
+            game.setScreen(new VictoryScreen(game));
+        }
         // Clear screen
         ScreenUtils.clear(0, 0, 0, 1);
 
