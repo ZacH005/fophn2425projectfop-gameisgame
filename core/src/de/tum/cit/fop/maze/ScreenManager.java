@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Path;
 import java.util.Map;
 //bananas comment
 /**
@@ -53,8 +54,6 @@ public class ScreenManager extends Game {
     // User and Game State
     private User user;
 
-
-
     /**
      * Constructor for ScreenManager.
      *
@@ -81,10 +80,12 @@ public class ScreenManager extends Game {
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         this.loadCharacterAnimation(); // Load character animation
 
-
-
-        // Play some background music
-        // Background sound
+        //MUSIC
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
+        backgroundMusic.setLooping(true);
+        //muting it for now
+        backgroundMusic.setVolume(0);
+        backgroundMusic.play();
 
         goToMenu(); // Navigate to the menu screen
     }
