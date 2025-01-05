@@ -58,7 +58,8 @@ public class GameScreen implements Screen {
     private Texture lightTexture;
     /// updated the constructor to take a map path
     private String mapPath;
-
+    /// pause trigger
+    private boolean isPaused;
 
     public GameScreen(ScreenManager game, String mapPath ) {
         this.mapPath = mapPath;
@@ -121,62 +122,70 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        if (player.getHealth()==0){
-            isGameOver=true;
-            game.setScreen(new GameOverScreen(game));
-        }
-
-        //options/pause button
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            ///saving the player state to a txt file before pausing
-            player.saveState("playerstate.txt");
-            enemy.saveState("enemystate.txt");
-            game.goToPause();
-        }
-        /// testing the victory screen by adding a button that finishes levels
-        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            // when a level is finished
-            // we first add it to the completed levels in the user data
-            // the map path is of form TiledMaps/mapName
-            // so we need to strip it just to the mapName
-            String mapName = mapPath.substring(mapPath.lastIndexOf('/') + 1);
-            if(!game.getUser().getCompletedLevels().contains(mapName)){
-                game.getUser().getCompletedLevels().add(mapName);
-                game.getUser().saveUserData("user_data.ser");
-                System.out.println(mapName+" is added to completed levels");
+        if(isPaused) {
+            System.out.println("Pause State"+ isPaused);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                isPaused=false;
             }
-            //now when the goToGame is called, we make sure it does not go to a finished map
-            // we already did that, so we can call goToGame in the ScreenManager
-            // and it won't load an level that's added to the completed levels
-            // we debug by prinitng which level we complete by pressing X
-            // and which levels are we loading
-            game.setScreen(new VictoryScreen(game));
         }
-        // Clear screen
 
+        else{
+
+                // winning
+                if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+                    // when a level is finished
+                    // we first add it to the completed levels in the user data
+                    // the map path is of form TiledMaps/mapName
+                    // so we need to strip it just to the mapName
+                    String mapName = mapPath.substring(mapPath.lastIndexOf('/') + 1);
+                    if(!game.getUser().getCompletedLevels().contains(mapName)){
+                        game.getUser().getCompletedLevels().add(mapName);
+                        game.getUser().saveUserData("user_data.ser");
+                        System.out.println(mapName+" is added to completed levels");
+                    }
+                    //now when the goToGame is called, we make sure it does not go to a finished map
+                    // we already did that, so we can call goToGame in the ScreenManager
+                    // and it won't load an level that's added to the completed levels
+                    // we debug by prinitng which level we complete by pressing X
+                    // and which levels are we loading
+                    game.setScreen(new VictoryScreen(game));
+                }
+                //health trigger
+                if (player.getHealth()==0){
+                    isGameOver=true;
+                    game.setScreen(new GameOverScreen(game));
+                }
+                //input updating ; find the method below for details
+                handleInput();
+                // updating characters
+                player.update(delta);
+                enemy.update(delta);
+        }
+
+        // Clear screen before prinitng each frame
         ScreenUtils.clear(0, 0, 0, 1);
+        // Clear the framebuffer
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        //changed this to a method because it was way too much to just be sitting in render
-        handleInput();
 
-        //updating the player, doesn't have any bounds anymore, but theres also no collisions
-        player.update(delta);
-        enemy.update(delta);
-
-        //literally is just moving the camera with the player, can be changed easily
+        // moving the camera with the player
         camera.position.set(player.getPosition().x, player.getPosition().y, 0);
         camera.update();
-
         //basically its just saying the map should be shown in (camera)
         mapRenderer.setView(camera);
+        //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
+        mapRenderer.render();
+
+        // lights :
+        // Set the light position
+        lightingShader.setUniformf("u_lightPos", player.getPosition().x, player.getPosition().y);
+        lightingShader.setUniformf("u_lightRadius", 300f);
 
         // Render the map and player to the framebuffer (off-screen)
         ///actually does smth, uncomment end for it to work
 //        lightBuffer.begin();
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);  // Clear the framebuffer
 
-        //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
-        mapRenderer.render();
+
 
 //        shapeRenderer.setProjectionMatrix(camera.combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -184,9 +193,7 @@ public class GameScreen implements Screen {
 //        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
 //        shapeRenderer.end();
 
-        //I don't get projectionmatrices, needed to be attached to the spritebatch
-        game.getSpriteBatch().setProjectionMatrix(camera.combined);
-        game.getSpriteBatch().begin();
+
 
         // Apply lighting
 //        lightBuffer.end();
@@ -196,12 +203,18 @@ public class GameScreen implements Screen {
 //        lightingShader.bind();
 //        lightingShader.setUniformf("u_lightPos", lights.get(0).position.x, lights.get(0).position.y);  // Set the light position
 //        lightingShader.setUniformf("u_lightRadius", lights.get(0).radius);
-        lightingShader.setUniformf("u_lightPos", player.getPosition().x, player.getPosition().y);  // Set the light position
-        lightingShader.setUniformf("u_lightRadius", 300f);
+
 
         // Draw the framebuffer with lighting effects
 //        game.getSpriteBatch().draw(lightBuffer.getColorBufferTexture(), 0, 0);
 
+
+        //I don't get projectionmatrices, needed to be attached to the spritebatch
+// Set the projection matrix for the game camera
+        game.getSpriteBatch().setProjectionMatrix(camera.combined);
+        game.getSpriteBatch().begin();
+
+        //loading powerups on map
         if (!mapPowerups.isEmpty()) {
             Iterator<Powerup> iterator = mapPowerups.iterator();
             while (iterator.hasNext()) {
@@ -216,17 +229,22 @@ public class GameScreen implements Screen {
             }
         }
 
-        //renders the player, pretty chill
+
+// Render the player and enemy
         player.render(game.getSpriteBatch());
-        game.getSpriteBatch().draw(enemy.getEnemy(),enemy.position.x,enemy.position.y);
-        game.getSpriteBatch().setColor(1,1,1,0.9f);
-        game.getSpriteBatch().draw(darkCircleoverlay,player.getPosition().x- darkCircleoverlay.getWidth()/4,player.getPosition().y- darkCircleoverlay.getHeight()/4,960,540);
-        game.getSpriteBatch().setColor(1,1,1,1);
+        game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
+
+// Apply the dark circle overlay
+        game.getSpriteBatch().setColor(1, 1, 1, 0.9f);
+        game.getSpriteBatch().draw(darkCircleoverlay, player.getPosition().x - darkCircleoverlay.getWidth() / 4, player.getPosition().y - darkCircleoverlay.getHeight() / 4, 960, 540);
+        game.getSpriteBatch().setColor(1, 1, 1, 1);
 
         game.getSpriteBatch().end();
 
+// Set the projection matrix for the HUD
         game.getSpriteBatch().setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
 
 //        shapeRenderer.setProjectionMatrix(camera.combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -240,6 +258,11 @@ public class GameScreen implements Screen {
 
 
     private void handleInput() {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+            isPaused = true;
+
+
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.move(Player.Direction.LEFT);
             player.setCurrentAnimation(game.getCharacterLeftAnimation());
