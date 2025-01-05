@@ -26,6 +26,8 @@ public class EntityUtils {
             }
         }
 
+
+
         // Save the entity's state to the file with locking
         try (FileOutputStream fos = new FileOutputStream(file);
              FileChannel fileChannel = fos.getChannel();
@@ -39,6 +41,7 @@ public class EntityUtils {
             dataToSave.put("armor", entity.getArmor());
             dataToSave.put("powerUps", entity.getPowerUps());
             dataToSave.put("money", entity.getMoney());
+
             dataToSave.put("isFollowing", entity.isFollowing());
 
             // Write the map to file
@@ -47,6 +50,7 @@ public class EntityUtils {
 
         } catch (IOException e) {
             System.err.println("Error saving entity to file: " + e.getMessage());
+
         }
     }
     // load only the specific variables from the file
@@ -61,6 +65,7 @@ public class EntityUtils {
 
         // Load the entity's state from the file
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+
             Map<String, Object> loadedData = (Map<String, Object>) in.readObject();
 
             // Update the entity's state based on the loaded data

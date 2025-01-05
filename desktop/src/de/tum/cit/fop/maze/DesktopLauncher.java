@@ -35,6 +35,6 @@ public class DesktopLauncher {
 		//new Lwjgl3Application(new RenderMap(), config);
 
 		//to run the base game just uncomment this
-		new Lwjgl3Application(new MazeRunnerGame(new DesktopFileChooser()), config);
+		new Lwjgl3Application(new ScreenManager(new DesktopFileChooser()), config);
 	}
 }

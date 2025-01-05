@@ -4,38 +4,29 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-import de.tum.cit.fop.maze.arbitrarymap.RenderMap;
-import de.tum.cit.fop.maze.entity.Entity;
-import de.tum.cit.fop.maze.entity.Player;
 import de.tum.cit.fop.maze.entity.User;
 import de.tum.cit.fop.maze.screens.*;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
-import jdk.jfr.StackTrace;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.ArrayList;
 import java.util.Map;
 //bananas comment
 /**
- * The MazeRunnerGame class represents the core of the Maze Runner game.
+ * The ScreenManager class represents the core of the Maze Runner game.
  * It manages the screens and global resources like SpriteBatch and Skin.
  */
-public class MazeRunnerGame extends Game {
+public class ScreenManager extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
@@ -63,11 +54,11 @@ public class MazeRunnerGame extends Game {
     private int indexOfTheMapBeingPlayed;
 
     /**
-     * Constructor for MazeRunnerGame.
+     * Constructor for ScreenManager.
      *
      * @param fileChooser The file chooser for the game, typically used in desktop environment.
      */
-    public MazeRunnerGame(NativeFileChooser fileChooser) {
+    public ScreenManager(NativeFileChooser fileChooser) {
         super();
     }
 
@@ -224,10 +215,12 @@ public class MazeRunnerGame extends Game {
 
     public void goToPause() {
 //        Vector2 positionOfThePlayerBeforePause = gameScreen.getPlayer().getPosition();
+
         if (pauseScreen == null) {
             pauseScreen = new PauseScreen(this); // Reuse existing PauseScreen
         }
         this.setScreen(pauseScreen);
+
     }
 /// go to map selector
     public void goToLevelSelector() {

@@ -3,7 +3,6 @@ package de.tum.cit.fop.maze.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -13,7 +12,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.SpeedUp;
 import de.tum.cit.fop.maze.entity.Enemy;
@@ -31,7 +30,7 @@ import java.util.List;
  */
 public class GameScreen implements Screen {
     //Map Path
-    private final MazeRunnerGame game;
+    private final ScreenManager game;
     private final OrthographicCamera camera;
     //private final BitmapFont font;
 
@@ -61,7 +60,7 @@ public class GameScreen implements Screen {
     private String mapPath;
 
 
-    public GameScreen(MazeRunnerGame game, String mapPath ) {
+    public GameScreen(ScreenManager game, String mapPath ) {
         this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
         //game is game
@@ -141,7 +140,7 @@ public class GameScreen implements Screen {
                 System.out.println(mapName+" is added to completed levels");
             }
             //now when the goToGame is called, we make sure it does not go to a finished map
-            // we already did that, so we can call goToGame in the MazeRunnerGame
+            // we already did that, so we can call goToGame in the ScreenManager
             // and it won't load an level that's added to the completed levels
             // we debug by prinitng which level we complete by pressing X
             // and which levels are we loading

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.ScreenManager;
 
 public class HUD {
     public Stage stage;
@@ -45,7 +45,7 @@ public class HUD {
      *
      * @param batch The SpriteBatch used for rendering.
      */
-    public HUD(SpriteBatch batch, MazeRunnerGame game) {
+    public HUD(SpriteBatch batch, ScreenManager game) {
         worldTimer = 0;
         timeCount = 0;
         score = 0;

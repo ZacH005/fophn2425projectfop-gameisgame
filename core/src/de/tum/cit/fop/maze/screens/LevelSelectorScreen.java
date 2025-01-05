@@ -14,15 +14,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.entity.User;
 
 public class LevelSelectorScreen extends ScreenAdapter {
     private Stage stage;
-    private MazeRunnerGame game;
+    private ScreenManager game;
     private User user;
 
-    public LevelSelectorScreen(MazeRunnerGame game) {
+    public LevelSelectorScreen(ScreenManager game) {
         this.game = game;
         this.user = game.getUser(); // Assume the game class provides access to the user
 

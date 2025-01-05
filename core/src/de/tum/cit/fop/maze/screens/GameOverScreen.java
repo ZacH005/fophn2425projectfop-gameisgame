@@ -13,14 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.ScreenManager;
 
 public class GameOverScreen implements Screen {
     private Stage stage;
-    private MazeRunnerGame game; // Reference to game class
+    private ScreenManager game; // Reference to game class
 
     // Pass the game instance in the constructor
-    public GameOverScreen(MazeRunnerGame game) {
+    public GameOverScreen(ScreenManager game) {
         this.game = game; // Store the reference to the game
     }
 

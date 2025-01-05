@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.ScreenManager;
 
 import java.util.*;
 //bananas commment
@@ -22,7 +22,7 @@ public class RenderMap  {
 //    private Set<>
 
 
-    public RenderMap(MazeRunnerGame game, OrthographicCamera camera) {
+    public RenderMap(ScreenManager game, OrthographicCamera camera) {
         this.tileSize = 32;
         wallTexture = new Texture("wallTile.png");
         pathTexture = new Texture("pathTile.png");

@@ -7,17 +7,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.fop.maze.MazeRunnerGame;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import de.tum.cit.fop.maze.ScreenManager;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -32,7 +27,7 @@ public class MenuScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(MazeRunnerGame game) {
+    public MenuScreen(ScreenManager game) {
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // Set camera zoom for a closer view
 
@@ -52,21 +47,6 @@ public class MenuScreen implements Screen {
             startNewGameButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-
-                if (Files.exists(Path.of("playerstate.txt"))) {
-                    try {
-                        Files.delete(Path.of("playerstate.txt"));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                if (Files.exists(Path.of("enemystate.txt"))) {
-                    try {
-                        Files.delete(Path.of("enemystate.txt"));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
                     game.goToGame();
                 }
             });
@@ -92,15 +72,15 @@ public class MenuScreen implements Screen {
         });
 
 
-        // Create and add a button to go to the game screen
-        TextButton goToGameButton = new TextButton("Continue Game", game.getSkin());
-        table.add(goToGameButton).width(300).row();
-        goToGameButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.goToGame();
-            }
-        });
+//        // Create and add a button to go to the game screen
+//        TextButton goToGameButton = new TextButton("Continue Game", game.getSkin());
+//        table.add(goToGameButton).width(300).row();
+//        goToGameButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                game.goToGame();
+//            }
+//        });
 
         TextButton goToSettingsButton = new TextButton("Go To Settings", game.getSkin());
         table.add(goToSettingsButton).width(300).row();

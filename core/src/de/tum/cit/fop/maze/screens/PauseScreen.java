@@ -13,12 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.ScreenManager;
 
 public class PauseScreen implements Screen {
     private final Stage stage;
 
-    public PauseScreen(MazeRunnerGame game) {
+    public PauseScreen(ScreenManager game) {
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f;
 

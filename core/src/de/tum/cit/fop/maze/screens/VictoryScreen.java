@@ -14,14 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import de.tum.cit.fop.maze.MazeRunnerGame;
+import de.tum.cit.fop.maze.ScreenManager;
 
 public class VictoryScreen implements Screen {
     private Stage stage;
-    private MazeRunnerGame game; // Reference to game class
+    private ScreenManager game; // Reference to game class
 
     // Pass the game instance in the constructor
-    public VictoryScreen(MazeRunnerGame game) {
+    public VictoryScreen(ScreenManager game) {
         this.game = game; // Store the reference to the game
     }
 
