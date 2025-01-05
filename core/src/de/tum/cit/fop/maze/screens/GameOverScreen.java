@@ -48,7 +48,7 @@ public class GameOverScreen implements Screen {
         retryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.restartGame();  // Calls the restart method on the game instance
+                game.goToGame();  // Calls the restart method on the game instance
             }
         });
         table.add(retryButton).width(300).row();

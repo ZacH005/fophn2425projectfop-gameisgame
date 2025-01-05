@@ -60,6 +60,7 @@ public class GameScreen implements Screen {
     private String mapPath;
     /// pause trigger
     private boolean isPaused;
+    private PauseOverlay pauseOverlay;
 
     public GameScreen(ScreenManager game, String mapPath ) {
         this.mapPath = mapPath;
@@ -123,10 +124,12 @@ public class GameScreen implements Screen {
     public void render(float delta) {
 
         if(isPaused) {
-            System.out.println("Pause State"+ isPaused);
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 isPaused=false;
             }
+            pauseOverlay.setVisible(isPaused);
+            pauseOverlay.render(delta);
+            return;
         }
 
         else{
@@ -212,6 +215,7 @@ public class GameScreen implements Screen {
         //I don't get projectionmatrices, needed to be attached to the spritebatch
 // Set the projection matrix for the game camera
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
+        game.getSpriteBatch().enableBlending();
         game.getSpriteBatch().begin();
 
         //loading powerups on map
@@ -296,6 +300,9 @@ public class GameScreen implements Screen {
         }
     }
 
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -308,6 +315,7 @@ public class GameScreen implements Screen {
         tiledMap.dispose();
         lightBuffer.dispose();
         lightingShader.dispose();
+        pauseOverlay.dispose();
     }
 
     @Override
@@ -315,6 +323,7 @@ public class GameScreen implements Screen {
         ///loading the player state from a txt file after resuming
         player.loadState("playerstate.txt");
         enemy.loadState("enemystate.txt");
+        pauseOverlay = new PauseOverlay(this,game);
     }
 
     @Override
@@ -326,5 +335,7 @@ public class GameScreen implements Screen {
     @Override
     public void resume() { }
 
-
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
 }

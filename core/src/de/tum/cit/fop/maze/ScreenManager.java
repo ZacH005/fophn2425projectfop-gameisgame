@@ -31,7 +31,7 @@ public class ScreenManager extends Game {
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
     private SettingsScreen settingsScreen;
-    private PauseScreen pauseScreen;
+    private PauseOverlay pauseScreen;
     private LevelSelectorScreen levelSelectorScreen;
 
     // Sprite Batch for rendering
@@ -165,34 +165,34 @@ public class ScreenManager extends Game {
         }
 
 
-    /** restart game**/
-    /// helper method to clear temporary files.
-    public static void resetFile(String filePath) {
-        // added the channel lock to restrict access to this file while rewriting it
-        try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
-             FileChannel channel = raf.getChannel();
-             FileLock lock = channel.lock()) {
-            // Truncate the file to zero length
-            raf.setLength(0);
-
-        } catch (IOException e) {
-            System.out.println("An error occurred while resetting the file: " + e.getMessage());
-        }
-    }
-
-    public void restartGame() {
-        /// dispose of the current game screen if necessary
-        if (getScreen() != null) {
-            getScreen().dispose();
-        }
-        /// reset objects-states in the map
-        resetFile("playerstate.txt");
-        System.out.println("wrote to file");
-        resetFile("enemystate.txt");
-        System.out.println("wrote to file");
-        // if the level isn't completed the goToGame will just go to the last unplayed level
-        goToGame();
-    }
+//    /** restart game**/
+//    /// helper method to clear temporary files.
+//    public static void resetFile(String filePath) {
+//        // added the channel lock to restrict access to this file while rewriting it
+//        try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
+//             FileChannel channel = raf.getChannel();
+//             FileLock lock = channel.lock()) {
+//            // Truncate the file to zero length
+//            raf.setLength(0);
+//
+//        } catch (IOException e) {
+//            System.out.println("An error occurred while resetting the file: " + e.getMessage());
+//        }
+//    }
+//
+//    public void restartGame() {
+//        /// dispose of the current game screen if necessary
+//        if (getScreen() != null) {
+//            getScreen().dispose();
+//        }
+//        /// reset objects-states in the map
+//        resetFile("playerstate.txt");
+//        System.out.println("wrote to file");
+//        resetFile("enemystate.txt");
+//        System.out.println("wrote to file");
+//        // if the level isn't completed the goToGame will just go to the last unplayed level
+//        goToGame();
+//    }
 
     /// go to settings
     public void goToSettings()  {
@@ -204,15 +204,15 @@ public class ScreenManager extends Game {
     }
 
     /// go to Pause
-    public void goToPause() {
-//        Vector2 positionOfThePlayerBeforePause = gameScreen.getPlayer().getPosition();
-
-        if (pauseScreen == null) {
-            pauseScreen = new PauseScreen(this); // Reuse existing PauseScreen
-        }
-        this.setScreen(pauseScreen);
-
-    }
+//    public void goToPause() {
+////        Vector2 positionOfThePlayerBeforePause = gameScreen.getPlayer().getPosition();
+//
+//        if (pauseScreen == null) {
+//            pauseScreen = new PauseOverlay(this); // Reuse existing PauseOverlay
+//        }
+//        this.setScreen(pauseScreen);
+//
+//    }
 
     /// go to map selector
     public void goToLevelSelector() {
