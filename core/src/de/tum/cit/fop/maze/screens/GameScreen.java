@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
     private FrameBuffer lightBuffer;
     private ShaderProgram lightingShader;
     private ArrayList<Light> lights;
-    private Texture backgroundoverlay;// Store all lights
+    private Texture darkCircleoverlay;// Store all lights
     private HUD hud;
     private boolean isGameOver;
 
@@ -63,15 +63,18 @@ public class GameScreen implements Screen {
     public GameScreen(ScreenManager game, String mapPath ) {
         this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
+
         //game is game
         this.game = game;
         this.tileSize = 16.0f;
+
         //CAMERA THINGS:
         camera = new OrthographicCamera();
+
         //this was kinda from before, i don't understand all this
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         camera.zoom = 1f;
-        backgroundoverlay=new Texture("DK.png");
+        darkCircleoverlay =new Texture("DK.png");
 
 
         //this is from the template should be good later
@@ -80,6 +83,7 @@ public class GameScreen implements Screen {
         //MAP STUFF::
         //decided to load map in the game screen since it's super simple in libgdx with tiled
         // I modified this to load a map from a selector
+
         tiledMap = new TmxMapLoader().load(mapPath);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         isGameOver=false;
@@ -116,10 +120,12 @@ public class GameScreen implements Screen {
 //    }
     @Override
     public void render(float delta) {
+
         if (player.getHealth()==0){
             isGameOver=true;
             game.setScreen(new GameOverScreen(game));
         }
+
         //options/pause button
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             ///saving the player state to a txt file before pausing
@@ -147,6 +153,7 @@ public class GameScreen implements Screen {
             game.setScreen(new VictoryScreen(game));
         }
         // Clear screen
+
         ScreenUtils.clear(0, 0, 0, 1);
 
         //changed this to a method because it was way too much to just be sitting in render
@@ -213,7 +220,7 @@ public class GameScreen implements Screen {
         player.render(game.getSpriteBatch());
         game.getSpriteBatch().draw(enemy.getEnemy(),enemy.position.x,enemy.position.y);
         game.getSpriteBatch().setColor(1,1,1,0.9f);
-        game.getSpriteBatch().draw(backgroundoverlay,player.getPosition().x-backgroundoverlay.getWidth()/4,player.getPosition().y-backgroundoverlay.getHeight()/4,960,540);
+        game.getSpriteBatch().draw(darkCircleoverlay,player.getPosition().x- darkCircleoverlay.getWidth()/4,player.getPosition().y- darkCircleoverlay.getHeight()/4,960,540);
         game.getSpriteBatch().setColor(1,1,1,1);
 
         game.getSpriteBatch().end();
