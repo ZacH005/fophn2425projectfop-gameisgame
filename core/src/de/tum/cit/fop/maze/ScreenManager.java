@@ -85,11 +85,6 @@ public class ScreenManager extends Game {
 
         // Play some background music
         // Background sound
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
-        backgroundMusic.setLooping(true);
-
-        backgroundMusic.setVolume(0);
-        backgroundMusic.play();
 
         goToMenu(); // Navigate to the menu screen
     }

@@ -3,9 +3,11 @@ package de.tum.cit.fop.maze.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -30,7 +32,7 @@ public class PauseOverlay {
         // Create the overlay
         overlay = new Image(new Texture(Gdx.files.internal("PauseMenuOverlay.png")));
         overlay.setFillParent(true);
-        overlay.setColor(1,0, 250, 0.02f); // Set transparency
+        overlay.setColor(1, 0, 250, 0.02f); // Set transparency
         stage.addActor(overlay);
 
         // Create and configure the table for UI elements
@@ -53,7 +55,6 @@ public class PauseOverlay {
             }
         });
         table.add(resumeButton).width(300).row();
-
 
 
         //Menu button
@@ -85,9 +86,35 @@ public class PauseOverlay {
         });
         table.add(goToMenuButton).width(300).row();
 
-        // Initialize dimensions
-        lastWidth = Gdx.graphics.getWidth();
-        lastHeight = Gdx.graphics.getHeight();
+
+        Label musicLabel = new Label("Sound", skin);
+        table.add(musicLabel).padBottom(20).row();
+
+        Slider musicSlider = new Slider(0, 1, 0.01f, false, skin);
+        musicSlider.setValue(0.5f); // Default value (50%)
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // Update the volume when the slider value changes
+                float volume = musicSlider.getValue();
+                setMusicVolume(volume,game);
+            }
+        });
+        table.add(musicSlider).width(300).row();
+
+
+
+    // Initialize dimensions
+    lastWidth =Gdx.graphics.getWidth();
+    lastHeight =Gdx.graphics.getHeight();
+
+    }
+    private void setMusicVolume(float volume,ScreenManager game) {
+        // Here, use a music player or sound manager to adjust the music volume
+        // For example, if you use libGDX's SoundManager:
+        // Gdx.audio.newMusic("your_music_file.mp3").setVolume(volume);
+        // or use a sound manager class to control the volume.
+//            game.getBackgroundMusic().setVolume(volume);
     }
 
     public void render(float delta) {
