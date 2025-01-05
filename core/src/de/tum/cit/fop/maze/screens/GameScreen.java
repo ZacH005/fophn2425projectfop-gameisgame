@@ -227,8 +227,12 @@ public class GameScreen implements Screen {
                 game.getSpriteBatch().draw(powerup.getTexture(), position.x, position.y);
 
                 if (powerup instanceof Collectable<?> collectable) {
-                    if (collectable.checkPickUp())
+                    if (collectable.checkPickUp() && player.getPowerUps().size()<3)  {
+                        player.getPowerUps().add((Powerup) collectable.pickUp());
+                        collectable.applyEffect();
                         iterator.remove();
+                        System.out.println(player.getPowerUps());
+                    }
                 }
             }
         }
