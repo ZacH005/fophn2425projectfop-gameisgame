@@ -69,44 +69,32 @@ public class ScreenManager extends Game {
      */
     @Override
     public void create() {
-        user = User.loadUserData("user_data.ser"); // Load existing user data, or use a default constructor to create a new one
-
+        // Load existing user data, or use a default constructor to create a new one
+        user = User.loadUserData("user_data.ser");
         if (user == null) {
-            user = new User("Player1");  // Set default username if no data found
+            // Set default username if no data found
+            user = new User("Player1");
         }
-        spriteBatch = new SpriteBatch(); // Create SpriteBatch
+
+
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
+        spriteBatch = new SpriteBatch(); // Create SpriteBatch
         this.loadCharacterAnimation(); // Load character animation
+
+
 
         // Play some background music
         // Background sound
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
         backgroundMusic.setLooping(true);
 
-        //Paused music cause it was annoying
         backgroundMusic.setVolume(0);
         backgroundMusic.play();
 
         goToMenu(); // Navigate to the menu screen
     }
-    /** restarts game **/
 
-    /** saves user data **/
-    public void saveUserData() {
-        if (user != null) {
-            user.saveUserData("user_data.ser");
-        }
-    }
-    /** sets user preferences **/
-    public void setPreferences(Map<String, Object> preferences) {
-        if (user != null) {
-            user.setPreferences(preferences);
-            saveUserData();  // Save preferences after setting them
-        }
-    }
-    /**
-     * Switches to the menu screen.
-     */
+    /*** Switches to the menu screen.*/
     public void goToMenu() {
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
         if (gameScreen != null) {
@@ -206,7 +194,7 @@ public class ScreenManager extends Game {
         goToGame();
     }
 
-
+    /// go to settings
     public void goToSettings()  {
         this.setScreen(new SettingsScreen(this));
         if (menuScreen != null) {
@@ -215,6 +203,7 @@ public class ScreenManager extends Game {
         }
     }
 
+    /// go to Pause
     public void goToPause() {
 //        Vector2 positionOfThePlayerBeforePause = gameScreen.getPlayer().getPosition();
 
@@ -224,13 +213,30 @@ public class ScreenManager extends Game {
         this.setScreen(pauseScreen);
 
     }
-/// go to map selector
+
+    /// go to map selector
     public void goToLevelSelector() {
         if (levelSelectorScreen == null) {
             levelSelectorScreen = new LevelSelectorScreen(this); // Create the level selector screen
         }
         this.setScreen(levelSelectorScreen); // Set the current screen to LevelSelectorScreen
     }
+
+    /** saves user data **/
+    public void saveUserData() {
+        if (user != null) {
+            user.saveUserData("user_data.ser");
+        }
+    }
+
+    /** sets user preferences **/
+    public void setPreferences(Map<String, Object> preferences) {
+        if (user != null) {
+            user.setPreferences(preferences);
+            saveUserData();  // Save preferences after setting them
+        }
+    }
+
     /// map loader
     public void loadLevel(String levelName) {
         // Load the level by loading the .tmx file
@@ -297,13 +303,9 @@ public class ScreenManager extends Game {
             y += frameHeight + 64;
         }
     }
-    // completing a certain level
-    public void markLevelAsCompleted(String levelFileName) {
-        if (user != null) {
-            user.addCompletedLevel(levelFileName);
-            user.saveUserData("user_data.ser");  // Save after adding a completed level
-        }
-    }
+
+
+
     /**
      * Cleans up resources when the game is disposed.
      */
@@ -321,7 +323,7 @@ public class ScreenManager extends Game {
 
     }
 
-    // Getter methods
+    // Getters methods
     public Skin getSkin() {
         return skin;
     }
