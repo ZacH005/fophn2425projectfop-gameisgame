@@ -29,9 +29,8 @@ public class PauseOverlay {
 
         // Create the overlay
         overlay = new Image(new Texture(Gdx.files.internal("PauseMenuOverlay.png")));
-        overlay.setColor(0,0, 0, 0.5f); // Set transparency
-
         overlay.setFillParent(true);
+        overlay.setColor(1,0, 250, 0.02f); // Set transparency
         stage.addActor(overlay);
 
         // Create and configure the table for UI elements
