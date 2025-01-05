@@ -40,7 +40,7 @@ public class ScreenManager extends Game {
     // UI Skin
     private Skin skin;
 
-    // Character animation downwards
+    // Character Animations
     private Animation<TextureRegion> characterDownAnimation;
     private Animation<TextureRegion> characterUpAnimation;
     private Animation<TextureRegion> characterRightAnimation;
@@ -49,9 +49,11 @@ public class ScreenManager extends Game {
 
     // Music
     private Music backgroundMusic;
-    //A User
+
+    // User and Game State
     private User user;
-    private int indexOfTheMapBeingPlayed;
+
+
 
     /**
      * Constructor for ScreenManager.
