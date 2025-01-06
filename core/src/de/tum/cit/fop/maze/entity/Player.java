@@ -105,6 +105,7 @@ public class Player implements Entity, Serializable {
             //stops flickering when time is greater than total animation duration (Ik the variable names could be confusing sorry.)
             if(flickertotaltime>totalflickerduration){
                 stopFlickering();
+                isFlickering = false;
                 flickertotaltime=0f;
             }
             //basically toggles the alphe value that each flicker duration the value swaps from 0 to 1 or from 1 to 0 which is then used as the opacity for the spritebatch
@@ -144,10 +145,14 @@ public class Player implements Entity, Serializable {
 
     public void render(SpriteBatch batch) {
         if (currentAnimation != null) {
-            batch.setColor(1,1,1,flickerAlpha);
+            if (isFlickering) {
+                batch.setColor(1,1,1,flickerAlpha);
+            } else {
+                batch.setColor(1,1,1,1);
+            }
             TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
             batch.draw(frame, position.x-(width/2), position.y-(height/2), width, height);
-            batch.setColor(1,1,1,1);
+            batch.setColor(1, 1, 1, 1);
         }
     }
     public void respawn(){

@@ -45,10 +45,12 @@ public class HUD {
      *
      * @param batch The SpriteBatch used for rendering.
      */
-    public HUD(SpriteBatch batch, ScreenManager game) {
+    public HUD(SpriteBatch batch, ScreenManager game, int maxHearts) {
         worldTimer = 0;
         timeCount = 0;
         score = 0;
+
+        this.maxHearts = maxHearts;
 
         viewport = new ScreenViewport();
         stage = new Stage(viewport, batch);
@@ -57,7 +59,6 @@ public class HUD {
         fullHeartTexture = new Texture("heart pixel art 32x32.png");
 
         // Set the maximum number of hearts (5 hearts for max health = 10)
-        maxHearts = 5;
 
         // Initialize heart states and set the current heart index to max (start with all full hearts)
         heartStates = new boolean[maxHearts]; // All hearts start as full
@@ -113,7 +114,10 @@ public class HUD {
         for (int i = 0; i < maxHearts; i++) {
             Image heart = new Image(fullHeartTexture); // Full hearts initially
             heart.setName("heart_" + i); // Assign unique names
-            heartTable.add(heart).size(32, 32).pad(5); // Set size and padding
+            heartTable.add(heart).size(32, 32).pad(5);
+            if ((i+1)%5==0){
+               heartTable.row();
+            }
         }
 
         // Add heart table to the stage
@@ -127,8 +131,7 @@ public class HUD {
             @Override
             public boolean keyDown(InputEvent event, int keyCode) {
                 if (keyCode == Input.Keys.Z) {  // If the Z key is pressed
-                    System.out.println("Z key pressed"); // Debugging line
-                    hitHeart();  // Call the method to hit the last heart
+                    System.out.println("Z key pressed"); // Debugging line// Call the method to hit the last heart
                     return true;
                 }
                 return false;
@@ -137,20 +140,25 @@ public class HUD {
     }
 
     // Method to progressively change the last heart from full to half, then remove it
-    public void hitHeart() {
-        if (currentHeartIndex >= 0) {
-            System.out.println("Hitting heart at index: " + currentHeartIndex); // Debugging line
+    public void updateHearts(int currentHealth) {
 
-            Image heart = (Image) heartTable.getChildren().get(currentHeartIndex);  // Get last heart image
+        // Clear the heart table
+        heartTable.clear();
 
-                // If the heart is already half, remove it from the table and set heart state as null
-                heart.remove();
-                heartStates[currentHeartIndex] = false;  // Heart is no longer in the game
-                System.out.println("Heart " + currentHeartIndex + " removed"); // Debugging line
-                currentHeartIndex--; // Move to the next heart (to the left)
+        System.out.println(currentHealth+"hearts");
 
+        // Recreate hearts based on current health
+        for (int i = 0; i < maxHearts; i++) {
+            if (i < currentHealth) {
+                // Full heart for each health point
+                heartTable.add(new Image(fullHeartTexture)).size(32, 32).pad(5);
+            }
+            if ((i + 1) % 5 == 0) {
+                heartTable.row(); // Wrap to the next row
+            }
         }
     }
+
 
     /**
      * Updates the world timer, score, or other HUD elements.

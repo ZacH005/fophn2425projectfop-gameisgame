@@ -100,7 +100,7 @@ public class Enemy implements Entity {
                 setPosition(new Vector2(initialposx,initialposy));
                 System.out.println("restarted");
                 player.startFlickering(cooldownTime);
-                hud.hitHeart();
+                hud.updateHearts(player.getHealth());
                 // update last damage time
                 lastDamageTime = TimeUtils.nanoTime();
             }
