@@ -212,6 +212,8 @@ public class Player implements Entity, Serializable {
         return cell != null;
     }
 
+    /// Entity's methods
+
     @Override
     public void takeDamage() {
         health -= 1;
@@ -219,9 +221,6 @@ public class Player implements Entity, Serializable {
         Sound hurtSFX = Gdx.audio.newSound(Gdx.files.internal("music/hitHurt.wav"));
         hurtSFX.play();
     }
-
-    /// Entity's methods
-
 
     @Override
     public int getHealth() {
@@ -294,15 +293,15 @@ public class Player implements Entity, Serializable {
         Entity loaded = EntityUtils.loadFromFile(filename,this);
         if (loaded instanceof Player loadedPlayer) {
             this.health = loadedPlayer.health;
-            this.position = loadedPlayer.position;
+            //no longer need to save positions if were just always starting player at map start point (maybe need to for checkpoints)
+//            this.position = loadedPlayer.position;
             this.armor = loadedPlayer.armor;
             this.money = loadedPlayer.money;
-            loadedPlayer.getPowerUps().forEach(powerup -> {
-                powerup.initializeTransientFields(loadedPlayer);
-                if (powerup instanceof Collectable<?> collectable) {
-                    collectable.applyEffect();
-                }
-            });
+            //doesn't need to get the powerups since they're temporary and only found mid-level
+//            loadedPlayer.getPowerUps().forEach(powerup -> {
+//                powerup.initializeTransientFields(loadedPlayer);
+//
+//            });
         }
     }
 

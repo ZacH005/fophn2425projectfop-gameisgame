@@ -1,11 +1,19 @@
 package de.tum.cit.fop.maze.abilities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import de.tum.cit.fop.maze.entity.Player;
 import de.tum.cit.fop.maze.screens.GameScreen;
 
-public class SpeedUp extends Powerup implements Collectable <Powerup>  {
-    public SpeedUp(Player player, String name, String description, float x, float y) {
-        super( player, name, description, x, y);
+public class SpeedUp extends Powerup  {
+    public SpeedUp(float x, float y) {
+        super(
+                "SpeedUp",
+                "fast powerup that makes you go reallly fast...",
+                "icons/speedUp.png",
+                x, y,
+                Gdx.audio.newSound(Gdx.files.internal("music/powerUp.wav"))
+        );
     }
 
     @Override
@@ -14,16 +22,14 @@ public class SpeedUp extends Powerup implements Collectable <Powerup>  {
         return this;
     }
 
-    @Override
-    public boolean checkPickUp() {
-        if (super.getCollider().overlaps(getPlayer().collider))
+    public boolean checkPickUp(Player player) {
+        if (super.getCollider().overlaps(player.collider))
             setEquipped(true);
         return isEquipped();
     }
 
-    @Override
-    public void applyEffect() {
-        getPlayer().setSpeed(getPlayer().getSpeed()*1.50f);
+    public void applyEffect(Player player) {
+        player.setSpeed(player.getSpeed()*1.50f);
         System.out.println("Picked up " + getName()+": " + getDescription());
     }
 }

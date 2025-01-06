@@ -48,9 +48,6 @@ public class GameScreen implements Screen {
 
     private ShapeRenderer shapeRenderer;
 
-    private FrameBuffer lightBuffer;
-    private ShaderProgram lightingShader;
-    private ArrayList<Light> lights;
     private Texture darkCircleoverlay;// Store all lights
     private HUD hud;
     private boolean isGameOver;
@@ -101,18 +98,7 @@ public class GameScreen implements Screen {
 
         this.enemy=new Enemy(200,250,player,hud);
         mapPowerups = new ArrayList<>();
-        mapPowerups.add(new SpeedUp(player, "SpeedUp", "Fast Power", 4*tileSize, 3*tileSize));
-
-        // LIGHTING
-        lights = new ArrayList<>();
-        lights.add(new Light(new Vector2(player.getPosition().x, player.getPosition().y), 300f));
-
-        // Initialize frame buffer and shader
-        lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, 800, 600, false);
-        lightingShader = new ShaderProgram(Gdx.files.internal("shaders/lighting.vert"), Gdx.files.internal("shaders/lighting.frag"));
-        if (!lightingShader.isCompiled()) {
-            Gdx.app.error("Shader", "Shader compilation failed: " + lightingShader.getLog());
-        }
+        mapPowerups.add(new SpeedUp(4*tileSize, 3*tileSize));
     }
 //    public void completeLevel(){
 //        //updates the index of the map being played
@@ -134,7 +120,7 @@ public class GameScreen implements Screen {
 
         else{
 
-                // winning
+                /// WINNING
                 if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
                     // when a level is finished
                     // we first add it to the completed levels in the user data
@@ -179,38 +165,11 @@ public class GameScreen implements Screen {
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
-        // lights :
-        // Set the light position
-        lightingShader.setUniformf("u_lightPos", player.getPosition().x, player.getPosition().y);
-        lightingShader.setUniformf("u_lightRadius", 300f);
-
-        // Render the map and player to the framebuffer (off-screen)
-        ///actually does smth, uncomment end for it to work
-//        lightBuffer.begin();
-
-
-
 //        shapeRenderer.setProjectionMatrix(camera.combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 //        shapeRenderer.setColor(1, 0, 0, 1); // Red color
 //        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
 //        shapeRenderer.end();
-
-
-
-        // Apply lighting
-//        lightBuffer.end();
-
-        // Use the lighting shader
-        ///this breaks everything for some reason vvv
-//        lightingShader.bind();
-//        lightingShader.setUniformf("u_lightPos", lights.get(0).position.x, lights.get(0).position.y);  // Set the light position
-//        lightingShader.setUniformf("u_lightRadius", lights.get(0).radius);
-
-
-        // Draw the framebuffer with lighting effects
-//        game.getSpriteBatch().draw(lightBuffer.getColorBufferTexture(), 0, 0);
-
 
         //I don't get projectionmatrices, needed to be attached to the spritebatch
 // Set the projection matrix for the game camera
@@ -226,13 +185,11 @@ public class GameScreen implements Screen {
                 Vector2 position = powerup.getPosition();
                 game.getSpriteBatch().draw(powerup.getTexture(), position.x, position.y);
 
-                if (powerup instanceof Collectable<?> collectable) {
-                    if (collectable.checkPickUp() && player.getPowerUps().size()<3)  {
-                        player.getPowerUps().add((Powerup) collectable.pickUp());
-                        collectable.applyEffect();
-                        iterator.remove();
-                        System.out.println(player.getPowerUps());
-                    }
+                if (powerup.checkPickUp(player) && player.getPowerUps().size()<3)   {
+                    player.getPowerUps().add(powerup.pickUp());
+                    powerup.applyEffect(player);
+                    iterator.remove();
+                    System.out.println(player.getPowerUps());
                 }
             }
         }
@@ -252,13 +209,6 @@ public class GameScreen implements Screen {
 // Set the projection matrix for the HUD
         game.getSpriteBatch().setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
-
-
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.setColor(1, 0, 0, 1); // Red color
-//        shapeRenderer.rect(enemy.damageCollider.getX(),enemy.damageCollider.getY(), enemy.damageCollider.width, enemy.damageCollider.height);
-//        shapeRenderer.end();
 
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
@@ -317,8 +267,6 @@ public class GameScreen implements Screen {
     public void dispose() {
         mapRenderer.dispose();
         tiledMap.dispose();
-        lightBuffer.dispose();
-        lightingShader.dispose();
         pauseOverlay.dispose();
     }
 
