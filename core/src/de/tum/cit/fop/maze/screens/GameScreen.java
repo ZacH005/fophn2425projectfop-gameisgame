@@ -146,6 +146,8 @@ public class GameScreen implements Screen {
                 //health trigger
                 if (player.getHealth()==0){
                     isGameOver=true;
+                    player.setHealth(5);
+                    player.saveState("playerstate.txt");
                     game.setScreen(new GameOverScreen(game));
                 }
                 //input updating ; find the method below for details
@@ -278,7 +280,7 @@ public class GameScreen implements Screen {
     public void show() {
         ///loading the player state from a txt file after resuming
         player.loadState("playerstate.txt");
-
+        System.out.println("I have this amount of hearts:"+ player.getHealth());
         pauseOverlay = new PauseOverlay(this,game);
     }
 
