@@ -154,6 +154,7 @@ public class Player implements Entity, Serializable {
             batch.draw(frame, position.x-(width/2), position.y-(height/2), width, height);
             batch.setColor(1, 1, 1, 1);
         }
+
     }
     public void respawn(){
         setPosition(new Vector2(50,50));
