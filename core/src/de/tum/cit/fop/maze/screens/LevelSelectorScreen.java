@@ -49,7 +49,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
 
     private void loadLevelButtons(Table table) {
         // Get all .tmx files in the "TiledMaps" directory
-        user.loadUserData("user_data.ser");
+
         FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
         Array<FileHandle> tmxFiles = new Array<>();
         for (FileHandle file : levelsDirectory.list()) {
@@ -63,7 +63,10 @@ public class LevelSelectorScreen extends ScreenAdapter {
             table.add(new Label("No levels yet, care to add some?", game.getSkin())).row();
             return;
         }
-
+        if(tmxFiles.size == user.getCompletedLevels().size()){
+            user.resetCompletedLevels();
+            System.out.println("reset all maps");
+        }
         // Create buttons for each .tmx file found
         for (FileHandle file : tmxFiles) {
             final String levelName = file.nameWithoutExtension(); // Get the level name without extension
@@ -83,7 +86,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
                     if (!levelButton.isDisabled()) {
                         // Load the corresponding level by its .tmx file
                         game.loadLevel(levelName);
-                        System.out.println("Level " + levelName + " selected");
+
                     }
                 }
             });

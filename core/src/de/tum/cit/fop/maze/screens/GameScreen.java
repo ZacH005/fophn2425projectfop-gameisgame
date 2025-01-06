@@ -59,6 +59,10 @@ public class GameScreen implements Screen {
     private boolean isPaused;
     private PauseOverlay pauseOverlay;
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public GameScreen(ScreenManager game, String mapPath ) {
         this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
@@ -130,8 +134,7 @@ public class GameScreen implements Screen {
                     if(!game.getUser().getCompletedLevels().contains(mapName)){
                         game.getUser().getCompletedLevels().add(mapName);
                         game.getUser().saveUserData("user_data.ser");
-                        System.out.println(mapName+" is added to completed levels");
-                        System.out.println(game.getUser().getCompletedLevels());
+                        player.saveState("playerstate.txt");
                     }
                     //now when the goToGame is called, we make sure it does not go to a finished map
                     // we already did that, so we can call goToGame in the ScreenManager
@@ -190,7 +193,7 @@ public class GameScreen implements Screen {
                     player.getPowerUps().add(powerup.pickUp());
                     powerup.applyEffect(player);
                     iterator.remove();
-                    System.out.println(player.getPowerUps());
+
                 }
             }
         }
@@ -244,13 +247,13 @@ public class GameScreen implements Screen {
             if (!player.isSprinting())  {
                 player.setSpeed(player.getSpeed()*1.50f);
                 player.setSprinting(true);
-                System.out.println(player.getSpeed());
+
             }
         }else{
             if (player.isSprinting())   {
                 player.setSpeed(player.getSpeed()/1.50f);
                 player.setSprinting(false);
-                System.out.println(player.getSpeed());
+
             }
         }
     }
@@ -275,7 +278,7 @@ public class GameScreen implements Screen {
     public void show() {
         ///loading the player state from a txt file after resuming
         player.loadState("playerstate.txt");
-        enemy.loadState("enemystate.txt");
+
         pauseOverlay = new PauseOverlay(this,game);
     }
 
