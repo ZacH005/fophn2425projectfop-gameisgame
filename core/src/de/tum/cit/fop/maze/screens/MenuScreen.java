@@ -67,6 +67,7 @@ public class MenuScreen implements Screen {
         goToLevelSelectorButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                System.out.println(game.getUser().getCompletedLevels());
                 game.goToLevelSelector();
             }
         });

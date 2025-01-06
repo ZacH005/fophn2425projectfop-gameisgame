@@ -112,6 +112,11 @@ public class ScreenManager extends Game {
         //getting the first map that isn't completed by the user.
         for(FileHandle file : tmxFiles) {
             // if the level is completed don't open it
+            if(tmxFiles.size == user.getCompletedLevels().size()){
+                this.setScreen(new LevelSelectorScreen(this));
+                break;
+            }
+            else{
             if(user.getCompletedLevels().contains(file.name())){
                 continue;
             }
@@ -119,7 +124,8 @@ public class ScreenManager extends Game {
             else{
                 System.out.println("loaded :"+file.name()+" map");
                 this.setScreen(new GameScreen(this, ("TiledMaps/"+file.name()) ));
-            }
+            }}
+
         }
          // Set the current screen to GameScreen
 
@@ -149,8 +155,7 @@ public class ScreenManager extends Game {
         System.out.println(levelsDirectory);
         System.out.println(counter);
 
-        if(user.getCompletedLevels().size()>=counter){
-            user.resetCompletedLevels();
+        if(user.getCompletedLevels().size()==counter){
             user.saveUserData("user_data.ser");
             goToMenu();
         }
@@ -158,7 +163,7 @@ public class ScreenManager extends Game {
         else {
             goToGame();
         }
-        }
+    }
 
 
 //    /** restart game**/
@@ -212,10 +217,10 @@ public class ScreenManager extends Game {
 
     /// go to map selector
     public void goToLevelSelector() {
-        if (levelSelectorScreen == null) {
-            levelSelectorScreen = new LevelSelectorScreen(this); // Create the level selector screen
+        if (levelSelectorScreen != null) {
+            levelSelectorScreen.dispose(); // Create the level selector screen
         }
-        this.setScreen(levelSelectorScreen); // Set the current screen to LevelSelectorScreen
+        this.setScreen(new LevelSelectorScreen(this)); // Set the current screen to LevelSelectorScreen
     }
 
     /** saves user data **/

@@ -131,6 +131,7 @@ public class GameScreen implements Screen {
                         game.getUser().getCompletedLevels().add(mapName);
                         game.getUser().saveUserData("user_data.ser");
                         System.out.println(mapName+" is added to completed levels");
+                        System.out.println(game.getUser().getCompletedLevels());
                     }
                     //now when the goToGame is called, we make sure it does not go to a finished map
                     // we already did that, so we can call goToGame in the ScreenManager

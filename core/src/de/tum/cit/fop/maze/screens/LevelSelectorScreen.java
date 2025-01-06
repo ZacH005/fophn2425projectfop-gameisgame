@@ -49,6 +49,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
 
     private void loadLevelButtons(Table table) {
         // Get all .tmx files in the "TiledMaps" directory
+        user.loadUserData("user_data.ser");
         FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
         Array<FileHandle> tmxFiles = new Array<>();
         for (FileHandle file : levelsDirectory.list()) {
