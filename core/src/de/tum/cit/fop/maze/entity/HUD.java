@@ -145,7 +145,6 @@ public class HUD {
         // Clear the heart table
         heartTable.clear();
 
-        System.out.println(currentHealth+"hearts");
 
         // Recreate hearts based on current health
         for (int i = 0; i < maxHearts; i++) {

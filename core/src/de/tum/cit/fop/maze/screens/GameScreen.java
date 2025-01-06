@@ -214,6 +214,7 @@ public class GameScreen implements Screen {
 
 // Set the projection matrix for the HUD
         game.getSpriteBatch().setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.updateHearts(player.getHealth());
         hud.stage.draw();
 
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
