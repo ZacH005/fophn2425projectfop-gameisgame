@@ -64,10 +64,10 @@ public class GameScreen implements Screen {
     private PauseOverlay pauseOverlay;
     private SoundManager soundManager;
     private float musicVolume;
-    private Map<String,Integer> mainState = new HashMap<String,Integer>();
+    private Map<String, Integer> mainState = new HashMap<String, Integer>();
 
 
-    public GameScreen(ScreenManager game, String mapPath ) {
+    public GameScreen(ScreenManager game, String mapPath) {
         this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
 
@@ -81,7 +81,7 @@ public class GameScreen implements Screen {
         //this was kinda from before, i don't understand all this
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         camera.zoom = 1f;
-        darkCircleoverlay =new Texture("DK.png");
+        darkCircleoverlay = new Texture("DK.png");
 
 
         //this is from the template should be good later
@@ -95,36 +95,35 @@ public class GameScreen implements Screen {
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.mapManager = new MapManager(tiledMap);
         this.colManager = new CollisionManager(mapManager.getCollisionObjects());
-        isGameOver=false;
+        isGameOver = false;
 
         //THIS IS ALL PLAYER THINGS:
         //need to make it so when the map loads, it chooses the specific location of the starting block
-        float startPlayerX = (2*tileSize)+tileSize/2;
-        float startPlayerY = (2*tileSize);
+        float startPlayerX = (2 * tileSize) + tileSize / 2;
+        float startPlayerY = (2 * tileSize);
 
         //sound stuff.
         this.soundManager = game.getSoundManager();
 
-        mainState.put("crackles",1);
-        mainState.put("wind",1);
-        mainState.put("piano",1);
-        mainState.put("strings",0);
-        mainState.put("pad",1);
-        mainState.put("drums",0);
-        mainState.put("bass",1);
+        mainState.put("crackles", 1);
+        mainState.put("wind", 1);
+        mainState.put("piano", 1);
+        mainState.put("strings", 0);
+        mainState.put("pad", 1);
+        mainState.put("drums", 0);
+        mainState.put("bass", 1);
 
         soundManager.onGameStateChange(mainState);
 
         //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, tiledMap,6,100,new ArrayList<String>(),0,soundManager);
+        player = new Player(startPlayerX, startPlayerY, tiledMap, 6, 100, new ArrayList<String>(), 0, soundManager);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
 
-        hud=new HUD(game.getSpriteBatch(),game,player);
+        hud = new HUD(game.getSpriteBatch(), game, player);
 
-        this.enemy=new Enemy(200,250,player,hud,soundManager);
+        this.enemy = new Enemy(200, 250, player, hud, soundManager);
 
         this.mapPowerups = mapManager.getPowerups();
-
 
 
     }
@@ -142,6 +141,7 @@ public class GameScreen implements Screen {
     public void setMusicVolume(float musicVolume) {
         this.musicVolume = musicVolume;
     }
+
     public boolean isPaused() {
         return isPaused;
     }
@@ -153,7 +153,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        if(isPaused) {
+        if (isPaused) {
             pauseOverlay.setVisible(isPaused);
             pauseOverlay.render(delta);
             // for the music
@@ -162,60 +162,57 @@ public class GameScreen implements Screen {
             soundManager.onGameStateChange(pauseOverlay.getPauseState());
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 soundManager.onGameStateChange(mainState);
-                isPaused=false;
+                isPaused = false;
             }
             return;
-        }
+        } else {
 
-        else{
-
-            if(pauseOverlay!=null){
+            if (pauseOverlay != null) {
                 musicVolume = pauseOverlay.getMusicVolume();
-            }
-            else{
+            } else {
                 musicVolume = 0.5f;
             }
 
-                /// WINNING
-                if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-                    // when a level is finished
-                    // we first add it to the completed levels in the user data
-                    // the map path is of form TiledMaps/mapName
-                    // so we need to strip it just to the mapName
-                    String mapName = mapPath.substring(mapPath.lastIndexOf('/') + 1);
-                    if(!game.getUser().getCompletedLevels().contains(mapName)){
-                        game.getUser().getCompletedLevels().add(mapName);
-                        game.getUser().saveUserData("user_data.ser");
-                        player.saveState("playerstate.txt");
-                    }
-                    //now when the goToGame is called, we make sure it does not go to a finished map
-                    // we already did that, so we can call goToGame in the ScreenManager
-                    // and it won't load an level that's added to the completed levels
-                    // we debug by prinitng which level we complete by pressing X
-                    // and which levels are we loading
-                    game.setScreen(new VictoryScreen(game));
-                }
-                //health trigger
-                if(Gdx.input.isKeyJustPressed(Input.Keys.D)){
-                    player.setHealth(player.getHealth()-1);
-                }
-                if (player.getHealth()==0){
-                    soundManager.playSound("losing sound");
-                    isGameOver=true;
-                    player.setHealth(5);
+            /// WINNING
+            if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+                // when a level is finished
+                // we first add it to the completed levels in the user data
+                // the map path is of form TiledMaps/mapName
+                // so we need to strip it just to the mapName
+                String mapName = mapPath.substring(mapPath.lastIndexOf('/') + 1);
+                if (!game.getUser().getCompletedLevels().contains(mapName)) {
+                    game.getUser().getCompletedLevels().add(mapName);
+                    game.getUser().saveUserData("user_data.ser");
                     player.saveState("playerstate.txt");
-
-
-                    game.setScreen(new GameOverScreen(game));
                 }
+                //now when the goToGame is called, we make sure it does not go to a finished map
+                // we already did that, so we can call goToGame in the ScreenManager
+                // and it won't load an level that's added to the completed levels
+                // we debug by prinitng which level we complete by pressing X
+                // and which levels are we loading
+                game.setScreen(new VictoryScreen(game));
+            }
+            //health trigger
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+                player.setHealth(player.getHealth() - 1);
+            }
+            if (player.getHealth() == 0) {
+                soundManager.playSound("losing sound");
+                isGameOver = true;
+                player.setHealth(5);
+                player.saveState("playerstate.txt");
 
 
-                //input updating ; find the method below for details
-                handleInput();
-                // updating characters
-                player.update(delta, colManager);
-                enemy.update(delta);
-                hud.updateHUD();
+                game.setScreen(new GameOverScreen(game));
+            }
+
+
+            //input updating ; find the method below for details
+            handleInput();
+            // updating characters
+            player.update(delta, colManager);
+            enemy.update(delta);
+            hud.updateHUD();
         }
 
 
@@ -238,8 +235,8 @@ public class GameScreen implements Screen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(1, 0, 0, 1); // Red color
-        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
-                shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
+        shapeRenderer.rect(enemy.scanRange.getX(), enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
+        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
         shapeRenderer.end();
 
         //I don't get projectionmatrices, needed to be attached to the spritebatch
@@ -271,7 +268,7 @@ public class GameScreen implements Screen {
                 Vector2 position = powerup.getPosition();
                 game.getSpriteBatch().draw(powerup.getTexture(), position.x, position.y);
 
-                if (powerup.checkPickUp(player))   {
+                if (powerup.checkPickUp(player)) {
                     player.getPowerUps().add(powerup.pickUp());
                     powerup.applyEffect(player);
                     iterator.remove();
@@ -305,7 +302,7 @@ public class GameScreen implements Screen {
 
 
     private void handleInput() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -326,15 +323,15 @@ public class GameScreen implements Screen {
             player.setCurrentAnimation(game.getCharacterIdleAnimation());
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-            if (!player.isSprinting())  {
-                player.setSpeed(player.getSpeed()*1.50f);
+        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+            if (!player.isSprinting()) {
+                player.setSpeed(player.getSpeed() * 1.50f);
                 player.setSprinting(true);
 
             }
-        }else{
-            if (player.isSprinting())   {
-                player.setSpeed(player.getSpeed()/1.50f);
+        } else {
+            if (player.isSprinting()) {
+                player.setSpeed(player.getSpeed() / 1.50f);
                 player.setSprinting(false);
 
             }
@@ -362,8 +359,8 @@ public class GameScreen implements Screen {
         ///loading the player state from a txt file after resuming
 
         player.loadState("playerstate.txt");
-        System.out.println("I have this amount of hearts:"+ player.getHealth());
-        pauseOverlay = new PauseOverlay(this,game);
+        System.out.println("I have this amount of hearts:" + player.getHealth());
+        pauseOverlay = new PauseOverlay(this, game);
         soundManager.onGameStateChange(mainState);
 
     }
@@ -373,17 +370,21 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void hide() { }
+    public void hide() {
+    }
 
     @Override
-    public void pause() { }
+    public void pause() {
+    }
 
     @Override
-    public void resume() { }
+    public void resume() {
+    }
 
     public OrthographicCamera getCamera() {
         return camera;
     }
+
     public SoundManager getSoundManager() {
         return soundManager;
     }
