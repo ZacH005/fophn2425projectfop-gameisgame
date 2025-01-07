@@ -145,7 +145,6 @@ public class HUD {
         // Clear the heart table
         heartTable.clear();
 
-
         // Recreate hearts based on current health
         for (int i = 0; i < maxHearts; i++) {
             if (i < currentHealth) {
@@ -180,5 +179,13 @@ public class HUD {
         fullHeartTexture.dispose();
         halfHeartTexture.dispose();  // Dispose half heart texture
         stage.dispose();
+    }
+
+    public int getMaxHearts() {
+        return maxHearts;
+    }
+
+    public void setMaxHearts(int maxHearts) {
+        this.maxHearts = maxHearts;
     }
 }

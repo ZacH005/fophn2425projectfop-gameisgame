@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.tum.cit.fop.maze.abilities.Collectable;
+import de.tum.cit.fop.maze.abilities.Item;
 import de.tum.cit.fop.maze.abilities.Powerup;
 
 import java.io.Serial;
@@ -49,6 +50,8 @@ public class Player implements Entity, Serializable {
     private int armor;
     private List<Powerup> powerups;
     private int money;
+    private int maxHealth;
+    private List<Item> hasEquipped;
 
     private float flickerAlpha = 1.0f;  // Initialize alpha to full visibility
     private boolean isFlickering = false;  // Track if the player is flickering
@@ -86,6 +89,8 @@ public class Player implements Entity, Serializable {
         this.money = money;
         this.powerups = new ArrayList<>();
         this.collider = new Rectangle(position.x-8, position.y-8, width, height);
+        this.maxHealth = 7;
+        this.hasEquipped = new ArrayList<>();
     }
     public void startFlickering(float time) {
         isFlickering = true;
@@ -218,7 +223,26 @@ public class Player implements Entity, Serializable {
         return cell != null;
     }
 
+    ///Items
+    public void equipItem(Item item) {
+        hasEquipped.add(item);
+    }
+
+    public void unequipItem(Item item)  {
+        hasEquipped.remove(item);
+    }
+
+    public List<Item> getHasEquipped() {
+        return hasEquipped;
+    }
+
     /// Entity's methods
+
+    @Override
+    public void heal() {
+        if (health < maxHealth)
+            health += 1;
+    }
 
     @Override
     public void takeDamage() {
@@ -330,5 +354,13 @@ public class Player implements Entity, Serializable {
 
     public void setSprinting(boolean sprinting) {
         isSprinting = sprinting;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
     }
 }

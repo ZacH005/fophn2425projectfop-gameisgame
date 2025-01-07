@@ -39,4 +39,15 @@ public abstract class Powerup extends GameEffect implements Collectable<Powerup>
     public Rectangle getCollider() {
         return collider;
     }
+
+    public Powerup pickUp() {
+        pickUpSound.play();
+        return this;
+    }
+
+    public boolean checkPickUp(Player player) {
+        if (collider.overlaps(player.collider))
+            setEquipped(true);
+        return isEquipped();
+    }
 }

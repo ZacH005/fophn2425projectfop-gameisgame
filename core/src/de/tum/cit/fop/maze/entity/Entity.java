@@ -6,6 +6,7 @@ import de.tum.cit.fop.maze.abilities.Powerup;
 import java.util.List;
 
 public interface Entity {
+    void heal();
     void takeDamage();
 
     int getHealth();

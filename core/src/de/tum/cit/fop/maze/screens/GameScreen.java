@@ -13,12 +13,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.fop.maze.ScreenManager;
-import de.tum.cit.fop.maze.abilities.Collectable;
-import de.tum.cit.fop.maze.abilities.SpeedUp;
+import de.tum.cit.fop.maze.abilities.*;
 import de.tum.cit.fop.maze.entity.Enemy;
 import de.tum.cit.fop.maze.entity.HUD;
 import de.tum.cit.fop.maze.entity.Player;
-import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.shaders.Light;
 
 import java.util.ArrayList;
@@ -98,11 +96,14 @@ public class GameScreen implements Screen {
         //just initializing the player
         player = new Player(startPlayerX, startPlayerY, tiledMap,6,100,new ArrayList<String>(),0);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
-        hud=new HUD(game.getSpriteBatch(),game,player.getHealth());
+
+        hud=new HUD(game.getSpriteBatch(),game,player.getMaxHealth());
 
         this.enemy=new Enemy(200,250,player,hud);
         mapPowerups = new ArrayList<>();
         mapPowerups.add(new SpeedUp(4*tileSize, 3*tileSize));
+        mapPowerups.add(new HeartUp(8*tileSize, 3*tileSize));
+        mapPowerups.add(new Key(6*tileSize, 3*tileSize));
     }
 //    public void completeLevel(){
 //        //updates the index of the map being played
@@ -195,7 +196,7 @@ public class GameScreen implements Screen {
                     player.getPowerUps().add(powerup.pickUp());
                     powerup.applyEffect(player);
                     iterator.remove();
-
+                    hud.updateHearts(player.getHealth());
                 }
             }
         }

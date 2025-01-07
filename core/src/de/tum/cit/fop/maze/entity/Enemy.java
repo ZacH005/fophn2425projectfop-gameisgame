@@ -55,6 +55,11 @@ public class Enemy implements Entity {
     }
 
     @Override
+    public void heal() {
+
+    }
+
+    @Override
     public void takeDamage() {
 
     }
