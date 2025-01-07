@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="11">
  <tileset firstgid="1" source="cavesTileset.tsx"/>
  <layer id="1" name="Ground" width="30" height="20">
   <data encoding="csv">
@@ -145,6 +145,15 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="9" name="CollisionObjects">
+  <object id="1" x="0" y="144" width="16" height="176"/>
+  <object id="4" x="16" y="304" width="320" height="16"/>
+  <object id="5" x="320" y="64" width="16" height="240"/>
+  <object id="6" x="320" y="0" width="16" height="64"/>
+  <object id="7" x="144" y="16" width="176"/>
+  <object id="9" x="0" y="16" width="160" height="144"/>
+  <object id="10" x="75.9563" y="174.317" width="138.798" height="81.4208"/>
+ </objectgroup>
  <layer id="7" name="Decor" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

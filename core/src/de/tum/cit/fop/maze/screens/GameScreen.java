@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.abilities.*;
+import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
+import de.tum.cit.fop.maze.arbitrarymap.MapManager;
 import de.tum.cit.fop.maze.entity.Enemy;
 import de.tum.cit.fop.maze.entity.HUD;
 import de.tum.cit.fop.maze.entity.Player;
@@ -36,6 +38,8 @@ public class GameScreen implements Screen {
     private TiledMap tiledMap;
     //tiled comes with a renderer
     private OrthogonalTiledMapRenderer mapRenderer;
+    private MapManager mapManager;
+    private CollisionManager colManager;
 
     private Player player;
     private Enemy enemy;
@@ -87,6 +91,8 @@ public class GameScreen implements Screen {
 
         tiledMap = new TmxMapLoader().load(mapPath);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        this.mapManager = new MapManager(tiledMap);
+        this.colManager = new CollisionManager(mapManager.getCollisionObjects());
         isGameOver=false;
 
         //THIS IS ALL PLAYER THINGS:
@@ -154,7 +160,7 @@ public class GameScreen implements Screen {
                 //input updating ; find the method below for details
                 handleInput();
                 // updating characters
-                player.update(delta);
+                player.update(delta, colManager);
                 enemy.update(delta);
         }
 
@@ -172,17 +178,33 @@ public class GameScreen implements Screen {
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.setColor(1, 0, 0, 1); // Red color
-//        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
-//        shapeRenderer.end();
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(1, 0, 0, 1); // Red color
+        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
+                shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
+        shapeRenderer.end();
 
         //I don't get projectionmatrices, needed to be attached to the spritebatch
 // Set the projection matrix for the game camera
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
         game.getSpriteBatch().enableBlending();
         game.getSpriteBatch().begin();
+
+//        shapeRenderer.setProjectionMatrix(camera.combined);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // Line mode to draw the border of the collider
+//
+//        // Assuming player.getCollider() returns a Rectangle or similar object
+//        shapeRenderer.rect(player.getCollider().getX(), player.getCollider().getY(), player.getCollider().getWidth(), player.getCollider().getHeight(), Color.RED, Color.RED, Color.RED, Color.RED);
+//
+//        shapeRenderer.end();
+
+//        shapeRenderer.setProjectionMatrix(camera.combined); // Set the projection matrix
+//        shapeRenderer.begin(); // Specify ShapeType
+//        shapeRenderer.setColor(1, 0, 0, 1f); // Red color
+//        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
+//        shapeRenderer.end();
+
 
         //loading powerups on map
         if (!mapPowerups.isEmpty()) {
@@ -226,8 +248,6 @@ public class GameScreen implements Screen {
     private void handleInput() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             isPaused = true;
-
-
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.move(Player.Direction.LEFT);
