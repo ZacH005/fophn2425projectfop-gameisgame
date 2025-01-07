@@ -16,18 +16,6 @@ public class SpeedUp extends Powerup  {
         );
     }
 
-    @Override
-    public Powerup pickUp() {
-        getPickUpSound().play();
-        return this;
-    }
-
-    public boolean checkPickUp(Player player) {
-        if (super.getCollider().overlaps(player.collider))
-            setEquipped(true);
-        return isEquipped();
-    }
-
     public void applyEffect(Player player) {
         player.setSpeed(player.getSpeed()*1.50f);
         System.out.println("Picked up " + getName()+": " + getDescription());

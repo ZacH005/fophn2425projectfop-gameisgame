@@ -18,11 +18,11 @@ public class HUD {
     public Stage stage;
     private Viewport viewport;
 
-    private Integer worldTimer;
+    private Integer keysno;
     private float timeCount;
     private Integer score;
 
-    Label countdownLabel;
+    Label keysLabel;
     Label scoreLabel1;
     Label timeLabel;
     Label levelLabel;
@@ -37,20 +37,22 @@ public class HUD {
     private int maxHearts;
     private boolean[] heartStates; // Array to track heart states (true = full, false = half)
 
-    private int currentHeartIndex; // Track the last heart's index to modify it
-
+    private int currentHeartIndex;// Track the last heart's index to modify it
+    private Player player;
     /**
      * Constructor for HUD.
      * Initializes score, timer, and heart system.
      *
      * @param batch The SpriteBatch used for rendering.
      */
-    public HUD(SpriteBatch batch, ScreenManager game, int maxHearts) {
-        worldTimer = 0;
+    public HUD(SpriteBatch batch, ScreenManager game, Player player) {
+        keysno = player.getKeys();
         timeCount = 0;
         score = 0;
 
-        this.maxHearts = maxHearts;
+        this.player = player;
+
+        this.maxHearts = player.getMaxHealth();
 
         viewport = new ScreenViewport();
         stage = new Stage(viewport, batch);
@@ -81,7 +83,7 @@ public class HUD {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = game.getSkin().getFont("font");  // Use the "font" from the skin
         
-        countdownLabel = new Label(String.format("%03d", worldTimer), labelStyle);
+        keysLabel = new Label(String.format("%03d", keysno), labelStyle);
 
         scoreLabel1 = new Label(String.format("%06d", score), labelStyle);
 
@@ -89,7 +91,7 @@ public class HUD {
 
         levelLabel = new Label("LEVEL 1", labelStyle);
 
-        worldLabel = new Label("WORLD 1", labelStyle);
+        worldLabel = new Label("KEYS", labelStyle);
 
         scoreLabel = new Label("SCORE", labelStyle);
 
@@ -99,7 +101,7 @@ public class HUD {
         table.add(timeLabel).expandX().padTop(10);
         table.row();
         table.add(scoreLabel1).expandX().padLeft(30);
-        table.add(countdownLabel).expandX();
+        table.add(keysLabel).expandX();
         table.add(levelLabel).expandX();
 
         // Add the table to the stage
@@ -138,13 +140,14 @@ public class HUD {
             }
         });
     }
-
+    public void updateHUD(){
+        keysLabel.setText(String.format("%03d", player.getKeys()));
+    }
     // Method to progressively change the last heart from full to half, then remove it
     public void updateHearts(int currentHealth) {
 
         // Clear the heart table
         heartTable.clear();
-
 
         // Recreate hearts based on current health
         for (int i = 0; i < maxHearts; i++) {
@@ -164,14 +167,6 @@ public class HUD {
      *
      * @param delta Time since the last frame.
      */
-    public void update(float delta) {
-        timeCount += delta;
-        if (timeCount >= 1) {
-            worldTimer++;
-            countdownLabel.setText(String.format("%03d", worldTimer));
-            timeCount = 0;
-        }
-    }
 
     /**
      * Disposes of resources used by the HUD.
@@ -180,5 +175,13 @@ public class HUD {
         fullHeartTexture.dispose();
         halfHeartTexture.dispose();  // Dispose half heart texture
         stage.dispose();
+    }
+
+    public int getMaxHearts() {
+        return maxHearts;
+    }
+
+    public void setMaxHearts(int maxHearts) {
+        this.maxHearts = maxHearts;
     }
 }

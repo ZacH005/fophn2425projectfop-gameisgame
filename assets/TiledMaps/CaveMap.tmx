@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="22">
  <tileset firstgid="1" source="cavesTileset.tsx"/>
  <layer id="1" name="Ground" width="30" height="20">
   <data encoding="csv">
@@ -125,7 +125,7 @@
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,46,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,46,0,0,0,0,46,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,92,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -145,6 +145,50 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="9" name="CollisionObjects">
+  <object id="1" x="0" y="144" width="16" height="176"/>
+  <object id="4" x="16" y="304" width="320" height="16"/>
+  <object id="5" x="320" y="64" width="16" height="240"/>
+  <object id="6" x="320" y="0" width="16" height="64"/>
+  <object id="7" x="144" y="16" width="176"/>
+  <object id="9" x="0" y="16" width="160" height="144"/>
+ </objectgroup>
+ <objectgroup id="10" name="PowerUpObjects">
+  <properties>
+   <property name="type" value="HeartUp"/>
+  </properties>
+  <object id="12" x="40" y="192">
+   <properties>
+    <property name="type" value="SpeedUp"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="16" x="168" y="192">
+   <properties>
+    <property name="Name" value="HeartUp"/>
+    <property name="type" value="HeartUp"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="17" x="280" y="192">
+   <properties>
+    <property name="type" value="SpeedUp"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="18" x="264" y="288">
+   <properties>
+    <property name="type" value="HeartUp"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="20" x="213.333" y="240.667">
+   <properties>
+    <property name="type" value="Key"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
  <layer id="7" name="Decor" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

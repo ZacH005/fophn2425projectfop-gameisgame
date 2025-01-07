@@ -12,7 +12,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Collectable;
+import de.tum.cit.fop.maze.abilities.Item;
 import de.tum.cit.fop.maze.abilities.Powerup;
+import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -54,6 +56,9 @@ public class Player implements Entity, Serializable {
     private int armor;
     private List<Powerup> powerups;
     private int money;
+    private int maxHealth;
+    private List<Item> hasEquipped;
+    private  int keys=0;
 
     private float flickerAlpha = 1.0f;  // Initialize alpha to full visibility
     private boolean isFlickering = false;  // Track if the player is flickering
@@ -61,6 +66,8 @@ public class Player implements Entity, Serializable {
     private static final float FLICKER_DURATION = 0.1f;  // Duration for each flicker step
     private float flickertotaltime = 0f; //Timer to keep track of time for whole flicker animation
     private float totalflickerduration; //Total animation duration
+
+    private Vector2 lastValidPosition;
 
     private boolean isSprinting;
 
@@ -81,7 +88,7 @@ public class Player implements Entity, Serializable {
         this.direction = Direction.DOWN;
         this.animationTime = 0f;
         //added in order that they are shown in the map file, not in the id order
-        this.collidable = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
+//        this.collidable = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
 
         this.isSprinting = false;
 
@@ -96,6 +103,10 @@ public class Player implements Entity, Serializable {
         this.money = money;
         this.powerups = new ArrayList<>();
         this.collider = new Rectangle(position.x-8, position.y-8, width, height);
+        this.maxHealth = 7;
+        this.hasEquipped = new ArrayList<>();
+
+        this.lastValidPosition = new Vector2(x, y);
         this.currentTileX = (int) position.x / tileSize;
         this.currentTileY = (int) position.y / tileSize;
     }
@@ -133,7 +144,7 @@ public class Player implements Entity, Serializable {
         this.currentAnimation = animation;
     }
 
-    public void update(float delta) {
+    public void update(float delta, CollisionManager colManager) {
         updateFlickerEffect(delta);
 
         footstepTimer += delta; // Update the timer
@@ -141,8 +152,10 @@ public class Player implements Entity, Serializable {
         if (isMoving) {
             float newX = position.x + velocity.x * speed * delta;
             float newY = position.y + velocity.y * speed * delta;
+            Rectangle newPos = new Rectangle(newX-7, newY-7, width-2, height-2);
 
-            if (!isColliding(newX, newY)) {
+            if (!colManager.checkCollision(newPos)) {
+                lastValidPosition.set(position.x, position.y);
                 position.x = newX;
                 position.y = newY;
                 collider.x = newX - 8;
@@ -216,20 +229,20 @@ public class Player implements Entity, Serializable {
         this.speed = speed;
     }
 
-    public boolean isColliding(float newX, float newY)  {
-        boolean colliding = false;
-        int i = 0;
-        //checks through all wall layers, (alse checks for an offset to avoid entering walls)
-        while (!colliding && i < collidable.size())  {
-            colliding = colliding || checkCollision(newX+5, newY, collidable.get(i)) || checkCollision(newX-5, newY, collidable.get(i));
-            //colliding = colliding || checkCollision(newX-6, newY, collidable.get(i));
-            //skipping the back walls to it keeps the current overlap
-            if (i != 2)
-                colliding = colliding || checkCollision(newX, newY - 7, collidable.get(i));
-            i++;
-        }
-        return colliding;
-    }
+//    public boolean isColliding(float newX, float newY)  {
+//        boolean colliding = false;
+//        int i = 0;
+//        //checks through all wall layers, (alse checks for an offset to avoid entering walls)
+//        while (!colliding && i < collidable.size())  {
+//            colliding = colliding || checkCollision(newX+5, newY, collidable.get(i)) || checkCollision(newX-5, newY, collidable.get(i));
+//            //colliding = colliding || checkCollision(newX-6, newY, collidable.get(i));
+//            //skipping the back walls to it keeps the current overlap
+//            if (i != 2)
+//                colliding = colliding || checkCollision(newX, newY - 7, collidable.get(i));
+//            i++;
+//        }
+//        return colliding;
+//    }
 
     private boolean checkCollision(float newX, float newY, TiledMapTileLayer wallLayer) {
         TiledMapTileLayer.Cell cell = null;
@@ -245,7 +258,26 @@ public class Player implements Entity, Serializable {
         return cell != null;
     }
 
+    ///Items
+    public void equipItem(Item item) {
+        hasEquipped.add(item);
+    }
+
+    public void unequipItem(Item item)  {
+        hasEquipped.remove(item);
+    }
+
+    public List<Item> getHasEquipped() {
+        return hasEquipped;
+    }
+
     /// Entity's methods
+
+    @Override
+    public void heal() {
+        if (health < maxHealth)
+            health += 1;
+    }
 
     @Override
     public void takeDamage() {
@@ -357,5 +389,25 @@ public class Player implements Entity, Serializable {
 
     public void setSprinting(boolean sprinting) {
         isSprinting = sprinting;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public Rectangle getCollider() {
+        return collider;
+    }
+
+    public int getKeys() {
+        return keys;
+    }
+
+    public void setKeys(int keys) {
+        this.keys = keys;
     }
 }

@@ -8,11 +8,15 @@
     ],
     "fileStates": {
         "CaveMap.tmx": {
-            "scale": 1.8325,
-            "selectedLayer": 3,
+            "expandedObjectLayers": [
+                10,
+                9
+            ],
+            "scale": 1.83,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 158.52660300136424,
-                "y": 178.17189631650749
+                "x": 153.82513661202182,
+                "y": 199.72677595628414
             }
         },
         "Caves-Tileset.tsx": {
@@ -34,9 +38,42 @@
         "cavesTileset.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "dwarfMines.tmx": {
+            "expandedObjectLayers": [
+                6
+            ],
+            "scale": 1.4156,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 67.46256004521052,
+                "y": 499.0816614862956
+            }
+        },
+        "newCaveMap.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 1.84,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 175.27173913043478,
+                "y": 172.55434782608694
+            }
+        },
+        "newCaveMap2.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 2.30671875,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 160.18424439477073,
+                "y": 160.18424439477073
+            }
         }
     },
-    "last.imagePath": "/Users/zach/IdeaProjects/fophn2425projectfop-gameisgame/assets/TiledMaps/tilesets/newCaves/Hana Caraka - Topdown Tileset [sample]/Tileset",
+    "last.imagePath": "/Users/zach/IdeaProjects/fophn2425projectfop-gameisgame/assets/TiledMaps/tilesets/DwarvenDelve/Background",
     "map.height": 40,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,

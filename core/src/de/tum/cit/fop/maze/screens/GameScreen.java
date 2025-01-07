@@ -4,8 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -14,13 +13,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.SoundManager;
-import de.tum.cit.fop.maze.abilities.Collectable;
-import de.tum.cit.fop.maze.abilities.SpeedUp;
+
+import de.tum.cit.fop.maze.abilities.*;
+import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
+import de.tum.cit.fop.maze.arbitrarymap.MapManager;
 import de.tum.cit.fop.maze.entity.Enemy;
 import de.tum.cit.fop.maze.entity.HUD;
 import de.tum.cit.fop.maze.entity.Player;
-import de.tum.cit.fop.maze.abilities.Powerup;
-import de.tum.cit.fop.maze.shaders.Light;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -41,6 +40,8 @@ public class GameScreen implements Screen {
     private TiledMap tiledMap;
     //tiled comes with a renderer
     private OrthogonalTiledMapRenderer mapRenderer;
+    private MapManager mapManager;
+    private CollisionManager colManager;
 
     private Player player;
     private Enemy enemy;
@@ -92,6 +93,8 @@ public class GameScreen implements Screen {
 
         tiledMap = new TmxMapLoader().load(mapPath);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        this.mapManager = new MapManager(tiledMap);
+        this.colManager = new CollisionManager(mapManager.getCollisionObjects());
         isGameOver=false;
 
         //THIS IS ALL PLAYER THINGS:
@@ -112,13 +115,18 @@ public class GameScreen implements Screen {
 
         soundManager.onGameStateChange(mainState);
 
-//just initializing the player
+        //just initializing the player
         player = new Player(startPlayerX, startPlayerY, tiledMap,6,100,new ArrayList<String>(),0,soundManager);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
-        hud=new HUD(game.getSpriteBatch(),game,player.getHealth());
+
+        hud=new HUD(game.getSpriteBatch(),game,player);
+
         this.enemy=new Enemy(200,250,player,hud,soundManager);
-        mapPowerups = new ArrayList<>();
-        mapPowerups.add(new SpeedUp(4*tileSize, 3*tileSize));
+
+        this.mapPowerups = mapManager.getPowerups();
+
+
+
     }
 //    public void completeLevel(){
 //        //updates the index of the map being played
@@ -205,9 +213,11 @@ public class GameScreen implements Screen {
                 //input updating ; find the method below for details
                 handleInput();
                 // updating characters
-                player.update(delta);
+                player.update(delta, colManager);
                 enemy.update(delta);
+                hud.updateHUD();
         }
+
 
         // Clear screen before prinitng each frame
         ScreenUtils.clear(0, 0, 0, 1);
@@ -223,17 +233,35 @@ public class GameScreen implements Screen {
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.setColor(1, 0, 0, 1); // Red color
-//        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
-//        shapeRenderer.end();
+        System.out.println(player.getKeys());
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(1, 0, 0, 1); // Red color
+        shapeRenderer.rect(enemy.scanRange.getX(),enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
+                shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
+        shapeRenderer.end();
 
         //I don't get projectionmatrices, needed to be attached to the spritebatch
 // Set the projection matrix for the game camera
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
         game.getSpriteBatch().enableBlending();
         game.getSpriteBatch().begin();
+
+//        shapeRenderer.setProjectionMatrix(camera.combined);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // Line mode to draw the border of the collider
+//
+//        // Assuming player.getCollider() returns a Rectangle or similar object
+//        shapeRenderer.rect(player.getCollider().getX(), player.getCollider().getY(), player.getCollider().getWidth(), player.getCollider().getHeight(), Color.RED, Color.RED, Color.RED, Color.RED);
+//
+//        shapeRenderer.end();
+
+//        shapeRenderer.setProjectionMatrix(camera.combined); // Set the projection matrix
+//        shapeRenderer.begin(); // Specify ShapeType
+//        shapeRenderer.setColor(1, 0, 0, 1f); // Red color
+//        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
+//        shapeRenderer.end();
+
 
         //loading powerups on map
         if (!mapPowerups.isEmpty()) {
@@ -243,11 +271,11 @@ public class GameScreen implements Screen {
                 Vector2 position = powerup.getPosition();
                 game.getSpriteBatch().draw(powerup.getTexture(), position.x, position.y);
 
-                if (powerup.checkPickUp(player) && player.getPowerUps().size()<3)   {
+                if (powerup.checkPickUp(player))   {
                     player.getPowerUps().add(powerup.pickUp());
                     powerup.applyEffect(player);
                     iterator.remove();
-
+                    hud.updateHearts(player.getHealth());
                 }
             }
         }
