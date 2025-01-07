@@ -103,7 +103,7 @@ public class GameScreen implements Screen {
         player = new Player(startPlayerX, startPlayerY, tiledMap,6,100,new ArrayList<String>(),0);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
 
-        hud=new HUD(game.getSpriteBatch(),game,player.getMaxHealth());
+        hud=new HUD(game.getSpriteBatch(),game,player);
 
         this.enemy=new Enemy(200,250,player,hud);
 
@@ -160,6 +160,7 @@ public class GameScreen implements Screen {
                 // updating characters
                 player.update(delta, colManager);
                 enemy.update(delta);
+                hud.updateHUD();
         }
 
         // Clear screen before prinitng each frame
@@ -175,6 +176,8 @@ public class GameScreen implements Screen {
         mapRenderer.setView(camera);
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
+
+        System.out.println(player.getKeys());
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

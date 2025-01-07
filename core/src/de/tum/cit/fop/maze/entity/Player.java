@@ -53,6 +53,7 @@ public class Player implements Entity, Serializable {
     private int money;
     private int maxHealth;
     private List<Item> hasEquipped;
+    private  int keys=0;
 
     private float flickerAlpha = 1.0f;  // Initialize alpha to full visibility
     private boolean isFlickering = false;  // Track if the player is flickering
@@ -373,5 +374,13 @@ public class Player implements Entity, Serializable {
 
     public Rectangle getCollider() {
         return collider;
+    }
+
+    public int getKeys() {
+        return keys;
+    }
+
+    public void setKeys(int keys) {
+        this.keys = keys;
     }
 }

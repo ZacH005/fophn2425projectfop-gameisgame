@@ -73,6 +73,9 @@ public class MapManager {
                 } else if ("HeartUp".equals(type)) {
                     powerup = new HeartUp(rectangle.x, rectangle.y);
                 }
+                 else if("Key".equals(type)) {
+                     powerup = new Key(rectangle.x, rectangle.y);
+                }
 
                 if (powerup != null) {
                     powerups.add(powerup);

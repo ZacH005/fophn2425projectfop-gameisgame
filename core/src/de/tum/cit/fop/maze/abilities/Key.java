@@ -15,6 +15,6 @@ public class Key extends Powerup    {
 
     @Override
     public void applyEffect(Player player) {
-        player.takeDamage();
+        player.setKeys(player.getKeys()+1);
     }
 }
