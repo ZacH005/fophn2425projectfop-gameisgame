@@ -163,6 +163,7 @@ public class GameScreen implements Screen {
                 hud.updateHUD();
         }
 
+
         // Clear screen before prinitng each frame
         ScreenUtils.clear(0, 0, 0, 1);
         // Clear the framebuffer
