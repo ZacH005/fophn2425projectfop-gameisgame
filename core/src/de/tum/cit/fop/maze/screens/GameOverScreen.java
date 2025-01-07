@@ -14,14 +14,38 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
+import de.tum.cit.fop.maze.SoundManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameOverScreen implements Screen {
     private Stage stage;
     private ScreenManager game; // Reference to game class
+    private SoundManager soundManager;
+    private Map<String,Integer> mainState;
+    private Map<String,Integer> gameOverState = new HashMap<String,Integer>();
 
     // Pass the game instance in the constructor
     public GameOverScreen(ScreenManager game) {
+
         this.game = game; // Store the reference to the game
+        soundManager = game.getSoundManager();
+        mainState = game.getMainState();
+
+        gameOverState.put("crackles",1);
+        gameOverState.put("wind",1);
+        gameOverState.put("piano",0);
+        gameOverState.put("strings",0);
+        gameOverState.put("pad",0);
+        gameOverState.put("drums",0);
+        gameOverState.put("bass",0);
+        soundManager.onGameStateChange(gameOverState);
+
+    }
+
+    public Map<String, Integer> getGameOverState() {
+        return gameOverState;
     }
 
     @Override
@@ -36,7 +60,7 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true); // Make table fill the stage
         stage.addActor(table);
 
-
+        soundManager.onGameStateChange(gameOverState);
         Label.LabelStyle style = new Label.LabelStyle(game.getSkin().getFont("title"), Color.WHITE); // Access skin from game
         Label gameOverLabel = new Label("GAME OVER", style);
 
@@ -48,6 +72,8 @@ public class GameOverScreen implements Screen {
         retryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
+                soundManager.onGameStateChange(mainState);
                 game.goToGame();  // Calls the restart method on the game instance
             }
         });
@@ -58,6 +84,8 @@ public class GameOverScreen implements Screen {
         menuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
+                soundManager.setMusicVolume(0.5f);
                 game.goToMenu();
             }
         });

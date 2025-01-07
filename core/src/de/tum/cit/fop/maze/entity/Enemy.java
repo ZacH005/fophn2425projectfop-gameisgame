@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Enemy implements Entity {
@@ -20,7 +23,12 @@ public class Enemy implements Entity {
     private Player player;
     private boolean following;
     public Rectangle damageCollider;
-    private Music chaseMusic;;
+//    private Music chaseMusic;;
+    ///sound manager stuff.
+    private SoundManager soundManager;
+    private Map<String,Integer> chaseState = new HashMap<String,Integer>();
+    private Map<String,Integer> mainState = new HashMap<String,Integer>();
+
     private float lastDamageTime; // To track the last damage time
     private float cooldownTime=2f;
     private HUD hud;
@@ -30,7 +38,7 @@ public class Enemy implements Entity {
     private int initialposx;
     private int initialposy;
 
-    public Enemy(int x, int y,Player player,HUD hud) {
+    public Enemy(int x, int y,Player player,HUD hud,SoundManager soundManager) {
         this.player = player;
         position = new Vector2(x,y);
         initialposx = x;
@@ -41,10 +49,28 @@ public class Enemy implements Entity {
          scanrangeheight = 100;
         scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
         damageCollider = new Rectangle(position.x+6,position.y+3,2,2);
-        chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
-        chaseMusic.setLooping(true);
+//        chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
+//        chaseMusic.setLooping(true);
+        this.soundManager=soundManager;
+        chaseState.put("crackles",0);
+        chaseState.put("wind",1);
+        chaseState.put("piano",1);
+        chaseState.put("strings",0);
+        chaseState.put("pad",0);
+        chaseState.put("drums",1);
+        chaseState.put("bass",1);
+
+        mainState.put("crackles",1);
+        mainState.put("wind",1);
+        mainState.put("piano",1);
+        mainState.put("strings",0);
+        mainState.put("pad",1);
+        mainState.put("drums",0);
+        mainState.put("bass",1);
+
         this.hud=hud;
     }
+
     public void update(float delta){
         animation.update(delta);
         checkfollows();
@@ -161,7 +187,8 @@ public class Enemy implements Entity {
         if (this.scanRange.overlaps(player.collider)) {
             if (!following) {
                 following = true; // Start following
-                chaseMusic.play(); // Play suspenseful music
+//              chaseMusic.play(); // Play suspenseful music
+                soundManager.onGameStateChange(chaseState);
             }
         }
 
@@ -169,7 +196,8 @@ public class Enemy implements Entity {
             // if close enough or escaped, stop moving
             if (distance > 100.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
                 following = false;
-                chaseMusic.stop();
+//              chaseMusic.stop();
+                soundManager.onGameStateChange(mainState);
                 return;
             }
 

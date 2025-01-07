@@ -12,6 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
+import de.tum.cit.fop.maze.SoundManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PauseOverlay {
     private Stage stage;
@@ -21,6 +25,14 @@ public class PauseOverlay {
 
     private int lastWidth;
     private int lastHeight;
+    private SoundManager soundManager;
+    private Slider musicSlider;
+    private float musicVolume;
+    private Map<String,Integer> pauseState = new HashMap<String,Integer>();
+
+    public Map<String, Integer> getPauseState() {
+        return pauseState;
+    }
 
     public PauseOverlay(GameScreen gameScreen, ScreenManager game) {
         // Initialize stage and skin
@@ -28,13 +40,23 @@ public class PauseOverlay {
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport);
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json"));
+        this.soundManager = gameScreen.getSoundManager();
+
+        pauseState.put("crackles",1);
+        pauseState.put("wind",1);
+        pauseState.put("piano",0);
+        pauseState.put("strings",0);
+        pauseState.put("pad",0);
+        pauseState.put("drums",0);
+        pauseState.put("bass",0);
+
 
         // Create the overlay
         overlay = new Image(new Texture(Gdx.files.internal("PauseMenuOverlay.png")));
         overlay.setFillParent(true);
         overlay.setColor(1, 0, 250, 0.02f); // Set transparency
         stage.addActor(overlay);
-
+        soundManager.onGameStateChange(pauseState);
         // Create and configure the table for UI elements
         table = new Table();
         table.setFillParent(true); // Center the table
@@ -44,14 +66,28 @@ public class PauseOverlay {
         Label label = new Label("Game Paused", skin);
         table.add(label).padBottom(80).row();
 
+        if(musicSlider==null){
+            if(game.getPassedVolumeSettingToPause()!=0.1234f){
+                musicVolume = game.getPassedVolumeSettingToPause();
+            }
+            else {
+                musicVolume = 0.5f;
+            }
+        }
+        else {
+            musicVolume = musicSlider.getValue();
+        }
+
         // Add Resume button
         TextButton resumeButton = new TextButton("Resume", skin);
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Resume clicked");
+                soundManager.playSound("click");
                 setVisible(false);
                 gameScreen.setPaused(false);
+                soundManager.onGameStateChange(gameScreen.getMainState());
             }
         });
         table.add(resumeButton).width(300).row();
@@ -63,9 +99,8 @@ public class PauseOverlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Restart clicked");
-                if (gameScreen != null) {
-                    gameScreen.dispose();
-                }
+                soundManager.playSound("click");
+                gameScreen.dispose();
                 game.goToGame();
             }
         });
@@ -78,9 +113,8 @@ public class PauseOverlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Go To Menu clicked");
-                if (gameScreen != null) {
-                    gameScreen.dispose();
-                }
+                soundManager.playSound("click");
+                gameScreen.dispose();
                 game.goToMenu();
             }
         });
@@ -90,14 +124,17 @@ public class PauseOverlay {
         Label musicLabel = new Label("Sound", skin);
         table.add(musicLabel).padBottom(20).row();
 
-        Slider musicSlider = new Slider(0, 1, 0.01f, false, skin);
-        musicSlider.setValue(0.5f); // Default value (50%)
+        musicSlider = new Slider(0, 1, 0.1f, false, skin);
+        musicSlider.setValue(musicVolume); // Default value (50%)
         musicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // Update the volume when the slider value changes
-                float volume = musicSlider.getValue();
-                setMusicVolume(volume,game);
+                     soundManager.playSound("click");
+                     soundManager.setSfxVolume(musicSlider.getValue());
+                     soundManager.setMusicVolume(musicSlider.getValue());
+                     musicVolume = musicSlider.getValue();
+
             }
         });
         table.add(musicSlider).width(300).row();
@@ -109,12 +146,8 @@ public class PauseOverlay {
     lastHeight =Gdx.graphics.getHeight();
 
     }
-    private void setMusicVolume(float volume,ScreenManager game) {
-        // Here, use a music player or sound manager to adjust the music volume
-        // For example, if you use libGDX's SoundManager:
-        // Gdx.audio.newMusic("your_music_file.mp3").setVolume(volume);
-        // or use a sound manager class to control the volume.
-//            game.getBackgroundMusic().setVolume(volume);
+    public float getMusicVolume() {
+        return musicVolume;
     }
 
     public void render(float delta) {

@@ -13,6 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
+import de.tum.cit.fop.maze.SoundManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -21,7 +25,8 @@ import de.tum.cit.fop.maze.ScreenManager;
 public class MenuScreen implements Screen {
 
     private final Stage stage;
-
+    private SoundManager soundManager;
+    Map<String,Integer> menuState = new HashMap<String,Integer>();
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
@@ -38,6 +43,20 @@ public class MenuScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
+
+        //sound manager
+        soundManager = game.getSoundManager();
+        soundManager.loadSound("click","music/UI/menu_select.ogg");
+
+        menuState.put("crackles",1);
+        menuState.put("wind",1);
+        menuState.put("piano",1);
+        menuState.put("strings",0);
+        menuState.put("pad",0);
+        menuState.put("drums",0);
+        menuState.put("bass",0);
+
+
         // Add a label as a title
         table.add(new Label("Blind Cave Game!", game.getSkin(), "title")).padBottom(80).row();
 
@@ -47,6 +66,7 @@ public class MenuScreen implements Screen {
             startNewGameButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    soundManager.playSound("click");
                     game.goToGame();
                 }
             });
@@ -57,21 +77,23 @@ public class MenuScreen implements Screen {
             ContinueButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    soundManager.playSound("click");
                     game.goToGame();
                 }
             });
         }
+
 /// map selector button
         TextButton goToLevelSelectorButton = new TextButton("Levels", game.getSkin());
         table.add(goToLevelSelectorButton).width(300).row();
         goToLevelSelectorButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println(game.getUser().getCompletedLevels());
+                soundManager.playSound("click");
                 game.goToLevelSelector();
             }
         });
-
+        soundManager.onGameStateChange(menuState);
 
 //        // Create and add a button to go to the game screen
 //        TextButton goToGameButton = new TextButton("Continue Game", game.getSkin());
@@ -88,6 +110,7 @@ public class MenuScreen implements Screen {
         goToSettingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
                 game.goToSettings(); // Change to the game screen when button is pressed
             }
         });
@@ -97,6 +120,7 @@ public class MenuScreen implements Screen {
         exitGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
                 Gdx.app.exit(); // exit game
                 //System.exit(-1); this is a force shut, which we don't need because we need to
                 // do cleanups and to save userdata.
@@ -126,6 +150,7 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         // Set the input processor so the stage can receive input events
+
         Gdx.input.setInputProcessor(stage);
     }
 

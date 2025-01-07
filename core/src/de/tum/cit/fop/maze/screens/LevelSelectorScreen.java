@@ -15,13 +15,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
+import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.entity.User;
 
 public class LevelSelectorScreen extends ScreenAdapter {
     private Stage stage;
     private ScreenManager game;
     private User user;
-
+    private SoundManager soundManager;
     public LevelSelectorScreen(ScreenManager game) {
         this.game = game;
         this.user = game.getUser(); // Assume the game class provides access to the user
@@ -34,6 +35,8 @@ public class LevelSelectorScreen extends ScreenAdapter {
 
         // Create a stage for UI elements
         stage = new Stage(viewport, game.getSpriteBatch());
+        this.soundManager = game.getSoundManager();
+
 
         // Create a table for layout
         Table table = new Table();
@@ -85,6 +88,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
                 public void changed(ChangeEvent event, Actor actor) {
                     if (!levelButton.isDisabled()) {
                         // Load the corresponding level by its .tmx file
+                        soundManager.playSound("click");
                         game.loadLevel(levelName);
 
                     }
@@ -98,6 +102,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
         goBackButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
                 game.goToMenu(); // Return to the main menu
             }
         });

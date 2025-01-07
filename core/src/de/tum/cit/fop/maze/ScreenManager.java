@@ -21,6 +21,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 //bananas comment
 /**
@@ -50,6 +51,17 @@ public class ScreenManager extends Game {
 
     // Music
     private Music backgroundMusic;
+    private SoundManager soundManager;
+    private Map<String,Integer> mainState = new HashMap<String,Integer>();
+    private float passedVolumeSettingToPause = 0.1234f;
+
+    public float getPassedVolumeSettingToPause() {
+        return passedVolumeSettingToPause;
+    }
+
+    public void setPassedVolumeSettingToPause(float passedVolumeSettingToPause) {
+        this.passedVolumeSettingToPause = passedVolumeSettingToPause;
+    }
 
     // User and Game State
     private User user;
@@ -61,6 +73,15 @@ public class ScreenManager extends Game {
      */
     public ScreenManager(NativeFileChooser fileChooser) {
         super();
+        this.soundManager = new SoundManager();
+    }
+
+    public Map<String, Integer> getMainState() {
+        return mainState;
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
     }
 
     /**
@@ -74,19 +95,36 @@ public class ScreenManager extends Game {
             // Set default username if no data found
             user = new User("Player1");
         }
-
+        soundManager.loadMusicLayer("bass","music/themes/Bass.mp3");
+        soundManager.loadMusicLayer("piano","music/themes/Piano.mp3");
+        soundManager.loadMusicLayer("drums","music/themes/Drums.mp3");
+        soundManager.loadMusicLayer("pad","music/themes/Pad.mp3");
+        soundManager.loadMusicLayer("strings","music/themes/Strings.mp3");
+        soundManager.loadMusicLayer("wind","music/themes/Wind.mp3");
+        soundManager.loadMusicLayer("crackles","music/themes/Crackles.mp3");
+        soundManager.loadSound("click","music/UI/menu_select.ogg");
+        soundManager.loadSound("losing sound","music/losing_sound.mp3");
+        soundManager.loadSound("footstep_sfx","music/footstep_sfx.mp3");
+        mainState.put("crackles",1);
+        mainState.put("wind",1);
+        mainState.put("piano",0);
+        mainState.put("strings",0);
+        mainState.put("pad",0);
+        mainState.put("drums",0);
+        mainState.put("bass",1);
 
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         this.loadCharacterAnimation(); // Load character animation
 
-        //MUSIC
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
-        backgroundMusic.setLooping(true);
-        //muting it for now
-        backgroundMusic.setVolume(0);
-        backgroundMusic.play();
+//        //MUSIC
+//        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
+//        backgroundMusic.setLooping(true);
+//        //muting it for now
+//        backgroundMusic.setVolume(0);
+//        backgroundMusic.play();
 
+        soundManager.playAllLayers();
         goToMenu(); // Navigate to the menu screen
     }
 
@@ -100,6 +138,8 @@ public class ScreenManager extends Game {
     }
 
     public void goToGame() {
+        soundManager.onGameStateChange(mainState);
+
         // loading all maps
         FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
         Array<FileHandle> tmxFiles = new Array<>();
@@ -321,10 +361,15 @@ public class ScreenManager extends Game {
             getScreen().dispose(); // Dispose the current screen
             spriteBatch.dispose(); // Dispose the spriteBatch
             skin.dispose(); // Dispose the skin
-
+            soundManager.dispose();
     }
 
     // Getters methods
+
+    public SoundManager getSoundManager() {
+        return soundManager;
+    }
+
     public Skin getSkin() {
         return skin;
     }

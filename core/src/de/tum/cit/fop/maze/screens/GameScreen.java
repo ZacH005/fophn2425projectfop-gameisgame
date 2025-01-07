@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.fop.maze.ScreenManager;
+import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.SpeedUp;
 import de.tum.cit.fop.maze.entity.Enemy;
@@ -21,9 +22,11 @@ import de.tum.cit.fop.maze.entity.Player;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.shaders.Light;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  * The GameScreen class handles gameplay, rendering the Tiled map and the player.
@@ -58,10 +61,10 @@ public class GameScreen implements Screen {
     /// pause trigger
     private boolean isPaused;
     private PauseOverlay pauseOverlay;
+    private SoundManager soundManager;
+    private float musicVolume;
+    private Map<String,Integer> mainState = new HashMap<String,Integer>();
 
-    public Player getPlayer() {
-        return player;
-    }
 
     public GameScreen(ScreenManager game, String mapPath ) {
         this.mapPath = mapPath;
@@ -95,12 +98,25 @@ public class GameScreen implements Screen {
         //need to make it so when the map loads, it chooses the specific location of the starting block
         float startPlayerX = (2*tileSize)+tileSize/2;
         float startPlayerY = (2*tileSize);
-        //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, tiledMap,6,100,new ArrayList<String>(),0);
+
+        //sound stuff.
+        this.soundManager = game.getSoundManager();
+
+        mainState.put("crackles",1);
+        mainState.put("wind",1);
+        mainState.put("piano",1);
+        mainState.put("strings",0);
+        mainState.put("pad",1);
+        mainState.put("drums",0);
+        mainState.put("bass",1);
+
+        soundManager.onGameStateChange(mainState);
+
+//just initializing the player
+        player = new Player(startPlayerX, startPlayerY, tiledMap,6,100,new ArrayList<String>(),0,soundManager);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
         hud=new HUD(game.getSpriteBatch(),game,player.getHealth());
-
-        this.enemy=new Enemy(200,250,player,hud);
+        this.enemy=new Enemy(200,250,player,hud,soundManager);
         mapPowerups = new ArrayList<>();
         mapPowerups.add(new SpeedUp(4*tileSize, 3*tileSize));
     }
@@ -110,19 +126,47 @@ public class GameScreen implements Screen {
 //
 //
 //    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setMusicVolume(float musicVolume) {
+        this.musicVolume = musicVolume;
+    }
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public Map<String, Integer> getMainState() {
+        return mainState;
+    }
+
     @Override
     public void render(float delta) {
 
         if(isPaused) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                isPaused=false;
-            }
             pauseOverlay.setVisible(isPaused);
             pauseOverlay.render(delta);
+            // for the music
+            musicVolume = pauseOverlay.getMusicVolume();
+            soundManager.setMusicVolume(musicVolume);
+            soundManager.onGameStateChange(pauseOverlay.getPauseState());
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                soundManager.onGameStateChange(mainState);
+                isPaused=false;
+            }
             return;
         }
 
         else{
+
+            if(pauseOverlay!=null){
+                musicVolume = pauseOverlay.getMusicVolume();
+            }
+            else{
+                musicVolume = 0.5f;
+            }
 
                 /// WINNING
                 if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
@@ -144,12 +188,20 @@ public class GameScreen implements Screen {
                     game.setScreen(new VictoryScreen(game));
                 }
                 //health trigger
+                if(Gdx.input.isKeyJustPressed(Input.Keys.D)){
+                    player.setHealth(player.getHealth()-1);
+                }
                 if (player.getHealth()==0){
+                    soundManager.playSound("losing sound");
                     isGameOver=true;
                     player.setHealth(5);
                     player.saveState("playerstate.txt");
+
+
                     game.setScreen(new GameOverScreen(game));
                 }
+
+
                 //input updating ; find the method below for details
                 handleInput();
                 // updating characters
@@ -219,14 +271,14 @@ public class GameScreen implements Screen {
 
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
+
+        //playing music
     }
 
 
     private void handleInput() {
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             isPaused = true;
-
-
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.move(Player.Direction.LEFT);
@@ -280,9 +332,16 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         ///loading the player state from a txt file after resuming
+
         player.loadState("playerstate.txt");
         System.out.println("I have this amount of hearts:"+ player.getHealth());
         pauseOverlay = new PauseOverlay(this,game);
+        soundManager.onGameStateChange(mainState);
+
+    }
+
+    public PauseOverlay getPauseOverlay() {
+        return pauseOverlay;
     }
 
     @Override
@@ -296,5 +355,8 @@ public class GameScreen implements Screen {
 
     public OrthographicCamera getCamera() {
         return camera;
+    }
+    public SoundManager getSoundManager() {
+        return soundManager;
     }
 }

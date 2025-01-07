@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.Powerup;
 
@@ -22,7 +23,11 @@ import java.util.List;
 public class Player implements Entity, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-
+    ///footstep sfx
+    private int currentTileX;
+    private int currentTileY;
+    private float footstepTimer = 0f;
+    private static final float FOOTSTEP_INTERVAL = 0.2f; // 300 ms between footsteps
 
     private Vector2 velocity;
     private float speed;
@@ -59,11 +64,13 @@ public class Player implements Entity, Serializable {
 
     private boolean isSprinting;
 
+    private SoundManager soundManager;
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
-    public Player(float x, float y, TiledMap tiledMap, int health,int armor, List<String> powerups, int money) {
+    public Player(float x, float y, TiledMap tiledMap, int health, int armor, List<String> powerups, int money, SoundManager soundManager) {
         this.tileSize = 16;
         this.velocity = new Vector2(0, 0);
         this.tiledMap = tiledMap;
@@ -78,6 +85,9 @@ public class Player implements Entity, Serializable {
 
         this.isSprinting = false;
 
+        /// sound manager
+        this.soundManager = soundManager;
+        soundManager.loadSound("hurt_sfx","music/hitHurt.wav");
         ///Entities variables
         this.position = new Vector2(x, y);
         this.resetpos = new Vector2(50, 50);
@@ -86,6 +96,8 @@ public class Player implements Entity, Serializable {
         this.money = money;
         this.powerups = new ArrayList<>();
         this.collider = new Rectangle(position.x-8, position.y-8, width, height);
+        this.currentTileX = (int) position.x / tileSize;
+        this.currentTileY = (int) position.y / tileSize;
     }
     public void startFlickering(float time) {
         isFlickering = true;
@@ -123,6 +135,9 @@ public class Player implements Entity, Serializable {
 
     public void update(float delta) {
         updateFlickerEffect(delta);
+
+        footstepTimer += delta; // Update the timer
+
         if (isMoving) {
             float newX = position.x + velocity.x * speed * delta;
             float newY = position.y + velocity.y * speed * delta;
@@ -130,17 +145,29 @@ public class Player implements Entity, Serializable {
             if (!isColliding(newX, newY)) {
                 position.x = newX;
                 position.y = newY;
-                collider.x = newX-8;
-                collider.y = newY-8;
-            }
+                collider.x = newX - 8;
+                collider.y = newY - 8;
 
-            //make a set of all x, y coordinates of walls. check if the set of walls includes those x, y coordinates. set player position to current position
+                // Detect tile crossing so you can play footstep sound at the right time
+                int newTileX = (int) newX / tileSize;
+                int newTileY = (int) newY / tileSize;
+
+                if ((newTileX != currentTileX || newTileY != currentTileY) && footstepTimer >= FOOTSTEP_INTERVAL) {
+                    currentTileX = newTileX;
+                    currentTileY = newTileY;
+
+                    // Play footstep sound and reset timer
+                    soundManager.playSound("footstep_sfx");
+                    footstepTimer = 0f;
+                }
+            }
 
             animationTime += delta;
         } else {
             animationTime = 0;
         }
     }
+
 
 
     public void render(SpriteBatch batch) {
@@ -224,8 +251,8 @@ public class Player implements Entity, Serializable {
     public void takeDamage() {
         health -= 1;
         System.out.println(health);
-        Sound hurtSFX = Gdx.audio.newSound(Gdx.files.internal("music/hitHurt.wav"));
-        hurtSFX.play();
+        soundManager.playSound("hurt_sfx");
+
     }
 
     @Override

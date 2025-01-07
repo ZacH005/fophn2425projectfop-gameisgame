@@ -2,6 +2,7 @@ package de.tum.cit.fop.maze.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,14 +16,29 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
+import de.tum.cit.fop.maze.SoundManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class VictoryScreen implements Screen {
     private Stage stage;
     private ScreenManager game; // Reference to game class
-
+    private SoundManager soundManager;
+    private Map<String,Integer> winState = new HashMap<String,Integer>();
     // Pass the game instance in the constructor
-    public VictoryScreen(ScreenManager game) {
+    public VictoryScreen(ScreenManager game)
+    {
         this.game = game; // Store the reference to the game
+        this.soundManager = game.getSoundManager();
+        winState.put("crackles",0);
+        winState.put("wind",0);
+        winState.put("piano",0);
+        winState.put("strings",1);
+        winState.put("pad",0);
+        winState.put("drums",0);
+        winState.put("bass",0);
+        soundManager.onGameStateChange(winState);
     }
 
     @Override

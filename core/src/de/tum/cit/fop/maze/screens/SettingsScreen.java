@@ -14,10 +14,12 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import de.tum.cit.fop.maze.SoundManager;
 
 public class SettingsScreen implements Screen {
     private final Stage stage;
-
+    private SoundManager soundManager;
+    private Slider music;
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
@@ -34,16 +36,23 @@ public class SettingsScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
+        soundManager = game.getSoundManager();
+
+
         // Add a label as a title
         table.add(new Label("Settings", game.getSkin(), "title")).padBottom(80).row();
 
-        Slider music = new Slider(0, 1, 0.01f, false, game.getSkin());
-        music.setValue(game.getBackgroundMusic().getVolume());
+        music = new Slider(0, 1, 0.3f, false, game.getSkin());
+
+        music.setValue(game.getSoundManager().getMusicVolume());
         table.add(music).width(300);
         music.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.getBackgroundMusic().setVolume(music.getValue());
+//                game.getBackgroundMusic().setVolume(music.getValue());
+                soundManager.playSound("click");
+                soundManager.setSfxVolume(music.getValue());
+                soundManager.setMusicVolume(music.getValue());
             }
         });
 
@@ -52,7 +61,12 @@ public class SettingsScreen implements Screen {
         muteMusicButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                music.setValue(0);
+                soundManager.playSound("click");
+                    soundManager.setSfxVolume(0.0f);
+                    soundManager.setMusicVolume(0.0f);
+                    music.setValue(0.0f);
+
+
             }
         });
 
@@ -61,9 +75,21 @@ public class SettingsScreen implements Screen {
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
+                soundManager.setMusicVolume(music.getValue());
+                soundManager.setSfxVolume(music.getValue());
+                game.setPassedVolumeSettingToPause(music.getValue());
                 game.goToMenu(); // Change to the game screen when button is pressed
             }
         });
+    }
+
+    public void setMusic(Slider music) {
+        this.music = music;
+    }
+
+    public Slider getMusic() {
+        return music;
     }
 
     @Override
