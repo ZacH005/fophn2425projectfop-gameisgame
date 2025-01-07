@@ -106,10 +106,8 @@ public class GameScreen implements Screen {
         hud=new HUD(game.getSpriteBatch(),game,player.getMaxHealth());
 
         this.enemy=new Enemy(200,250,player,hud);
-        mapPowerups = new ArrayList<>();
-        mapPowerups.add(new SpeedUp(4*tileSize, 3*tileSize));
-        mapPowerups.add(new HeartUp(8*tileSize, 3*tileSize));
-        mapPowerups.add(new Key(6*tileSize, 3*tileSize));
+
+        this.mapPowerups = mapManager.getPowerups();
     }
 //    public void completeLevel(){
 //        //updates the index of the map being played
@@ -214,7 +212,7 @@ public class GameScreen implements Screen {
                 Vector2 position = powerup.getPosition();
                 game.getSpriteBatch().draw(powerup.getTexture(), position.x, position.y);
 
-                if (powerup.checkPickUp(player) && player.getPowerUps().size()<3)   {
+                if (powerup.checkPickUp(player))   {
                     player.getPowerUps().add(powerup.pickUp());
                     powerup.applyEffect(player);
                     iterator.remove();

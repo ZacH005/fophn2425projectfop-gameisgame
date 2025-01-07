@@ -8,11 +8,15 @@
     ],
     "fileStates": {
         "CaveMap.tmx": {
+            "expandedObjectLayers": [
+                10,
+                9
+            ],
             "scale": 1.83,
-            "selectedLayer": 6,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 158.74316939890707,
-                "y": 178.41530054644807
+                "x": 153.82513661202182,
+                "y": 199.72677595628414
             }
         },
         "Caves-Tileset.tsx": {
@@ -36,8 +40,11 @@
             "scaleInEditor": 1
         },
         "dwarfMines.tmx": {
+            "expandedObjectLayers": [
+                6
+            ],
             "scale": 1.4156,
-            "selectedLayer": 2,
+            "selectedLayer": 3,
             "viewCenter": {
                 "x": 67.46256004521052,
                 "y": 499.0816614862956
@@ -48,15 +55,18 @@
                 5
             ],
             "scale": 1.84,
-            "selectedLayer": 4,
+            "selectedLayer": 5,
             "viewCenter": {
                 "x": 175.27173913043478,
                 "y": 172.55434782608694
             }
         },
         "newCaveMap2.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
             "scale": 2.30671875,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 160.18424439477073,
                 "y": 160.18424439477073
