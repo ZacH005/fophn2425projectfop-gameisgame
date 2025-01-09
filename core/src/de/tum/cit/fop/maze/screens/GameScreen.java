@@ -344,8 +344,8 @@ public class GameScreen implements Screen {
             player.move(Player.Direction.DOWN);
             player.setCurrentAnimation(game.getCharacterDownAnimation());
         } else {
-            player.stop();
             player.setCurrentAnimation(game.getCharacterIdleAnimation());
+            player.stop();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {

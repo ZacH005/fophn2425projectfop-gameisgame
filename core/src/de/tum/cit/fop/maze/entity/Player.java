@@ -104,7 +104,7 @@ public class Player implements Entity, Serializable {
         this.armor = armor;
         this.money = money;
         this.powerups = new ArrayList<>();
-        this.collider = new Rectangle(position.x-8, position.y-8, width, height);
+        this.collider = new Rectangle(position.x-tileSize/2, position.y-tileSize/2, width, height);
         this.maxHealth = 7;
         this.hasEquipped = new ArrayList<>();
 
@@ -152,6 +152,8 @@ public class Player implements Entity, Serializable {
         updateFlickerEffect(delta);
 
         footstepTimer += delta; // Update the timer
+
+        animationTime += delta;
 
         if (isMoving) {
             float newX = position.x + velocity.x * speed * delta;
@@ -205,16 +207,16 @@ public class Player implements Entity, Serializable {
 //                startFlickering(2f);
 //            }
 
-            animationTime += delta;
+//            animationTime += delta;
         } else {
-            animationTime = 0;
+//            animationTime = 0;
         }
     }
 
 
 
     public void render(SpriteBatch batch) {
-        System.out.println(health);
+//        System.out.println(health);
         if (currentAnimation != null) {
             if (isFlickering) {
                 batch.setColor(1,1,1,flickerAlpha);
@@ -222,7 +224,7 @@ public class Player implements Entity, Serializable {
                 batch.setColor(1,1,1,1);
             }
             TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
-            batch.draw(frame, position.x-(width/2), position.y-(height/2), width, height);
+            batch.draw(frame, position.x-(width/2)-2.5f, position.y-(height/2), width*1.333f, height*1.333f);
             batch.setColor(1, 1, 1, 1);
         }
 
@@ -301,6 +303,10 @@ public class Player implements Entity, Serializable {
 
     public List<Item> getHasEquipped() {
         return hasEquipped;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
     }
 
     /// Entity's methods

@@ -14,10 +14,10 @@
                 10
             ],
             "scale": 1.83,
-            "selectedLayer": 11,
+            "selectedLayer": 6,
             "viewCenter": {
                 "x": 145.90163934426226,
-                "y": 239.0710382513661
+                "y": 198.08743169398906
             }
         },
         "Caves-Tileset.tsx": {
@@ -60,10 +60,11 @@
         },
         "newCaveMap.tmx": {
             "expandedObjectLayers": [
-                5
+                5,
+                9
             ],
             "scale": 1.56,
-            "selectedLayer": 3,
+            "selectedLayer": 4,
             "viewCenter": {
                 "x": 183.97435897435898,
                 "y": 194.55128205128204
@@ -71,13 +72,14 @@
         },
         "newCaveMap2.tmx": {
             "expandedObjectLayers": [
-                5
+                5,
+                9
             ],
-            "scale": 2.30671875,
-            "selectedLayer": 5,
+            "scale": 1.5832,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 160.40100250626568,
-                "y": 160.18424439477073
+                "x": 141.48559878726633,
+                "y": 206.2278928751895
             }
         },
         "newLand.tsx": {

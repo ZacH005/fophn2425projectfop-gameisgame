@@ -288,26 +288,85 @@ public class ScreenManager extends Game {
         this.setScreen(new GameScreen(this, "assets/TiledMaps/" + levelName + ".tmx")); // Change to a GameScreen that uses the loaded map
     }
 
+//    private void loadCharacterAnimation() {
+//        Texture walkSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/walk.png"));
+//
+//        int frameWidth = 16, frameHeight = 16, walkAnimationFrames = 8, y = 32, idleAnimationFrames = 4;
+//
+//        for (int i = 0; i <= 2; i++)    {
+//            // libGDX internal Array instead of ArrayList because of performance
+//            Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
+//
+//            // Add all frames to the animation
+//            int offset = 32;
+//
+//            for (int col = 0; col < walkAnimationFrames; col++) {
+//                walkFrames.add(new TextureRegion(walkSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
+//            }
+//            switch (y)  {
+//                case 112:
+//                    characterDownAnimation = new Animation<>(0.05f, walkFrames);
+//                    break;
+//                case 32:
+//                    characterRightAnimation = new Animation<>(0.05f, walkFrames);
+//                    Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
+//                    for (TextureRegion t : walkFrames)  {
+//                        TextureRegion flippedFrame = new TextureRegion(t);
+//                        flippedFrame.flip(true, false);
+//                        leftWalkFrames.add(flippedFrame);
+//                    }
+//                    characterLeftAnimation = new Animation<>(0.05f, leftWalkFrames);
+//                    break;
+//                case 192:
+//
+//                    characterUpAnimation = new Animation<>(0.05f, walkFrames);
+//                    break;
+//            }
+//            y += frameHeight + 64;
+//        }
+//
+//        y=32;
+//        Texture idleSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/idle.png"));
+//
+//        for (int i = 0; i <= 2; i++)    {
+//            Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
+//
+//            int offset = 32;
+//
+//            for (int col = 0; col < idleAnimationFrames; col++) {
+//                idleFrames.add(new TextureRegion(idleSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
+//            }
+//            switch (y)  {
+//                case 32:
+//                    characterIdleAnimation = new Animation<>(0.1f, idleFrames);
+//                    break;
+//            }
+//            y += frameHeight + 64;
+//        }
+//    }
+
+
     private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/walk.png"));
+        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/2944.png"));
 
-        int frameWidth = 16, frameHeight = 16, walkAnimationFrames = 8, y = 32, idleAnimationFrames = 4;
+        int frameWidth = 64, frameHeight = 64, walkAnimationFrames = 9, idleAnimationFrames = 2, y = 0;
 
-        for (int i = 0; i <= 2; i++)    {
+        for (int i = 0; i <= 46; i++)    {
             // libGDX internal Array instead of ArrayList because of performance
             Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
-
-            // Add all frames to the animation
-            int offset = 32;
+            Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
 
             for (int col = 0; col < walkAnimationFrames; col++) {
-                walkFrames.add(new TextureRegion(walkSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
+                walkFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
+            }
+            for (int col = 0; col < idleAnimationFrames; col++) {
+                idleFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
             }
             switch (y)  {
-                case 112:
+                case 640:
                     characterDownAnimation = new Animation<>(0.05f, walkFrames);
                     break;
-                case 32:
+                case 704:
                     characterRightAnimation = new Animation<>(0.05f, walkFrames);
                     Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
                     for (TextureRegion t : walkFrames)  {
@@ -317,31 +376,14 @@ public class ScreenManager extends Game {
                     }
                     characterLeftAnimation = new Animation<>(0.05f, leftWalkFrames);
                     break;
-                case 192:
+                case 512:
 
                     characterUpAnimation = new Animation<>(0.05f, walkFrames);
                     break;
+                case 1536:
+                    characterIdleAnimation = new Animation<>(0.25f, idleFrames);
             }
-            y += frameHeight + 64;
-        }
-
-        y=32;
-        Texture idleSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/idle.png"));
-
-        for (int i = 0; i <= 2; i++)    {
-            Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
-
-            int offset = 32;
-
-            for (int col = 0; col < idleAnimationFrames; col++) {
-                idleFrames.add(new TextureRegion(idleSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
-            }
-            switch (y)  {
-                case 32:
-                    characterIdleAnimation = new Animation<>(0.1f, idleFrames);
-                    break;
-            }
-            y += frameHeight + 64;
+            y += frameHeight;
         }
     }
 
