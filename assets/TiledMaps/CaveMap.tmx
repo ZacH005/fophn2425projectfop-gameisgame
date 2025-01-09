@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="22">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="24">
  <tileset firstgid="1" source="cavesTileset.tsx"/>
+ <tileset firstgid="141" source="dwarvenMines.tsx"/>
  <layer id="1" name="Ground" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,111,116,127,136,84,114,125,83,107,53,114,128,0,0,0,0,0,0,0,0,0,
@@ -170,30 +171,29 @@
    </properties>
    <point/>
   </object>
-  <object id="17" x="280" y="192">
+  <object id="17" template="speedUpTemplate.tx" x="280" y="192"/>
+  <object id="18" template="heartUpTemplate.tx" x="264" y="288"/>
+  <object id="20" template="keyTemplate.tx" x="213.333" y="240.667"/>
+ </objectgroup>
+ <objectgroup id="12" name="DoorObjects"/>
+ <objectgroup id="13" name="EventObjects">
+  <object id="22" x="44" y="232">
    <properties>
-    <property name="type" value="SpeedUp"/>
+    <property name="type" value="Start"/>
    </properties>
    <point/>
   </object>
-  <object id="18" x="264" y="288">
+  <object id="23" x="228" y="40" width="8" height="8">
    <properties>
-    <property name="type" value="HeartUp"/>
+    <property name="type" value="Finish"/>
    </properties>
-   <point/>
-  </object>
-  <object id="20" x="213.333" y="240.667">
-   <properties>
-    <property name="type" value="Key"/>
-   </properties>
-   <point/>
   </object>
  </objectgroup>
  <layer id="7" name="Decor" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,95,0,0,0,139,0,0,0,0,95,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,1,0,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,1,0,170,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,47,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,19,25,24,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

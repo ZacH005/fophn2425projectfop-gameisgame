@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -95,9 +96,10 @@ public class Player implements Entity, Serializable {
         /// sound manager
         this.soundManager = soundManager;
         soundManager.loadSound("hurt_sfx","music/hitHurt.wav");
+        soundManager.loadSound("openDoor_sfx", "music/unlockBigDoor.mp3");
         ///Entities variables
         this.position = new Vector2(x, y);
-        this.resetpos = new Vector2(50, 50);
+        this.resetpos = new Vector2(25, 25);
         this.health = health;
         this.armor = armor;
         this.money = money;
@@ -144,6 +146,8 @@ public class Player implements Entity, Serializable {
         this.currentAnimation = animation;
     }
 
+    boolean trapped = false;
+
     public void update(float delta, CollisionManager colManager) {
         updateFlickerEffect(delta);
 
@@ -154,8 +158,21 @@ public class Player implements Entity, Serializable {
             float newY = position.y + velocity.y * speed * delta;
             Rectangle newPos = new Rectangle(newX-7, newY-7, width-2, height-2);
 
-            if (!colManager.checkCollision(newPos)) {
-                lastValidPosition.set(position.x, position.y);
+            //door check
+            Door door = colManager.checkDoorCollision(newPos);
+            if (door != null && keys > 0)    {
+                colManager.openDoor(door);
+                soundManager.playSound("openDoor_sfx");
+                door.setCurrentTexture(door.getOpenTexture());
+                keys -= 1;
+            }
+
+            if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")) {
+                colManager.setWonLevel(true);
+                System.out.println(colManager.isWonLevel());
+            }
+
+            if (colManager.checkMapCollision(newPos) == null) {
                 position.x = newX;
                 position.y = newY;
                 collider.x = newX - 8;
@@ -173,7 +190,20 @@ public class Player implements Entity, Serializable {
                     soundManager.playSound("footstep_sfx");
                     footstepTimer = 0f;
                 }
+            } else if (colManager.checkMapCollision(newPos).equals("Trap"))   {
+                    respawn();
+                    takeDamage();
+                    startFlickering(2f);
             }
+
+//                System.out.println(colManager.checkMapCollision(newPos));
+
+//            } else if (colManager.checkListCollision(colManager.getTrapObjects(), collider) && !trapped)   {
+//                trapped = true;
+//                respawn();
+//                takeDamage();
+//                startFlickering(2f);
+//            }
 
             animationTime += delta;
         } else {
@@ -197,7 +227,8 @@ public class Player implements Entity, Serializable {
 
     }
     public void respawn(){
-        setPosition(new Vector2(50,50));
+        setPosition(new Vector2(30,30));
+        trapped = false;
     }
 
     public void move(Direction direction) {
@@ -284,7 +315,6 @@ public class Player implements Entity, Serializable {
         health -= 1;
         System.out.println(health);
         soundManager.playSound("hurt_sfx");
-
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -94,13 +95,22 @@ public class GameScreen implements Screen {
         tiledMap = new TmxMapLoader().load(mapPath);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.mapManager = new MapManager(tiledMap);
-        this.colManager = new CollisionManager(mapManager.getCollisionObjects());
+        this.colManager = new CollisionManager(mapManager.getCollisionObjects(), mapManager.getDoorObjects(), mapManager.getEventObjects());
         isGameOver = false;
 
         //THIS IS ALL PLAYER THINGS:
-        //need to make it so when the map loads, it chooses the specific location of the starting block
+        Optional<RectangleMapObject> startObject = mapManager.getEventObjects().stream()
+                .filter(recObj -> "Start".equals(recObj.getProperties().get("type")))
+                .findFirst();
+
         float startPlayerX = (2 * tileSize) + tileSize / 2;
         float startPlayerY = (2 * tileSize);
+
+        if (startObject.isPresent()) {
+            RectangleMapObject start = startObject.get();
+            startPlayerX = (float) start.getProperties().get("x");
+            startPlayerY = (float) start.getProperties().get("y");
+        }
 
         //sound stuff.
         this.soundManager = game.getSoundManager();
@@ -174,28 +184,13 @@ public class GameScreen implements Screen {
             }
 
             /// WINNING
-            if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-                // when a level is finished
-                // we first add it to the completed levels in the user data
-                // the map path is of form TiledMaps/mapName
-                // so we need to strip it just to the mapName
-                String mapName = mapPath.substring(mapPath.lastIndexOf('/') + 1);
-                if (!game.getUser().getCompletedLevels().contains(mapName)) {
-                    game.getUser().getCompletedLevels().add(mapName);
-                    game.getUser().saveUserData("user_data.ser");
-                    player.saveState("playerstate.txt");
-                }
-                //now when the goToGame is called, we make sure it does not go to a finished map
-                // we already did that, so we can call goToGame in the ScreenManager
-                // and it won't load an level that's added to the completed levels
-                // we debug by prinitng which level we complete by pressing X
-                // and which levels are we loading
-                game.setScreen(new VictoryScreen(game));
+            if (Gdx.input.isKeyJustPressed(Input.Keys.X) || colManager.isWonLevel()) {
+                winLevel();
             }
             //health trigger
-            if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-                player.setHealth(player.getHealth() - 1);
-            }
+//            if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+//                player.setHealth(player.getHealth() - 1);
+//            }
             if (player.getHealth() == 0) {
                 soundManager.playSound("losing sound");
                 isGameOver = true;
@@ -211,6 +206,8 @@ public class GameScreen implements Screen {
             handleInput();
             // updating characters
             player.update(delta, colManager);
+//            if (colManager.checkListCollision(mapManager.getTrapObjects(), player.collider))
+//                player.takeDamage();
             enemy.update(delta);
             hud.updateHUD();
         }
@@ -230,7 +227,7 @@ public class GameScreen implements Screen {
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
-        System.out.println(player.getKeys());
+//        System.out.println(player.getKeys());
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -259,7 +256,6 @@ public class GameScreen implements Screen {
 //        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
 //        shapeRenderer.end();
 
-
         //loading powerups on map
         if (!mapPowerups.isEmpty()) {
             Iterator<Powerup> iterator = mapPowerups.iterator();
@@ -276,6 +272,9 @@ public class GameScreen implements Screen {
                 }
             }
         }
+
+        //draws doors and sets their textures
+        mapManager.getDoorObjects().forEach(door -> game.getSpriteBatch().draw(door.getCurrentTexture(), door.getColliderObject().getRectangle().x, door.getColliderObject().getRectangle().y));
 
 
 // Render the player and enemy
@@ -298,6 +297,26 @@ public class GameScreen implements Screen {
 //        mapRenderer.render(new int[]{1, 2});
 
         //playing music
+    }
+
+    private void winLevel() {
+        // when a level is finished
+        // we first add it to the completed levels in the user data
+        // the map path is of form TiledMaps/mapName
+        // so we need to strip it just to the mapName
+        String mapName = mapPath.substring(mapPath.lastIndexOf('/') + 1);
+        if (!game.getUser().getCompletedLevels().contains(mapName)) {
+            game.getUser().getCompletedLevels().add(mapName);
+            game.getUser().saveUserData("user_data.ser");
+            player.saveState("playerstate.txt");
+        }
+        //now when the goToGame is called, we make sure it does not go to a finished map
+        // we already did that, so we can call goToGame in the ScreenManager
+        // and it won't load an level that's added to the completed levels
+        // we debug by prinitng which level we complete by pressing X
+        // and which levels are we loading
+        game.setScreen(new VictoryScreen(game));
+        colManager.setWonLevel(false);
     }
 
 
