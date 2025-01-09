@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface Entity {
     void heal();
-    void takeDamage();
+    void takeDamage(float amount);
 
-    int getHealth();
-    void setHealth(int health);
+    float getHealth();
+    void setHealth(float health);
 
     Vector2 getPosition();
     void setPosition(Vector2 position);

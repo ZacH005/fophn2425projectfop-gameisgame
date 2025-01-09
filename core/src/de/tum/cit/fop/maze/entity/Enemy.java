@@ -16,6 +16,7 @@ import java.util.Map;
 
 
 public class Enemy implements Entity {
+    public boolean isDead = false;
     public Vector2 position;
     private Texture texture;
     private Animation animation;
@@ -37,6 +38,7 @@ public class Enemy implements Entity {
     //for some reason if I just create a Vector2 initial position it does not work dk why
     private int initialposx;
     private int initialposy;
+    private int health;
 
     public Enemy(int x, int y,Player player,HUD hud,SoundManager soundManager) {
         this.player = player;
@@ -48,7 +50,8 @@ public class Enemy implements Entity {
          scanrangewidth = 100;
          scanrangeheight = 100;
         scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
-        damageCollider = new Rectangle(position.x+6,position.y+3,2,2);
+        damageCollider = new Rectangle(position.x-2,position.y-5,20,20);
+        health = 3;
 //        chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
 //        chaseMusic.setLooping(true);
         this.soundManager=soundManager;
@@ -72,9 +75,11 @@ public class Enemy implements Entity {
     }
 
     public void update(float delta){
-        animation.update(delta);
-        checkfollows();
-        checkDamaging(delta);
+        if(!isDead){
+            animation.update(delta);
+            checkfollows();
+            checkDamaging(delta);
+        }
     }
     public TextureRegion getEnemy(){
         return animation.getFrame();
@@ -86,12 +91,12 @@ public class Enemy implements Entity {
     }
 
     @Override
-    public void takeDamage() {
-
+    public void takeDamage(float amount) {
     }
 
+
     @Override
-    public int getHealth() {
+    public float getHealth() {
         return 0;
     }
 
@@ -105,7 +110,7 @@ public class Enemy implements Entity {
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(float health) {
 
     }
 
@@ -119,19 +124,14 @@ public class Enemy implements Entity {
         this.position.x=position.x;
         this.position.y=position.y;
         scanRange.setPosition(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4);
-        damageCollider.setPosition(position.x+6,position.y+3);
+        damageCollider.setPosition(position.x-2,position.y-5);
     }
     private void checkDamaging(float delta) {
         if (damageCollider.overlaps(player.collider)) {
             // only process if cooldown has passed
             if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
                 // proceed with damage logic
-                player.takeDamage();
-                player.respawn();// Reset player position
-                setPosition(new Vector2(initialposx,initialposy));
-                System.out.println("restarted");
-                player.startFlickering(cooldownTime);
-                hud.updateHearts(player.getHealth());
+                attack();
                 // update last damage time
                 lastDamageTime = TimeUtils.nanoTime();
             }
@@ -167,6 +167,12 @@ public class Enemy implements Entity {
     public void setMoney(int money) {
 
     }
+    public void takedamage(){
+        health-=1;
+        if(health<=0){
+            isDead=true;
+        }
+    }
 
     @Override
     public void saveState(String filename) {
@@ -199,7 +205,7 @@ public class Enemy implements Entity {
 
         if (following) {
             // if close enough or escaped, stop moving
-            if (distance > 100.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
+            if (distance > 100.0f||distance < 10.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
                 following = false;
 //              chaseMusic.stop();
                 soundManager.onGameStateChange(mainState);
@@ -219,8 +225,19 @@ public class Enemy implements Entity {
             this.scanRange.setX(this.position.x - scanRange.getWidth()/2f+8);
             this.scanRange.setY(this.position.y - scanRange.getHeight()/2f+4);
 
-            this.damageCollider.setX(this.position.x +6);
-            this.damageCollider.setY(this.position.y + 3);
+            this.damageCollider.setX(this.position.x - 2);
+            this.damageCollider.setY(this.position.y - 5);
         }
+    }
+    public void attack(){
+        player.takeDamage(0.25f);
+        System.out.println("restarted");
+        hud.updateHearts(player.getHealth());
+        if(player.getHealth()%1==0){
+            player.respawn();
+            setPosition(new Vector2(initialposx,initialposy));
+            player.startFlickering(cooldownTime);
+        }
+
     }
 }

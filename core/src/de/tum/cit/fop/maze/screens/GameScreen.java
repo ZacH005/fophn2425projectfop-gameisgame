@@ -126,7 +126,7 @@ public class GameScreen implements Screen {
         soundManager.onGameStateChange(mainState);
 
         //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, tiledMap, 6, 100, new ArrayList<String>(), 0, soundManager);
+        player = new Player(startPlayerX, startPlayerY, tiledMap, 3, 100, new ArrayList<String>(), 0, soundManager);
         player.setCurrentAnimation(game.getCharacterIdleAnimation());
 
         hud = new HUD(game.getSpriteBatch(), game, player);
@@ -232,7 +232,7 @@ public class GameScreen implements Screen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(1, 0, 0, 1); // Red color
-        shapeRenderer.rect(enemy.scanRange.getX(), enemy.scanRange.getY(), enemy.scanRange.width, enemy.scanRange.height);
+        shapeRenderer.rect(enemy.damageCollider.getX(), enemy.damageCollider.getY(), enemy.damageCollider.width, enemy.damageCollider.height);
         shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
         shapeRenderer.end();
 
@@ -279,11 +279,14 @@ public class GameScreen implements Screen {
 
 // Render the player and enemy
         player.render(game.getSpriteBatch());
-        game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
+        if(!enemy.isDead){
+            game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
+        }
+
 
 // Apply the dark circle overlay
         game.getSpriteBatch().setColor(1, 1, 1, 0.9f);
-        game.getSpriteBatch().draw(darkCircleoverlay, player.getPosition().x - darkCircleoverlay.getWidth() / 4, player.getPosition().y - darkCircleoverlay.getHeight() / 4, 960, 540);
+//        game.getSpriteBatch().draw(darkCircleoverlay, player.getPosition().x - darkCircleoverlay.getWidth() / 4, player.getPosition().y - darkCircleoverlay.getHeight() / 4, 960, 540);
         game.getSpriteBatch().setColor(1, 1, 1, 1);
 
         game.getSpriteBatch().end();
@@ -323,6 +326,9 @@ public class GameScreen implements Screen {
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = true;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)&&(player.getCollider().overlaps(enemy.damageCollider))){
+            enemy.takedamage();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.move(Player.Direction.LEFT);

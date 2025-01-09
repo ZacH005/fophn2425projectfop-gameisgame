@@ -70,7 +70,7 @@ public class EntityUtils {
 
             // Update the entity's state based on the loaded data
             if (loadedData != null) {
-                entity.setHealth((int) loadedData.get("health"));
+                entity.setHealth((float) loadedData.get("health"));
                 //commented out because after gameover it would respawn at level
                 //entity.setPosition((Vector2) loadedData.get("position"));
                 entity.setArmor((int) loadedData.get("armor"));

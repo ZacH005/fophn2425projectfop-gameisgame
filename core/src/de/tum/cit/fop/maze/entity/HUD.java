@@ -1,15 +1,19 @@
 package de.tum.cit.fop.maze.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
@@ -19,13 +23,13 @@ public class HUD {
     private Viewport viewport;
 
     private Integer keysno;
-    private float timeCount;
+    private float elapsedTime;
     private Integer score;
 
     Label keysLabel;
     Label scoreLabel1;
     Label timeLabel;
-    Label levelLabel;
+    Label timecounterLabel;
     Label worldLabel;
     Label scoreLabel;
 
@@ -39,6 +43,8 @@ public class HUD {
 
     private int currentHeartIndex;// Track the last heart's index to modify it
     private Player player;
+    private Array<TextureRegion> frames;
+    Label.LabelStyle labelStyle;
     /**
      * Constructor for HUD.
      * Initializes score, timer, and heart system.
@@ -47,8 +53,16 @@ public class HUD {
      */
     public HUD(SpriteBatch batch, ScreenManager game, Player player) {
         keysno = player.getKeys();
-        timeCount = 0;
+        elapsedTime = 0;
         score = 0;
+
+        TextureRegion region= new TextureRegion(new Texture("HUD heart.png"));
+
+        frames = new Array<TextureRegion>();
+        int frameWidth = region.getRegionWidth() / 5;
+        for(int i = 0; i < 5; i++){
+            frames.add(new TextureRegion(region, i * frameWidth, 0, frameWidth, region.getRegionHeight()));
+        }
 
         this.player = player;
 
@@ -80,50 +94,43 @@ public class HUD {
 
         // Labels setup code...
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle = new Label.LabelStyle();
         labelStyle.font = game.getSkin().getFont("font");  // Use the "font" from the skin
         
         keysLabel = new Label(String.format("%03d", keysno), labelStyle);
 
-        scoreLabel1 = new Label(String.format("%06d", score), labelStyle);
 
         timeLabel = new Label("TIME", labelStyle);
 
-        levelLabel = new Label("LEVEL 1", labelStyle);
+        timecounterLabel = new Label("00:00", labelStyle);
 
         worldLabel = new Label("KEYS", labelStyle);
 
-        scoreLabel = new Label("SCORE", labelStyle);
+        heartTable=new Table();
 
+        table.add(heartTable).expandX();
+        
+        Table table1=new Table();
+        Table table2 =new Table();
         // Add labels to the table
-        table.add(scoreLabel).expandX().padTop(10).padLeft(30);
-        table.add(worldLabel).expandX().padTop(10);
-        table.add(timeLabel).expandX().padTop(10);
-        table.row();
-        table.add(scoreLabel1).expandX().padLeft(30);
-        table.add(keysLabel).expandX();
-        table.add(levelLabel).expandX();
+        table1.add(worldLabel).expandX();
+        table1.row();
+        table1.add(keysLabel).expandX();
+        table.add(table1).expandX();
+        table2.add(timeLabel).expandX();
+        table2.row();
+        table2.add(timecounterLabel).expandX();
+        table.add(table2).expandX();
 
+
+        table.padTop(10);
         // Add the table to the stage
         stage.addActor(table);
 
         // Create table for hearts
-        heartTable = new Table();
-        heartTable.top().left(); // Align to top-left corner
-        heartTable.setFillParent(true);
 
-        // Add full hearts initially
-        for (int i = 0; i < maxHearts; i++) {
-            Image heart = new Image(fullHeartTexture); // Full hearts initially
-            heart.setName("heart_" + i); // Assign unique names
-            heartTable.add(heart).size(32, 32).pad(5);
-            if ((i+1)%5==0){
-               heartTable.row();
-            }
-        }
 
         // Add heart table to the stage
-        stage.addActor(heartTable);
 
         // Explicitly set the input processor
         com.badlogic.gdx.Gdx.input.setInputProcessor(stage); // Make sure stage receives input
@@ -142,23 +149,43 @@ public class HUD {
     }
     public void updateHUD(){
         keysLabel.setText(String.format("%03d", player.getKeys()));
+
+        // Update elapsed time every frame
+        elapsedTime += Gdx.graphics.getDeltaTime(); // deltaTime gives you the time since the last frame
+
+        // Calculate minutes and seconds
+        int minutes = (int) (elapsedTime / 60); // Get minutes
+        int seconds = (int) (elapsedTime % 60); // Get seconds
+
+        // Format the time as "MM:SS"
+        String formattedTime = String.format("%02d:%02d", minutes, seconds);
+
+        // Update the label text
+        timecounterLabel.setText(formattedTime);
+
+        // Draw everything
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
     }
     // Method to progressively change the last heart from full to half, then remove it
-    public void updateHearts(int currentHealth) {
+    public void updateHearts(float currentHealth) {
 
         // Clear the heart table
         heartTable.clear();
 
         // Recreate hearts based on current health
-        for (int i = 0; i < maxHearts; i++) {
-            if (i < currentHealth) {
-                // Full heart for each health point
-                heartTable.add(new Image(fullHeartTexture)).size(32, 32).pad(5);
-            }
-            if ((i + 1) % 5 == 0) {
-                heartTable.row(); // Wrap to the next row
-            }
+        float remainder = currentHealth%1;
+        int x = (int)(remainder/0.25);
+        Image heart;
+        if(x==0){
+            heart = new Image(frames.get(0));
         }
+        else{
+            heart = new Image(frames.get(4-x));
+        }
+        heart.setName("heart_"); // Assign unique names
+        heartTable.add(heart).size(54, 42);
+        scoreLabel1 = new Label(String.format("x%01d",(int) Math.ceil(player.getHealth())), labelStyle);
+        heartTable.add(scoreLabel1);
     }
 
 

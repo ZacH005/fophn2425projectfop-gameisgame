@@ -53,7 +53,7 @@ public class Player implements Entity, Serializable {
     ///Entitiy's variables
     private Vector2 position;
     public final Vector2 resetpos;
-    private int health;
+    private float health;
     private int armor;
     private List<Powerup> powerups;
     private int money;
@@ -78,7 +78,7 @@ public class Player implements Entity, Serializable {
         UP, DOWN, LEFT, RIGHT
     }
 
-    public Player(float x, float y, TiledMap tiledMap, int health, int armor, List<String> powerups, int money, SoundManager soundManager) {
+    public Player(float x, float y, TiledMap tiledMap, float health, int armor, List<String> powerups, int money, SoundManager soundManager) {
         this.tileSize = 16;
         this.velocity = new Vector2(0, 0);
         this.tiledMap = tiledMap;
@@ -192,7 +192,7 @@ public class Player implements Entity, Serializable {
                 }
             } else if (colManager.checkMapCollision(newPos).equals("Trap"))   {
                     respawn();
-                    takeDamage();
+                    takeDamage(0.25f);
                     startFlickering(2f);
             }
 
@@ -214,6 +214,7 @@ public class Player implements Entity, Serializable {
 
 
     public void render(SpriteBatch batch) {
+        System.out.println(health);
         if (currentAnimation != null) {
             if (isFlickering) {
                 batch.setColor(1,1,1,flickerAlpha);
@@ -311,19 +312,19 @@ public class Player implements Entity, Serializable {
     }
 
     @Override
-    public void takeDamage() {
-        health -= 1;
+    public void takeDamage(float x) {
+        health -= x;
         System.out.println(health);
         soundManager.playSound("hurt_sfx");
     }
 
     @Override
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
 
     @Override
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
 
