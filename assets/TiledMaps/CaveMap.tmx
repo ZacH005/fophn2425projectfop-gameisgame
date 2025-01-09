@@ -147,12 +147,36 @@
 </data>
  </layer>
  <objectgroup id="9" name="CollisionObjects">
-  <object id="1" x="0" y="144" width="16" height="176"/>
-  <object id="4" x="16" y="304" width="320" height="16"/>
-  <object id="5" x="320" y="64" width="16" height="240"/>
-  <object id="6" x="320" y="0" width="16" height="64"/>
-  <object id="7" x="144" y="16" width="176"/>
-  <object id="9" x="0" y="16" width="160" height="144"/>
+  <object id="1" x="0" y="144" width="16" height="176">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
+  <object id="4" x="16" y="304" width="320" height="16">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
+  <object id="5" x="320" y="64" width="16" height="240">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
+  <object id="6" x="320" y="0" width="16" height="64">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
+  <object id="7" x="144" y="0.153005" width="176" height="15.847">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
+  <object id="9" x="0" y="16" width="160" height="144">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="10" name="PowerUpObjects">
   <properties>
