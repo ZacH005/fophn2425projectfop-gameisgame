@@ -36,11 +36,11 @@ public class Enemy implements Entity {
     int scanrangewidth;
     int scanrangeheight;
     //for some reason if I just create a Vector2 initial position it does not work dk why
-    private int initialposx;
-    private int initialposy;
+    private float initialposx;
+    private float initialposy;
     private int health;
 
-    public Enemy(int x, int y,Player player,HUD hud,SoundManager soundManager) {
+    public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager) {
         this.player = player;
         position = new Vector2(x,y);
         initialposx = x;

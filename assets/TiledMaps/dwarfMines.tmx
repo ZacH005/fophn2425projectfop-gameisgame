@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="74">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="92">
  <tileset firstgid="1" source="dwarvenMines.tsx"/>
  <tileset firstgid="97" source="doorsAsset.tsx"/>
  <layer id="7" name="test" width="40" height="40">
@@ -266,6 +266,26 @@
   <object id="64" x="224" y="496">
    <properties>
     <property name="type" value="SpeedUp"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="76" x="110.266" y="590.813">
+   <properties>
+    <property name="type" value="Key"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="15" name="EnemyObjects">
+  <object id="74" x="216" y="544">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="75" x="209.938" y="571.071">
+   <properties>
+    <property name="type" value="Slime"/>
    </properties>
    <point/>
   </object>

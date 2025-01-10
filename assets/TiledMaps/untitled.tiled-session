@@ -11,12 +11,13 @@
         "CaveMap.tmx": {
             "expandedObjectLayers": [
                 9,
-                10
+                10,
+                13
             ],
             "scale": 1.83,
-            "selectedLayer": 6,
+            "selectedLayer": 7,
             "viewCenter": {
-                "x": 145.90163934426226,
+                "x": 156.83060109289613,
                 "y": 198.08743169398906
             }
         },
@@ -42,16 +43,13 @@
         },
         "dwarfMines.tmx": {
             "expandedObjectLayers": [
-                14,
-                6,
-                9,
-                10
+                15
             ],
-            "scale": 4.06,
-            "selectedLayer": 2,
+            "scale": 3.5526,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 276.35467980295573,
-                "y": 572.536945812808
+                "x": 135.67528007656364,
+                "y": 580.5607160952542
             }
         },
         "dwarvenMines.tsx": {
@@ -64,9 +62,9 @@
                 9
             ],
             "scale": 1.56,
-            "selectedLayer": 4,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 183.97435897435898,
+                "x": 196.7948717948718,
                 "y": 194.55128205128204
             }
         },
@@ -76,7 +74,7 @@
                 9
             ],
             "scale": 1.5832,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 141.48559878726633,
                 "y": 206.2278928751895

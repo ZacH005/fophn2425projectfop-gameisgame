@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.fop.maze.ScreenManager;
@@ -45,7 +46,7 @@ public class GameScreen implements Screen {
     private CollisionManager colManager;
 
     private Player player;
-    private Enemy enemy;
+//    private Enemy enemy;
     private List<Powerup> mapPowerups;
 
     private float tileSize;
@@ -66,6 +67,8 @@ public class GameScreen implements Screen {
     private SoundManager soundManager;
     private float musicVolume;
     private Map<String, Integer> mainState = new HashMap<String, Integer>();
+
+    private List<Enemy> enemies;
 
 
     public GameScreen(ScreenManager game, String mapPath) {
@@ -131,7 +134,27 @@ public class GameScreen implements Screen {
 
         hud = new HUD(game.getSpriteBatch(), game, player);
 
-        this.enemy = new Enemy(200, 250, player, hud, soundManager);
+        enemies = new ArrayList<>();
+
+        for (RectangleMapObject enemySpawn : mapManager.getEnemies())   {
+            Rectangle rectangle = enemySpawn.getRectangle();
+            Enemy enemy = null;
+
+            String type = enemySpawn.getProperties().get("type", String.class);
+//                System.out.println("Adding powerup");
+
+            if ("Slime".equals(type)) {
+                enemy = new Enemy(rectangle.x, rectangle.y, player, hud, soundManager);
+            }
+
+            if (enemy != null) {
+                enemies.add(enemy);
+            }
+        }
+
+//        this.enemy = new Enemy(200, 250, player, hud, soundManager);
+
+
 
         this.mapPowerups = mapManager.getPowerups();
 
@@ -208,7 +231,7 @@ public class GameScreen implements Screen {
             player.update(delta, colManager);
 //            if (colManager.checkListCollision(mapManager.getTrapObjects(), player.collider))
 //                player.takeDamage();
-            enemy.update(delta);
+            enemies.forEach(enemy1 -> enemy1.update(delta));
             hud.updateHUD();
         }
 
@@ -229,12 +252,12 @@ public class GameScreen implements Screen {
 
 //        System.out.println(player.getKeys());
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(1, 0, 0, 1); // Red color
-        shapeRenderer.rect(enemy.damageCollider.getX(), enemy.damageCollider.getY(), enemy.damageCollider.width, enemy.damageCollider.height);
-        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
-        shapeRenderer.end();
+//        shapeRenderer.setProjectionMatrix(camera.combined);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//        shapeRenderer.setColor(1, 0, 0, 1); // Red color
+//        shapeRenderer.rect(enemy.damageCollider.getX(), enemy.damageCollider.getY(), enemy.damageCollider.width, enemy.damageCollider.height);
+//        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
+//        shapeRenderer.end();
 
         //I don't get projectionmatrices, needed to be attached to the spritebatch
 // Set the projection matrix for the game camera
@@ -279,8 +302,10 @@ public class GameScreen implements Screen {
 
 // Render the player and enemy
         player.render(game.getSpriteBatch());
-        if(!enemy.isDead){
-            game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
+        for (Enemy enemy : enemies) {
+            if(!enemy.isDead){
+                game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
+            }
         }
 
 
@@ -327,8 +352,10 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = true;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)&&(player.getCollider().overlaps(enemy.damageCollider))){
-            enemy.takedamage();
+        for (Enemy enemy : enemies) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)&&(player.getCollider().overlaps(enemy.damageCollider))){
+                enemy.takedamage();
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.move(Player.Direction.LEFT);

@@ -12,6 +12,7 @@ import de.tum.cit.fop.maze.abilities.Key;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.abilities.SpeedUp;
 import de.tum.cit.fop.maze.entity.Door;
+import de.tum.cit.fop.maze.entity.Enemy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class MapManager {
     private List<Door> doorObjects = new ArrayList<>();
     private List<Powerup> powerups = new ArrayList<>();
     private List<RectangleMapObject> eventObjects = new ArrayList<>();
+    private List<RectangleMapObject> enemies = new ArrayList<>();
 //    private List<Rectangle> trapObjects = new ArrayList<>();
 
     public MapManager(TiledMap tiledMap) {
@@ -31,6 +33,7 @@ public class MapManager {
         loadPowerupObjects();
         loadDoorObjects();
         loadEventObjects();
+        loadEnemies();
     }
 
     private void loadCollisionObjects() {
@@ -66,6 +69,18 @@ public class MapManager {
         }
     }
 
+    private void loadEnemies()  {
+        MapObjects objects = map.getLayers().get("EnemyObjects").getObjects();
+
+        for (MapObject object : objects) {
+            if (object instanceof RectangleMapObject rectObj) {
+                enemies.add(rectObj);
+            }
+        }
+    }
+
+
+
 //    private void loadTrapObjects()  {
 //        MapObjects objects = map.getLayers().get("TrapObjects").getObjects();
 //
@@ -80,13 +95,13 @@ public class MapManager {
         MapObjects objects = map.getLayers().get("PowerUpObjects").getObjects();
 
         for (MapObject object : objects) {
-            System.out.println(object);
+//            System.out.println(object);
             if (object instanceof RectangleMapObject rectObj) {
                 Rectangle rectangle = rectObj.getRectangle();
                 Powerup powerup = null;
 
                 String type = object.getProperties().get("type", String.class);
-                System.out.println("Adding powerup");
+//                System.out.println("Adding powerup");
 
                 if ("SpeedUp".equals(type)) {
                     powerup = new SpeedUp(rectangle.x, rectangle.y);
@@ -118,6 +133,10 @@ public class MapManager {
 
     public TiledMap getMap() {
         return map;
+    }
+
+    public List<RectangleMapObject> getEnemies() {
+        return enemies;
     }
 
     public List<Door> getDoorObjects()    {

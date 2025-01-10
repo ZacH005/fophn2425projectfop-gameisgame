@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="24">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="34">
  <tileset firstgid="1" source="cavesTileset.tsx"/>
  <tileset firstgid="141" source="dwarvenMines.tsx"/>
  <layer id="1" name="Ground" width="30" height="20">
@@ -176,6 +176,68 @@
    <properties>
     <property name="type" value="Wall"/>
    </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="14" name="EnemyObjects">
+  <object id="24" x="192" y="112">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="25" x="230.055" y="161.749">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="26" x="242.623" y="107.104">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="27" x="260.656" y="207.65">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="28" x="257.377" y="157.923">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="29" x="196.175" y="201.639">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="30" x="175.956" y="238.251">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="31" x="298.907" y="220.219">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="32" x="237.705" y="238.251">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="33" x="184.699" y="251.366">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
   </object>
  </objectgroup>
  <objectgroup id="10" name="PowerUpObjects">

@@ -347,7 +347,7 @@ public class ScreenManager extends Game {
 
 
     private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/2944.png"));
+        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/TOZACHARY.png"));
 
         int frameWidth = 64, frameHeight = 64, walkAnimationFrames = 9, idleAnimationFrames = 2, y = 0;
 
@@ -380,7 +380,7 @@ public class ScreenManager extends Game {
 
                     characterUpAnimation = new Animation<>(0.05f, walkFrames);
                     break;
-                case 1536:
+                case 0:
                     characterIdleAnimation = new Animation<>(0.25f, idleFrames);
             }
             y += frameHeight;
