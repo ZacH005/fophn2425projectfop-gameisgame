@@ -130,7 +130,7 @@ public class GameScreen implements Screen {
 
         //just initializing the player
         player = new Player(startPlayerX, startPlayerY, tiledMap, 3, 100, new ArrayList<String>(), 0, soundManager);
-        player.setCurrentAnimation(game.getCharacterIdleAnimation());
+        player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
 
         hud = new HUD(game.getSpriteBatch(), game, player);
 
@@ -352,11 +352,6 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = true;
         }
-        for (Enemy enemy : enemies) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)&&(player.getCollider().overlaps(enemy.damageCollider))){
-                enemy.takedamage();
-            }
-        }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.move(Player.Direction.LEFT);
             player.setCurrentAnimation(game.getCharacterLeftAnimation());
@@ -364,14 +359,41 @@ public class GameScreen implements Screen {
 
             player.move(Player.Direction.RIGHT);
             player.setCurrentAnimation(game.getCharacterRightAnimation());
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            for (Enemy enemy : enemies) {
+                if ((player.getCollider().overlaps(enemy.damageCollider))){
+                    if((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation())||player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))){
+                        player.setAdjust(true);
+                        player.setCurrentAnimation(game.getcharacterDownAttackAnimation());
+                    } else if ((player.getCurrentAnimation().equals(game.getCharacterRightIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterRightAnimation())) {
+                        player.setCurrentAnimation(game.getCharacterRightAttackAnimation());
+                    } else if ((player.getCurrentAnimation().equals(game.getCharacterLeftIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterLeftAnimation())) {
+                        player.setCurrentAnimation(game.getCharacterLeftAttackAnimation());
+                    } else if ((player.getCurrentAnimation().equals(game.getCharacterUpIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterUpAnimation())) {
+                        player.setAdjust(true);
+                        player.setCurrentAnimation(game.getcharacterUpAttackAnimation());
+                    }
+                    player.attack(enemy);
+                }
+            }
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             player.move(Player.Direction.UP);
             player.setCurrentAnimation(game.getCharacterUpAnimation());
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             player.move(Player.Direction.DOWN);
             player.setCurrentAnimation(game.getCharacterDownAnimation());
-        } else {
-            player.setCurrentAnimation(game.getCharacterIdleAnimation());
+        } else if(!player.isAttack) {
+            if(player.getCurrentAnimation().equals(game.getCharacterDownAnimation())||player.getCurrentAnimation().equals(game.getCharacterDownAttackAnimation())) {
+                player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
+            } else if (player.getCurrentAnimation().equals(game.getCharacterRightAnimation())||player.getCurrentAnimation().equals(game.getCharacterRightAttackAnimation())) {
+                player.setCurrentAnimation(game.getCharacterRightIdleAnimation());
+            } else if (player.getCurrentAnimation().equals(game.getCharacterLeftAnimation())||player.getCurrentAnimation().equals(game.getCharacterLeftAttackAnimation())) {
+                player.setCurrentAnimation(game.getCharacterLeftIdleAnimation());
+            } else if (player.getCurrentAnimation().equals(game.getCharacterUpAnimation())||player.getCurrentAnimation().equals(game.getcharacterUpAttackAnimation())) {
+                player.setCurrentAnimation(game.getCharacterUpIdleAnimation());
+            }
             player.stop();
         }
 

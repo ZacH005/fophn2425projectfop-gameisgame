@@ -22,6 +22,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Player implements Entity, Serializable {
     @Serial
@@ -30,6 +33,7 @@ public class Player implements Entity, Serializable {
     private int currentTileX;
     private int currentTileY;
     private float footstepTimer = 0f;
+    private boolean adjust = false;
     private static final float FOOTSTEP_INTERVAL = 0.2f; // 300 ms between footsteps
 
     private Vector2 velocity;
@@ -40,6 +44,7 @@ public class Player implements Entity, Serializable {
     private float animationTime;
 
     private Direction direction;
+    public boolean isAttack=false;
 
     private float width;
     private float height;
@@ -122,6 +127,18 @@ public class Player implements Entity, Serializable {
         isFlickering = false;
         flickerAlpha = 1.0f;  // Reset alpha to normal
     }
+    public void attack(Enemy enemy){
+        isAttack=true;
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.schedule(() -> {
+            isAttack = false;
+            enemy.takedamage();
+            adjust=false;
+            System.out.println("attacked");
+            scheduler.shutdown(); // Shut down the scheduler
+        }, 400, TimeUnit.MILLISECONDS);
+    }
+
 
     public void updateFlickerEffect(float delta) {
         if (isFlickering) {
@@ -214,7 +231,6 @@ public class Player implements Entity, Serializable {
     }
 
 
-
     public void render(SpriteBatch batch) {
 //        System.out.println(health);
         if (currentAnimation != null) {
@@ -224,7 +240,12 @@ public class Player implements Entity, Serializable {
                 batch.setColor(1,1,1,1);
             }
             TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
-            batch.draw(frame, position.x-(width/2)-2.5f, position.y-(height/2), width*1.333f, height*1.333f);
+            if(adjust) {
+                batch.draw(frame, position.x - (width / 2) - 2.5f + 4f, position.y - (height / 2), width * 2.0f, height * 2.0f);
+            }else{
+                batch.draw(frame, position.x-(width/2)-2.5f, position.y-(height/2), width*2.0f, height*2.0f);
+            }
+
             batch.setColor(1, 1, 1, 1);
         }
 
@@ -232,6 +253,10 @@ public class Player implements Entity, Serializable {
     public void respawn(){
         setPosition(new Vector2(30,30));
         trapped = false;
+    }
+
+    public void setAdjust(boolean adjust) {
+        this.adjust = adjust;
     }
 
     public void move(Direction direction) {
@@ -315,6 +340,10 @@ public class Player implements Entity, Serializable {
     public void heal() {
         if (health < maxHealth)
             health += 1;
+    }
+
+    public Animation<TextureRegion> getCurrentAnimation() {
+        return currentAnimation;
     }
 
     @Override

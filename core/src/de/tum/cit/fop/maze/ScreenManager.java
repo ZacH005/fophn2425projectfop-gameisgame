@@ -47,7 +47,14 @@ public class ScreenManager extends Game {
     private Animation<TextureRegion> characterUpAnimation;
     private Animation<TextureRegion> characterRightAnimation;
     private Animation<TextureRegion> characterLeftAnimation;
-    private Animation<TextureRegion> characterIdleAnimation;
+    private Animation<TextureRegion> characterUpIdleAnimation;
+    private Animation<TextureRegion> characterDownIdleAnimation;
+    private Animation<TextureRegion> characterLeftIdleAnimation;
+    private Animation<TextureRegion> characterRightIdleAnimation;
+    private Animation<TextureRegion> characterLeftAttackAnimation;
+    private Animation<TextureRegion> characterRightAttackAnimation;
+    private Animation<TextureRegion> characterDownAttackAnimation;
+    private Animation<TextureRegion> characterUpAttackAnimation;
 
     // Music
     private Music backgroundMusic;
@@ -347,20 +354,25 @@ public class ScreenManager extends Game {
 
 
     private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/TOZACHARY.png"));
+        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/FinalAnim.png"));
 
         int frameWidth = 64, frameHeight = 64, walkAnimationFrames = 9, idleAnimationFrames = 2, y = 0;
 
-        for (int i = 0; i <= 46; i++)    {
+        for (int i = 0; i <= 50; i++)    {
             // libGDX internal Array instead of ArrayList because of performance
             Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
+            Array<TextureRegion> attackLeftFrames = new Array<>(TextureRegion.class);
+
 
             for (int col = 0; col < walkAnimationFrames; col++) {
                 walkFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
             }
             for (int col = 0; col < idleAnimationFrames; col++) {
                 idleFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
+            }
+            for (int col = 0; col < 6; col++) {
+                attackLeftFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
             }
             switch (y)  {
                 case 640:
@@ -380,14 +392,50 @@ public class ScreenManager extends Game {
 
                     characterUpAnimation = new Animation<>(0.05f, walkFrames);
                     break;
-                case 0:
-                    characterIdleAnimation = new Animation<>(0.25f, idleFrames);
+                case 1536:
+                    characterDownIdleAnimation = new Animation<>(0.25f, idleFrames);
+                    break;
+                case 1408:
+                    characterUpIdleAnimation = new Animation<>(0.25f, idleFrames);
+                    break;
+                case 1472:
+                    characterLeftIdleAnimation = new Animation<>(0.25f, idleFrames);
+                    break;
+                case 1600:
+                    characterRightIdleAnimation = new Animation<>(0.25f, idleFrames);
+                    break;
+                case 3008:
+                    characterRightAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    break;
+                case 3072:
+                    characterDownAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    break;
+                case 3136:
+                    characterLeftAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    break;
+                case 3200:
+                    characterUpAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    break;
             }
             y += frameHeight;
         }
     }
 
+    public Animation<TextureRegion> getcharacterUpAttackAnimation() {
+        return characterUpAttackAnimation;
+    }
 
+    public Animation<TextureRegion> getcharacterDownAttackAnimation() {
+        return characterDownAttackAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterRightAttackAnimation() {
+        return characterRightAttackAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterLeftAttackAnimation() {
+        return characterLeftAttackAnimation;
+    }
 
     /**
      * Cleans up resources when the game is disposed.
@@ -432,8 +480,28 @@ public class ScreenManager extends Game {
         return characterLeftAnimation;
     }
 
-    public Animation<TextureRegion> getCharacterIdleAnimation() {
-        return characterIdleAnimation;
+    public Animation<TextureRegion> getCharacterUpAttackAnimation() {
+        return characterUpAttackAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterDownAttackAnimation() {
+        return characterDownAttackAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterRightIdleAnimation() {
+        return characterRightIdleAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterLeftIdleAnimation() {
+        return characterLeftIdleAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterDownIdleAnimation() {
+        return characterDownIdleAnimation;
+    }
+
+    public Animation<TextureRegion> getCharacterUpIdleAnimation() {
+        return characterUpIdleAnimation;
     }
 
     public SpriteBatch getSpriteBatch() {
