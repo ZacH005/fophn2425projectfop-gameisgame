@@ -231,6 +231,7 @@ public class Enemy implements Entity {
     }
     public void attack(){
         player.takeDamage(0.25f);
+
         System.out.println("restarted");
         hud.updateHearts(player.getHealth());
         if(player.getHealth()%1==0){

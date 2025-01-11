@@ -109,9 +109,24 @@ public class ScreenManager extends Game {
         soundManager.loadMusicLayer("strings","music/themes/Strings.mp3");
         soundManager.loadMusicLayer("wind","music/themes/Wind.mp3");
         soundManager.loadMusicLayer("crackles","music/themes/Crackles.mp3");
-        soundManager.loadSound("click","music/UI/menu_select.ogg");
+
         soundManager.loadSound("losing sound","music/losing_sound.mp3");
-        soundManager.loadSound("footstep_sfx","music/footstep_sfx.mp3");
+
+        soundManager.loadSound("mcCollectKey_sfx","music/sfxs/mcCollectKey.mp3");
+        soundManager.loadSound("mcCollectSpeedUp_sfx","music/sfxs/mcCollectSpeedUp.mp3");
+        soundManager.loadSound("mcCollectHeart_sfx","music/sfxs/mcCollectHeart.mp3");
+        soundManager.loadSound("mcPunch_sfx","music/sfxs/mcPunch.mp3");
+        soundManager.loadSound("mcDeath_sfx","music/sfxs/mcDeath.mp3");
+        soundManager.loadSound("mcHitWithAxe_sfx","music/sfxs/mcHitsEnemyWithAxe.mp3");
+        soundManager.loadSound("mcDoor_sfx","music/sfxs/mcDoor.mp3");
+        soundManager.loadSound("mcOpenBigDoor_sfx","music/sfxs/mcOpenBigDoor.mp3");
+        soundManager.loadSound("mcOpenNormalDoor_sfx","music/sfxs/mcOpenNormalDoor.mp3");
+        soundManager.loadSound("mcUsePowerUp_sfx","music/sfxs/mcUsePowerUp.mp3");
+        soundManager.loadSound("mcFootstep_sfx","music/sfxs/mcFootStep.mp3");
+        soundManager.loadSound("mcHurt_sfx","music/sfxs/mcHurt.mp3");
+        soundManager.loadSound("enemyDeath_sfx","music/sfxs/EnemyDeath.mp3");
+        soundManager.loadSound("click","music/UI/menuSelect.mp3");
+
         mainState.put("crackles",1);
         mainState.put("wind",1);
         mainState.put("piano",0);
