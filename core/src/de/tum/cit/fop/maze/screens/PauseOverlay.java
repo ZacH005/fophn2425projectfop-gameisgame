@@ -49,6 +49,7 @@ public class PauseOverlay {
         pauseState.put("pad",0);
         pauseState.put("drums",0);
         pauseState.put("bass",0);
+        pauseState.put("key_sound",0);
 
 
         // Create the overlay
@@ -101,7 +102,9 @@ public class PauseOverlay {
                 System.out.println("Restart clicked");
                 soundManager.playSound("click");
                 gameScreen.dispose();
-                game.goToGame();
+                String mappath = gameScreen.getMapPath();
+                game.setScreen(new GameScreen(game,mappath));
+
             }
         });
         table.add(restartButton).width(300).row();

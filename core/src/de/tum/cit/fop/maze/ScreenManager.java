@@ -102,6 +102,7 @@ public class ScreenManager extends Game {
             // Set default username if no data found
             user = new User("Player1");
         }
+        ///sound layers
         soundManager.loadMusicLayer("bass","music/themes/Bass.mp3");
         soundManager.loadMusicLayer("piano","music/themes/Piano.mp3");
         soundManager.loadMusicLayer("drums","music/themes/Drums.mp3");
@@ -110,6 +111,7 @@ public class ScreenManager extends Game {
         soundManager.loadMusicLayer("wind","music/themes/Wind.mp3");
         soundManager.loadMusicLayer("crackles","music/themes/Crackles.mp3");
 
+        ///sfxs
         soundManager.loadSound("losing sound","music/losing_sound.mp3");
 
         soundManager.loadSound("mcCollectKey_sfx","music/sfxs/mcCollectKey.mp3");
@@ -126,7 +128,9 @@ public class ScreenManager extends Game {
         soundManager.loadSound("mcHurt_sfx","music/sfxs/mcHurt.mp3");
         soundManager.loadSound("enemyDeath_sfx","music/sfxs/EnemyDeath.mp3");
         soundManager.loadSound("click","music/UI/menuSelect.mp3");
-
+        /// key sound
+        soundManager.loadKeySound("music/themes/Key.mp3");
+        /// state definition
         mainState.put("crackles",1);
         mainState.put("wind",1);
         mainState.put("piano",0);

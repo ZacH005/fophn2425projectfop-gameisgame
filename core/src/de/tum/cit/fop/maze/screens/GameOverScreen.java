@@ -40,6 +40,7 @@ public class GameOverScreen implements Screen {
         gameOverState.put("pad",0);
         gameOverState.put("drums",0);
         gameOverState.put("bass",0);
+        gameOverState.put("key_sound",0);
         soundManager.onGameStateChange(gameOverState);
 
     }

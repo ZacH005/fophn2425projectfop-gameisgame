@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -46,6 +47,7 @@ public class GameScreen implements Screen {
     private CollisionManager colManager;
 
     private Player player;
+    private int keysCollectedCounter;
 //    private Enemy enemy;
     private List<Powerup> mapPowerups;
 
@@ -67,9 +69,14 @@ public class GameScreen implements Screen {
     private SoundManager soundManager;
     private float musicVolume;
     private Map<String, Integer> mainState = new HashMap<String, Integer>();
+    private List<Key> keysInTheMap;
 
     private List<Enemy> enemies;
 
+
+    public String getMapPath() {
+        return mapPath;
+    }
 
     public GameScreen(ScreenManager game, String mapPath) {
         this.mapPath = mapPath;
@@ -126,6 +133,7 @@ public class GameScreen implements Screen {
         mainState.put("drums", 0);
         mainState.put("bass", 1);
 
+
         soundManager.onGameStateChange(mainState);
 
         //just initializing the player
@@ -157,8 +165,12 @@ public class GameScreen implements Screen {
 
 
         this.mapPowerups = mapManager.getPowerups();
-
-
+        this.keysCollectedCounter= 0;
+        // Check if there are Keys in the map
+        keysInTheMap = mapPowerups.stream()
+                .filter(Key.class::isInstance)
+                .map(Key.class::cast)
+                .collect(Collectors.toList());
     }
 //    public void completeLevel(){
 //        //updates the index of the map being played
@@ -185,20 +197,26 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         if (isPaused) {
             pauseOverlay.setVisible(isPaused);
             pauseOverlay.render(delta);
+            float lastKeySoundVolumeBeforePause = soundManager.getKeySoundVolume();
+            soundManager.setKeySoundVolume(0f);
             // for the music
             musicVolume = pauseOverlay.getMusicVolume();
             soundManager.setMusicVolume(musicVolume);
             soundManager.onGameStateChange(pauseOverlay.getPauseState());
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                soundManager.setKeySoundVolume(lastKeySoundVolumeBeforePause);
                 soundManager.onGameStateChange(mainState);
                 isPaused = false;
+
             }
+
             return;
-        } else {
+
+        }
+        else {
 
             if (pauseOverlay != null) {
                 musicVolume = pauseOverlay.getMusicVolume();
@@ -215,17 +233,27 @@ public class GameScreen implements Screen {
 //                player.setHealth(player.getHealth() - 1);
 //            }
             if (player.getHealth() == 0) {
-                soundManager.playSound("losing sound");
+
                 isGameOver = true;
                 player.setHealth(5);
                 player.saveState("playerstate.txt");
 
-
+//                soundManager.playSound("mcDeath_sfx");
+                soundManager.playSound("losing sound");
                 game.setScreen(new GameOverScreen(game));
             }
 
+            /// key sound logic
+            // play the key sound
+            soundManager.playKeySound();
+            Key closestKey = checkForKeysAndGetTheClosestOne(keysInTheMap);
+            // if there are keys in the map and we haven't collected them yet
+            if (!keysInTheMap.isEmpty()) {
+                updateKeySound(closestKey);
+            }
 
-            //input updating ; find the method below for details
+
+                //input updating ; find the method below for details
             handleInput();
             // updating characters
             player.update(delta, colManager);
@@ -290,6 +318,20 @@ public class GameScreen implements Screen {
                 if (powerup.checkPickUp(player)) {
                     player.getPowerUps().add(powerup.pickUp());
                     powerup.applyEffect(player);
+
+
+                    if(powerup instanceof Key){
+
+                        keysInTheMap.remove((Key) powerup);
+                        if(keysInTheMap.isEmpty()){
+                            soundManager.setKeySoundVolume(0f);
+                        }
+                        else{
+                        Key closestKey = checkForKeysAndGetTheClosestOne(keysInTheMap);
+                        updateKeySound(closestKey);
+                        }
+                    }
+
                     iterator.remove();
                     hud.updateHearts(player.getHealth());
                 }
@@ -324,8 +366,66 @@ public class GameScreen implements Screen {
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
 
-        //playing music
+
     }
+
+    //let's find the closest key
+    public Key checkForKeysAndGetTheClosestOne(List<Key> keys) {
+
+        //get player position
+        float playerX = player.getPosition().x;
+        float playerY = player.getPosition().y;
+        // create a sudo key
+        Key closestKey = null;
+        // create a variable for minDistance
+        float closestDistance = Float.MAX_VALUE;
+
+        for (Key key : keys) {
+            // check distance for each key in our map and calculate
+            double xDiff = key.getPosition().x - playerX;
+            double yDiff = key.getPosition().y - playerY;
+            double distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+            // if it's less than the last minDistance
+            if (distance < closestDistance) {
+                //then this key is the closest key
+                closestKey = key;
+                // and this distance is the new minDistance
+                closestDistance = (float) distance; // Update closestDistance
+            }
+        }
+        // return the key so we can see how far it is and adjust volume.
+
+        return closestKey;
+    }
+
+    public void updateKeySound(Key key){
+            // check wich is the closest key
+//            Key closestKey = checkForKeysAndGetTheClosestOne(keysInTheMap);
+
+            // if there's a closest key
+            if (key != null) {
+                // find the distance between this key and the player
+                double xDiff = key.getPosition().x - player.getPosition().x;
+                double yDiff = key.getPosition().y - player.getPosition().y;
+                double distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+                // if the distance is greater than 16 let's say
+                if (distance >= 71) {
+                    // mute the key sound
+                    soundManager.setKeySoundVolume(0f);
+                } else {
+                    // else, increase sound when distance decreases
+                    float keySoundVolume = 1f - (float) distance / 71; // Normalized
+                    System.out.println(keySoundVolume+" key sound volume supposdly");
+
+                    soundManager.setKeySoundVolume(keySoundVolume);
+
+                    float currentvol = soundManager.getKeySoundVolume();
+                    System.out.println(currentvol+" key sound volume actually");
+                }
+            }
+        }
+
+
 
     private void winLevel() {
         // when a level is finished

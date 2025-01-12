@@ -100,8 +100,7 @@ public class Player implements Entity, Serializable {
 
         /// sound manager
         this.soundManager = soundManager;
-        soundManager.loadSound("hurt_sfx","music/hitHurt.wav");
-        soundManager.loadSound("openDoor_sfx", "music/unlockBigDoor.mp3");
+
         ///Entities variables
         this.position = new Vector2(x, y);
         this.resetpos = new Vector2(25, 25);
@@ -181,7 +180,7 @@ public class Player implements Entity, Serializable {
             Door door = colManager.checkDoorCollision(newPos);
             if (door != null && keys > 0)    {
                 colManager.openDoor(door);
-                soundManager.playSound("openDoor_sfx");
+                soundManager.playSound("mcOpenNormalDoor_sfx");
                 door.setCurrentTexture(door.getOpenTexture());
                 keys -= 1;
             }
