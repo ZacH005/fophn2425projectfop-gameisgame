@@ -1,0 +1,61 @@
+    public void checkfollows(CollisionManager colManager) {
+        // calculates x and y distance
+        float distanceX = player.getPosition().x - this.position.x;
+        float distanceY = player.getPosition().y - this.position.y;
+
+        // calculate the total distance (Pythagoras)
+        float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        // check if the player is in range
+        if (this.scanRange.overlaps(player.collider)) {
+            if (!following) {
+                following = true; // Start following
+//              chaseMusic.play(); // Play suspenseful music
+                soundManager.onGameStateChange(chaseState);
+            }
+        }
+
+        if (following) {
+            // if close enough or escaped, stop moving
+            if (distance > 100.0f||distance < 10.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
+                following = false;
+//              chaseMusic.stop();
+                soundManager.onGameStateChange(mainState);
+                return;
+            }
+
+            // moves the enemy towards the player
+            float directionX = distanceX / distance; // Basic Vector Math to get unit vector direction without any extra magnitude
+            float directionY = distanceY / distance;
+
+            // Update enemy position
+            Rectangle newPos = new Rectangle(position.x+directionX * movementSpeed * 16, position.y+directionY * movementSpeed * 16, 16, 16);
+            if (colManager.checkMapCollision(newPos) != null)   {
+                this.position.x += directionX * movementSpeed;
+                this.position.y += directionY * movementSpeed;
+
+                // Update scan range based on the enemy's new position
+                this.scanRange.setX(this.position.x - scanRange.getWidth()/2f+8);
+                this.scanRange.setY(this.position.y - scanRange.getHeight()/2f+4);
+
+                this.damageCollider.setX(this.position.x - 2);
+                this.damageCollider.setY(this.position.y - 5);
+            } else {
+                Rectangle checkX = new Rectangle(position.x+directionX * movementSpeed * 16, position.y, 16, 16);
+                Rectangle checkY = new Rectangle(position.x, position.y+directionY * movementSpeed * 16, 16, 16);
+                if (colManager.checkMapCollision(checkX) != null) {
+                    this.position.x += directionX * movementSpeed;
+
+                    this.scanRange.setX(this.position.x - scanRange.getWidth() / 2f + 8);
+
+                    this.damageCollider.setX(this.position.x - 2);
+                } else if (colManager.checkMapCollision(checkY) != null)    {
+                    this.position.y += directionY * movementSpeed;
+
+                    this.scanRange.setY(this.position.y - scanRange.getHeight()/2f+4);
+
+                    this.damageCollider.setY(this.position.y - 5);
+                }
+            }
+        }
+    }

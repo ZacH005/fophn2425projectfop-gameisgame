@@ -424,16 +424,16 @@ public class ScreenManager extends Game {
                     characterRightIdleAnimation = new Animation<>(0.25f, idleFrames);
                     break;
                 case 3008:
-                    characterRightAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    characterRightAttackAnimation = new Animation<>(0.1f, attackLeftFrames);
                     break;
                 case 3072:
-                    characterDownAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    characterDownAttackAnimation = new Animation<>(0.25f, attackLeftFrames);
                     break;
                 case 3136:
-                    characterLeftAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    characterLeftAttackAnimation = new Animation<>(0.25f, attackLeftFrames);
                     break;
                 case 3200:
-                    characterUpAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    characterUpAttackAnimation = new Animation<>(0.25f, attackLeftFrames);
                     break;
             }
             y += frameHeight;

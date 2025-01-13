@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="92">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="94">
  <tileset firstgid="1" source="dwarvenMines.tsx"/>
  <tileset firstgid="97" source="doorsAsset.tsx"/>
  <layer id="7" name="test" width="40" height="40">
@@ -174,7 +174,7 @@
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="26" x="48" y="592" width="32" height="16">
+  <object id="26" x="50.0029" y="594.146" width="26.9928" height="12.5665">
    <properties>
     <property name="type" value="Barrels"/>
    </properties>

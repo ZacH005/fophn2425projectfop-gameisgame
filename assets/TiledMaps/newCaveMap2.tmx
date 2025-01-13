@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="18">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="20">
  <tileset firstgid="1" source="newMines.tsx"/>
  <tileset firstgid="45" source="dwarvenMines.tsx"/>
  <layer id="1" name="Ground" width="20" height="20">
@@ -27,6 +27,9 @@
 </data>
  </layer>
  <objectgroup id="5" name="CollisionObjects">
+  <properties>
+   <property name="type" value="Wall"/>
+  </properties>
   <object id="3" x="0" y="0" width="240" height="80">
    <properties>
     <property name="type" value="Wall"/>
@@ -83,7 +86,14 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="11" name="EnemyObjects"/>
+ <objectgroup id="11" name="EnemyObjects">
+  <object id="18" x="222.966" y="257.706">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
  <objectgroup id="6" name="PowerUpObjects"/>
  <objectgroup id="8" name="DoorObjects"/>
  <objectgroup id="9" name="EventObjects">
@@ -116,7 +126,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,62,0,49,0,0,
 0,0,0,0,0,0,0,0,60,0,0,0,0,0,0,0,0,0,0,0,
 0,0,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,49,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,62,0,49,0,0,0,
 0,0,0,0,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

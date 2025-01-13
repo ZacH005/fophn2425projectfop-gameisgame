@@ -11,9 +11,9 @@ public class SoundManager implements Disposable {
     private HashMap<String, Sound> soundEffects;
     private HashMap<String, Music> musicLayers; // Music layers
     private HashMap<String, Boolean> layerMuteStates; // Mute state of each layer
+    private float musicVolume = 0f;
     // for the key sound
     private Music keySound;
-    private float musicVolume = 1.0f;
     private float sfxVolume = 1.0f;
 
     public SoundManager() {

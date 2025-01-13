@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.TimeUtils;
 import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.SoundManager;
 
@@ -21,6 +23,7 @@ import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 import de.tum.cit.fop.maze.arbitrarymap.MapManager;
 import de.tum.cit.fop.maze.entity.Enemy;
 import de.tum.cit.fop.maze.entity.HUD;
+import de.tum.cit.fop.maze.entity.Node;
 import de.tum.cit.fop.maze.entity.Player;
 
 import java.util.*;
@@ -37,7 +40,7 @@ public class GameScreen implements Screen {
     //Map Path
     private final ScreenManager game;
     private final OrthographicCamera camera;
-    //private final BitmapFont font;
+//    private final BitmapFont font;
 
     //Tiled map which is an object
     private TiledMap tiledMap;
@@ -73,6 +76,7 @@ public class GameScreen implements Screen {
 
     private List<Enemy> enemies;
 
+    private boolean showDebugOverlay = false;
 
     public String getMapPath() {
         return mapPath;
@@ -91,7 +95,7 @@ public class GameScreen implements Screen {
 
         //this was kinda from before, i don't understand all this
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
-        camera.zoom = 1f;
+        camera.zoom = 0.8f;
         darkCircleoverlay = new Texture("DK.png");
 
 
@@ -159,10 +163,6 @@ public class GameScreen implements Screen {
                 enemies.add(enemy);
             }
         }
-
-//        this.enemy = new Enemy(200, 250, player, hud, soundManager);
-
-
 
         this.mapPowerups = mapManager.getPowerups();
         this.keysCollectedCounter= 0;
@@ -259,7 +259,7 @@ public class GameScreen implements Screen {
             player.update(delta, colManager);
 //            if (colManager.checkListCollision(mapManager.getTrapObjects(), player.collider))
 //                player.takeDamage();
-            enemies.forEach(enemy1 -> enemy1.update(delta));
+            enemies.forEach(enemy1 -> enemy1.update(delta, colManager));
             hud.updateHUD();
         }
 
@@ -287,25 +287,45 @@ public class GameScreen implements Screen {
 //        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
 //        shapeRenderer.end();
 
+        //shapes need to be outside spritebatch
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        Gdx.gl.glEnable(GL20.GL_BLEND); // Enable blending for transparency
+
         //I don't get projectionmatrices, needed to be attached to the spritebatch
 // Set the projection matrix for the game camera
         game.getSpriteBatch().setProjectionMatrix(camera.combined);
         game.getSpriteBatch().enableBlending();
         game.getSpriteBatch().begin();
 
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line); // Line mode to draw the border of the collider
-//
-//        // Assuming player.getCollider() returns a Rectangle or similar object
-//        shapeRenderer.rect(player.getCollider().getX(), player.getCollider().getY(), player.getCollider().getWidth(), player.getCollider().getHeight(), Color.RED, Color.RED, Color.RED, Color.RED);
-//
-//        shapeRenderer.end();
+        if (showDebugOverlay) {
+            int fps = Gdx.graphics.getFramesPerSecond();
+            BitmapFont font = new BitmapFont();
+            font.draw(game.getSpriteBatch(), "FPS: " + fps, 0, 0);
 
-//        shapeRenderer.setProjectionMatrix(camera.combined); // Set the projection matrix
-//        shapeRenderer.begin(); // Specify ShapeType
-//        shapeRenderer.setColor(1, 0, 0, 1f); // Red color
-//        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
-//        shapeRenderer.end();
+            shapeRenderer.rect(player.collider.x, player.collider.y, player.collider.width, player.collider.height);
+            for (Enemy enemy : enemies) { // Assuming you have a list of enemies
+                List<Node> path = enemy.getCurrentPath();
+                if (path != null) {
+                    for (int i = 0; i < path.size() - 1; i++) {
+                        Node current = path.get(i);
+                        Node next = path.get(i + 1);
+
+                        // Draw a line between nodes
+                        shapeRenderer.setColor(1, 0, 0, 1); // Red for the path
+                        shapeRenderer.line(current.x, current.y, next.x, next.y);
+                        shapeRenderer.setColor(Color.BLUE);
+                        shapeRenderer.point(current.x, current.y, 0);
+                        shapeRenderer.setColor(Color.YELLOW);
+                    }
+                }
+
+                shapeRenderer.setColor(0, 1, 0, 1);
+                shapeRenderer.rect(enemy.scanRange.x, enemy.scanRange.y, enemy.scanRange.width, enemy.scanRange.height);
+                shapeRenderer.setColor(Color.ORANGE);
+                shapeRenderer.rect(enemy.damageCollider.x, enemy.damageCollider.y, enemy.damageCollider.width, enemy.damageCollider.height);
+            }
+        }
 
         //loading powerups on map
         if (!mapPowerups.isEmpty()) {
@@ -365,7 +385,8 @@ public class GameScreen implements Screen {
 
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
-
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
 
     }
 
@@ -415,12 +436,12 @@ public class GameScreen implements Screen {
                 } else {
                     // else, increase sound when distance decreases
                     float keySoundVolume = 1f - (float) distance / 71; // Normalized
-                    System.out.println(keySoundVolume+" key sound volume supposdly");
+//                    System.out.println(keySoundVolume+" key sound volume supposdly");
 
                     soundManager.setKeySoundVolume(keySoundVolume);
 
                     float currentvol = soundManager.getKeySoundVolume();
-                    System.out.println(currentvol+" key sound volume actually");
+//                    System.out.println(currentvol+" key sound volume actually");
                 }
             }
         }
@@ -449,6 +470,9 @@ public class GameScreen implements Screen {
 
 
     private void handleInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+            showDebugOverlay = !showDebugOverlay;
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = true;
         }
@@ -459,24 +483,32 @@ public class GameScreen implements Screen {
 
             player.move(Player.Direction.RIGHT);
             player.setCurrentAnimation(game.getCharacterRightAnimation());
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            if((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation())||player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))){
+                player.setAdjust(true);
+                player.setCurrentAnimation(game.getcharacterDownAttackAnimation());
+            } else if ((player.getCurrentAnimation().equals(game.getCharacterRightIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterRightAnimation())) {
+                player.setCurrentAnimation(game.getCharacterRightAttackAnimation());
+            } else if ((player.getCurrentAnimation().equals(game.getCharacterLeftIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterLeftAnimation())) {
+                player.setCurrentAnimation(game.getCharacterLeftAttackAnimation());
+            } else if ((player.getCurrentAnimation().equals(game.getCharacterUpIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterUpAnimation())) {
+                player.setAdjust(true);
+                player.setCurrentAnimation(game.getcharacterUpAttackAnimation());
+            }
             for (Enemy enemy : enemies) {
                 if ((player.getCollider().overlaps(enemy.damageCollider))){
-                    if((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation())||player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))){
-                        player.setAdjust(true);
-                        player.setCurrentAnimation(game.getcharacterDownAttackAnimation());
-                    } else if ((player.getCurrentAnimation().equals(game.getCharacterRightIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterRightAnimation())) {
-                        player.setCurrentAnimation(game.getCharacterRightAttackAnimation());
-                    } else if ((player.getCurrentAnimation().equals(game.getCharacterLeftIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterLeftAnimation())) {
-                        player.setCurrentAnimation(game.getCharacterLeftAttackAnimation());
-                    } else if ((player.getCurrentAnimation().equals(game.getCharacterUpIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterUpAnimation())) {
-                        player.setAdjust(true);
-                        player.setCurrentAnimation(game.getcharacterUpAttackAnimation());
-                    }
                     player.attack(enemy);
+                } else {
+                    player.attack(null);
                 }
             }
+//            float lastDamageTime = 0;
+//            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
+//                // proceed with damage logic
+//                attack();
+//                // update last damage time
+//                lastDamageTime = TimeUtils.nanoTime();
+//            }
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             player.move(Player.Direction.UP);
@@ -523,9 +555,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        soundManager.dispose();
         mapRenderer.dispose();
         tiledMap.dispose();
         pauseOverlay.dispose();
+        shapeRenderer.dispose();
     }
 
     @Override

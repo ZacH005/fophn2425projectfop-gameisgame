@@ -1,0 +1,88 @@
+public void checkFollows(CollisionManager colManager) {
+        float distanceX = player.getPosition().x - this.position.x;
+        float distanceY = player.getPosition().y - this.position.y;
+
+        float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        if (this.scanRange.overlaps(player.collider)) {
+            if (!following) {
+                following = true;
+                soundManager.onGameStateChange(chaseState); // starts chase
+            }
+        }
+
+        if (following) {
+            // Stop following if out of range
+            if (distance > 100.0f || distance < 10.0f) {
+                following = false;
+                soundManager.onGameStateChange(mainState);
+                return;
+            }
+
+            float directionX = distanceX / distance;
+            float directionY = distanceY / distance;
+
+            float newPosX = this.position.x + directionX * movementSpeed;
+            float newPosY = this.position.y + directionY * movementSpeed;
+
+            // Check direct collision for the full movement
+            boolean directBlocked = colManager.checkMapCollision(new Rectangle(newPosX, newPosY, 14, 14)) != null;
+
+            // Check individual axis collisions
+            boolean xBlocked = colManager.checkMapCollision(new Rectangle(newPosX, this.position.y, 12, 12)) != null;
+            boolean yBlocked = colManager.checkMapCollision(new Rectangle(this.position.x, newPosY, 12, 12)) != null;
+
+            // Attempt to resolve collisions
+            if (directBlocked) {
+                System.out.println("front blocked");
+                // If direct movement is blocked, check side paths
+                float offset = movementSpeed*2; // Use movement speed as the step size
+                float angle = (float) Math.atan2(directionY, directionX);
+
+                // Calculate front-right and front-left positions
+                float frontRightX = this.position.x + (float) Math.cos(angle + Math.PI / 4) * offset;
+                float frontRightY = this.position.y + (float) Math.sin(angle + Math.PI / 4) * offset;
+
+                float frontLeftX = this.position.x + (float) Math.cos(angle - Math.PI / 4) * offset;
+                float frontLeftY = this.position.y + (float) Math.sin(angle - Math.PI / 4) * offset;
+
+                boolean frontRightBlocked = colManager.checkMapCollision(new Rectangle(frontRightX, frontRightY, 16, 16)) != null;
+                boolean frontLeftBlocked = colManager.checkMapCollision(new Rectangle(frontLeftX, frontLeftY, 16, 16)) != null;
+
+                // Prioritize front-right if free, then front-left
+                if (!frontRightBlocked) {
+                    this.position.x += (frontRightX - this.position.x) * movementSpeed; // Smooth movement
+                    this.position.y += (frontRightY - this.position.y) * movementSpeed;
+                    System.out.println("moveing right left blocked");
+                } else if (!frontLeftBlocked) {
+                    this.position.x += (frontLeftX - this.position.x) * movementSpeed; // Smooth movement
+                    this.position.y += (frontLeftY - this.position.y) * movementSpeed;
+                    System.out.println("moveing leftr right blocked");
+                }
+            } else {
+                // Move normally if no direct collision
+                System.out.println("moveing straight");
+                this.position.x = newPosX;
+                this.position.y = newPosY;
+            }
+
+            // Allow movement through narrow spaces if neither axis is blocked
+            if (!xBlocked && !yBlocked) {
+                this.position.x = newPosX;
+                this.position.y = newPosY;
+            } else {
+                // If one axis is blocked, move along the other
+                if (!xBlocked) {
+                    this.position.x = newPosX;
+                }
+                if (!yBlocked) {
+                    this.position.y = newPosY;
+                }
+            }
+        }
+        this.scanRange.setX(this.position.x - scanRange.getWidth()/2f+8);
+        this.scanRange.setY(this.position.y - scanRange.getHeight()/2f+4);
+
+        this.damageCollider.setX(this.position.x - 2);
+        this.damageCollider.setY(this.position.y - 5);
+    }

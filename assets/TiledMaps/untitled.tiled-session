@@ -43,13 +43,17 @@
         },
         "dwarfMines.tmx": {
             "expandedObjectLayers": [
-                15
+                14,
+                6,
+                9,
+                15,
+                10
             ],
-            "scale": 3.5526,
-            "selectedLayer": 1,
+            "scale": 6.9899,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 135.67528007656364,
-                "y": 580.5607160952542
+                "x": 70.53033662856407,
+                "y": 586.4890770969542
             }
         },
         "dwarvenMines.tsx": {
@@ -70,14 +74,15 @@
         },
         "newCaveMap2.tmx": {
             "expandedObjectLayers": [
+                11,
                 5,
                 9
             ],
-            "scale": 1.5832,
-            "selectedLayer": 2,
+            "scale": 1.785,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 141.48559878726633,
-                "y": 206.2278928751895
+                "x": 254.34173669467785,
+                "y": 222.12885154061627
             }
         },
         "newLand.tsx": {

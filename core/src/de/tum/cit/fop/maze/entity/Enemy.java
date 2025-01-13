@@ -9,10 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import com.badlogic.gdx.utils.TimeUtils;
+import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class Enemy implements Entity {
@@ -40,6 +39,9 @@ public class Enemy implements Entity {
     private float initialposy;
     private int health;
 
+    private float movementSpeed;
+    private List<Node> currentPath;
+
     public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager) {
         this.player = player;
         position = new Vector2(x,y);
@@ -52,6 +54,9 @@ public class Enemy implements Entity {
         scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
         damageCollider = new Rectangle(position.x-2,position.y-5,20,20);
         health = 3;
+
+        movementSpeed = 50 * Gdx.graphics.getDeltaTime(); // uses delta time to allow for frames to be bad
+
 //        chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
 //        chaseMusic.setLooping(true);
         this.soundManager=soundManager;
@@ -74,10 +79,10 @@ public class Enemy implements Entity {
         this.hud=hud;
     }
 
-    public void update(float delta){
+    public void update(float delta, CollisionManager colManager){
         if(!isDead){
             animation.update(delta);
-            checkfollows();
+            updateMovement(colManager);
             checkDamaging(delta);
         }
     }
@@ -186,49 +191,166 @@ public class Enemy implements Entity {
             this.position = loadedEnemy.position;
         }
     }
-    public void checkfollows() {
-        // calculates x and y distance
+
+    ///beginning of movement
+    long lastMovementUpdateTime = 0, movementDelay = 500;
+
+    public void updateMovement(CollisionManager colManager) {
         float distanceX = player.getPosition().x - this.position.x;
         float distanceY = player.getPosition().y - this.position.y;
-
-        // calculate the total distance (Pythagoras)
         float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-        // check if the player is in range
-        if (this.scanRange.overlaps(player.collider)) {
-            if (!following) {
-                following = true; // Start following
-//              chaseMusic.play(); // Play suspenseful music
+        if (scanRange.overlaps(player.collider) && !following) {
+                following = true;
                 soundManager.onGameStateChange(chaseState);
-            }
+        }
+        if (distance > 140.0f||distance < 10.0f && following) {
+            following = false;
+            soundManager.onGameStateChange(mainState);
+            return;
         }
 
         if (following) {
-            // if close enough or escaped, stop moving
-            if (distance > 100.0f||distance < 10.0f) { // Stop when within 5 units (captured) or when more than 100 units (escaped)
-                following = false;
-//              chaseMusic.stop();
-                soundManager.onGameStateChange(mainState);
-                return;
+            //decides how long until the path si recalculated (rn 500 millisec)
+            if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
+                currentPath = findPlayerPath(colManager);
+                lastMovementUpdateTime = TimeUtils.millis();
+            }
+            List<Node> path = currentPath;
+
+            if (path != null && !path.isEmpty()) {
+                //get direction of difference between first node and next node (get the vector)
+                //move along that vector
+                Node nextNode;
+
+                if (path.size()>2) {
+                     nextNode = path.get(1);
+                } else {
+                    nextNode = path.get(0);
+                }
+
+                float directionX = nextNode.x - this.position.x;
+                float directionY = nextNode.y - this.position.y;
+
+                float length = (float) Math.sqrt(directionX * directionX + directionY * directionY);
+
+                if (length > 0) {
+                    directionX /= length;
+                    directionY /= length;
+                }
+
+                this.position.x += directionX * movementSpeed;
+                this.position.y += directionY * movementSpeed;
+
+                updateColliders();
+
+                //makes sure that it updates once the node is reached
+                if (length < movementSpeed) {
+                    currentPath.remove(0);
+                }
+            }
+        }
+//        if (currentPath != null)    {
+//            System.out.println("size: "+currentPath.size());
+//            System.out.println("distance: "+distance);
+//            System.out.println("node distance: "+distanceBetween(currentPath.get(0), currentPath.get(currentPath.size()-1)));
+//        }
+    }
+
+    private List<Node> findPlayerPath(CollisionManager colManager) {
+        Node start = new Node((int) (this.position.x), (int) (this.position.y), null, 0, 0);
+        Node goal = new Node((int) (player.getPosition().x-7), (int) (player.getPosition().y-7), null, 0, 0);
+
+        PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fCost));
+        Set<Node> closedSet = new HashSet<>();
+
+        openSet.add(start);
+
+        while (!openSet.isEmpty()) {
+            Node current = openSet.poll();
+
+            if (current.equals(goal)) {
+                return reconstructPath(current);
             }
 
-            // moves the enemy towards the player
-            float speed = 90 * Gdx.graphics.getDeltaTime(); // Speed in units per second
-            float directionX = distanceX / distance; // Basic Vector Math to get unit vector direction without any extra magnitude
-            float directionY = distanceY / distance;
+            closedSet.add(current);
 
-            // Update enemy position
-            this.position.x += directionX * speed;
-            this.position.y += directionY * speed;
+            for (Node neighbor : getNeighbors(current, colManager)) {
+                if (closedSet.contains(neighbor)) continue;
 
-            // Update scan range based on the enemy's new position
-            this.scanRange.setX(this.position.x - scanRange.getWidth()/2f+8);
-            this.scanRange.setY(this.position.y - scanRange.getHeight()/2f+4);
+                double tentativeGCost = current.gCost + distanceBetween(current, neighbor);
 
-            this.damageCollider.setX(this.position.x - 2);
-            this.damageCollider.setY(this.position.y - 5);
+                if (!openSet.contains(neighbor) || tentativeGCost < neighbor.gCost) {
+                    neighbor.gCost = tentativeGCost;
+                    neighbor.hCost = heuristic(neighbor, goal);
+                    neighbor.fCost = neighbor.gCost + neighbor.hCost;
+                    neighbor.parent = current;
+
+                    if (!openSet.contains(neighbor)) {
+                        openSet.add(neighbor);
+                    }
+                }
+            }
         }
+
+        return null;
     }
+
+    private List<Node> getNeighbors(Node node, CollisionManager colManager) {
+        List<Node> neighbors = new ArrayList<>();
+        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+        for (int[] dir : directions) {
+            int newX = node.x + dir[0];
+            int newY = node.y + dir[1];
+
+            Rectangle potentialPosition = new Rectangle(newX, newY, 14, 14);
+            if (colManager.checkMapCollision(potentialPosition) == null) {
+                neighbors.add(new Node(newX, newY, null, 0, 0));
+            }
+        }
+
+        return neighbors;
+    }
+
+    private double distanceBetween(Node a, Node b) {
+        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+    }
+
+    private double heuristic(Node a, Node b) {
+        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)); // Euclidean distance
+    }
+
+    //decides how many nodes get placed (ex. every 2 nodes), higher number = smoother movement (but leads to problems read bug sheet)
+    int n = 5;
+    private List<Node> reconstructPath(Node node) {
+        List<Node> path = new ArrayList<>();
+        int count = 0;
+
+        while (node != null) {
+            if (count % n == 0) {
+                path.add(node);
+            }
+            count++;
+            node = node.parent;
+        }
+        Collections.reverse(path);
+        return path;
+    }
+
+
+    private void updateColliders() {
+        this.scanRange.setX(this.position.x - scanRange.getWidth() / 2f + 8);
+        this.scanRange.setY(this.position.y - scanRange.getHeight() / 2f + 4);
+
+        this.damageCollider.setX(this.position.x - 2);
+        this.damageCollider.setY(this.position.y - 5);
+    }
+
+    ///end of movement
+
+
+
     public void attack(){
         player.takeDamage(0.25f);
 
@@ -240,5 +362,17 @@ public class Enemy implements Entity {
             player.startFlickering(cooldownTime);
         }
 
+    }
+
+    public Rectangle getDamageCollider() {
+        return damageCollider;
+    }
+
+    public Rectangle getScanRange() {
+        return scanRange;
+    }
+
+    public List<Node> getCurrentPath() {
+        return currentPath;
     }
 }
