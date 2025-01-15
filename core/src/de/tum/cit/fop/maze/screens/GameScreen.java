@@ -6,11 +6,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -21,6 +26,7 @@ import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.*;
 import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 import de.tum.cit.fop.maze.arbitrarymap.MapManager;
+import de.tum.cit.fop.maze.entity.Door;
 import de.tum.cit.fop.maze.entity.Enemy;
 import de.tum.cit.fop.maze.entity.HUD;
 import de.tum.cit.fop.maze.entity.Node;
@@ -30,6 +36,9 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -44,6 +53,8 @@ public class GameScreen implements Screen {
 
     //Tiled map which is an object
     private TiledMap tiledMap;
+    Texture arrowTexture = new Texture("icons/File1.png");
+    Sprite arrowSprite = new Sprite(arrowTexture);
     //tiled comes with a renderer
     private OrthogonalTiledMapRenderer mapRenderer;
     private MapManager mapManager;
@@ -95,7 +106,7 @@ public class GameScreen implements Screen {
 
         //this was kinda from before, i don't understand all this
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
-        camera.zoom = 0.8f;
+        camera.zoom = 1f;
         darkCircleoverlay = new Texture("DK.png");
 
 
@@ -364,6 +375,7 @@ public class GameScreen implements Screen {
 
 // Render the player and enemy
         player.render(game.getSpriteBatch());
+        drawarrow();
         for (Enemy enemy : enemies) {
             if(!enemy.isDead){
                 game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
@@ -483,20 +495,21 @@ public class GameScreen implements Screen {
 
             player.move(Player.Direction.RIGHT);
             player.setCurrentAnimation(game.getCharacterRightAnimation());
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            if((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation())||player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))){
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            handleBreaking(tiledMap);
+            if ((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))) {
                 player.setAdjust(true);
                 player.setCurrentAnimation(game.getcharacterDownAttackAnimation());
-            } else if ((player.getCurrentAnimation().equals(game.getCharacterRightIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterRightAnimation())) {
+            } else if ((player.getCurrentAnimation().equals(game.getCharacterRightIdleAnimation())) || player.getCurrentAnimation().equals(game.getCharacterRightAnimation())) {
                 player.setCurrentAnimation(game.getCharacterRightAttackAnimation());
-            } else if ((player.getCurrentAnimation().equals(game.getCharacterLeftIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterLeftAnimation())) {
+            } else if ((player.getCurrentAnimation().equals(game.getCharacterLeftIdleAnimation())) || player.getCurrentAnimation().equals(game.getCharacterLeftAnimation())) {
                 player.setCurrentAnimation(game.getCharacterLeftAttackAnimation());
-            } else if ((player.getCurrentAnimation().equals(game.getCharacterUpIdleAnimation()))||player.getCurrentAnimation().equals(game.getCharacterUpAnimation())) {
+            } else if ((player.getCurrentAnimation().equals(game.getCharacterUpIdleAnimation())) || player.getCurrentAnimation().equals(game.getCharacterUpAnimation())) {
                 player.setAdjust(true);
                 player.setCurrentAnimation(game.getcharacterUpAttackAnimation());
             }
             for (Enemy enemy : enemies) {
-                if ((player.getCollider().overlaps(enemy.damageCollider))){
+                if ((player.getCollider().overlaps(enemy.damageCollider))) {
                     player.attack(enemy);
                 } else {
                     player.attack(null);
@@ -509,22 +522,25 @@ public class GameScreen implements Screen {
 //                // update last damage time
 //                lastDamageTime = TimeUtils.nanoTime();
 //            }
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             player.move(Player.Direction.UP);
             player.setCurrentAnimation(game.getCharacterUpAnimation());
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             player.move(Player.Direction.DOWN);
             player.setCurrentAnimation(game.getCharacterDownAnimation());
-        } else if(!player.isAttack) {
-            if(player.getCurrentAnimation().equals(game.getCharacterDownAnimation())||player.getCurrentAnimation().equals(game.getCharacterDownAttackAnimation())) {
+        } else if (!player.isAttack) {
+            if (player.getCurrentAnimation().equals(game.getCharacterDownAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
-            } else if (player.getCurrentAnimation().equals(game.getCharacterRightAnimation())||player.getCurrentAnimation().equals(game.getCharacterRightAttackAnimation())) {
+                player.setAdjust(false);
+            } else if (player.getCurrentAnimation().equals(game.getCharacterRightAnimation()) || player.getCurrentAnimation().equals(game.getCharacterRightAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterRightIdleAnimation());
-            } else if (player.getCurrentAnimation().equals(game.getCharacterLeftAnimation())||player.getCurrentAnimation().equals(game.getCharacterLeftAttackAnimation())) {
+                player.setAdjust(false);
+            } else if (player.getCurrentAnimation().equals(game.getCharacterLeftAnimation()) || player.getCurrentAnimation().equals(game.getCharacterLeftAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterLeftIdleAnimation());
-            } else if (player.getCurrentAnimation().equals(game.getCharacterUpAnimation())||player.getCurrentAnimation().equals(game.getcharacterUpAttackAnimation())) {
+                player.setAdjust(false);
+            } else if (player.getCurrentAnimation().equals(game.getCharacterUpAnimation()) || player.getCurrentAnimation().equals(game.getcharacterUpAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterUpIdleAnimation());
+                player.setAdjust(false);
             }
             player.stop();
         }
@@ -543,6 +559,53 @@ public class GameScreen implements Screen {
             }
         }
     }
+    public void handleBreaking(TiledMap map) {
+        MapLayer objectLayer = map.getLayers().get("BreakableWalls");
+        TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get("Opening");
+
+        Door door = colManager.checkDoorCollision(player.getCollider());
+        if (door != null && player.getKeys() > 0)    {
+            colManager.openDoor(door);
+            soundManager.playSound("mcOpenNormalDoor_sfx");
+            door.setCurrentTexture(door.getOpenTexture());
+            player.setKeys(player.getKeys()-1);
+        }
+
+        for (MapObject object : objectLayer.getObjects()) {
+            if(player.collider.overlaps(((RectangleMapObject) object).getRectangle())) {
+                tiledMap.getLayers().get("Anim").setVisible(true);
+                ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+                scheduler.schedule(() -> {
+                    tiledMap.getLayers().get("Anim").setVisible(false);
+                    breakTiles(object, tileLayer, 16, 16);
+                    scheduler.shutdown(); // Shut down the scheduler
+                }, 1200, TimeUnit.MILLISECONDS);
+
+            }
+        }
+    }
+    public void breakTiles(MapObject object, TiledMapTileLayer tileLayer, float tileWidth, float tileHeight) {
+        // Get object properties
+        float objectX = (float) object.getProperties().get("x");
+        float objectY = (float) object.getProperties().get("y");
+        float objectWidth = (float) object.getProperties().get("width");
+        float objectHeight = (float) object.getProperties().get("height");
+
+        // Convert to tile coordinates
+        int tileXStart = (int) (objectX / tileWidth);
+        int tileYStart = (int) (objectY / tileHeight);
+        int tileXEnd = (int) ((objectX + objectWidth) / tileWidth);
+        int tileYEnd = (int) ((objectY + objectHeight) / tileHeight);
+
+        // Remove tiles
+        for (int x = tileXStart; x < tileXEnd; x++) {
+            for (int y = tileYStart; y < tileYEnd; y++) {
+                tileLayer.setCell(x, y, null); // Clear the tile
+            }
+        }
+    }
+
+
 
     public void setPaused(boolean paused) {
         isPaused = paused;
@@ -595,5 +658,39 @@ public class GameScreen implements Screen {
 
     public SoundManager getSoundManager() {
         return soundManager;
+    }
+    public void drawarrow(){
+
+        RectangleMapObject rect=null;
+        for(RectangleMapObject r:colManager.getEventObjects()){
+            if ("Finish".equals(r.getProperties().get("type", String.class))) {
+                rect = r;
+                break;
+            }
+        }
+
+// Ensure the finish object is found
+        if (rect == null) {
+            throw new RuntimeException("Finish object not found in eventobjects layer!");
+        }
+
+        // Player's position
+        float playerX = player.getPosition().x;
+        float playerY = player.getPosition().y;
+
+// Finish object's position
+        Rectangle finishBounds = rect.getRectangle();
+        float finishX = finishBounds.x + finishBounds.width / 2;
+        float finishY = finishBounds.y + finishBounds.height / 2;
+
+// Calculate angle
+        float angle = MathUtils.atan2(finishY - playerY, finishX - playerX) * MathUtils.radiansToDegrees;
+
+        arrowSprite.setScale(0.05f);
+        arrowSprite.setPosition(playerX-143, playerY-120);
+        arrowSprite.setRotation(90+angle); // Adjust rotation (optional)
+
+// In render method
+        arrowSprite.draw(game.getSpriteBatch());
     }
 }

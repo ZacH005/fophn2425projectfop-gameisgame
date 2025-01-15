@@ -177,13 +177,7 @@ public class Player implements Entity, Serializable {
             Rectangle newPos = new Rectangle(newX-7, newY-7, width-2, height-2);
 
             //door check
-            Door door = colManager.checkDoorCollision(newPos);
-            if (door != null && keys > 0)    {
-                colManager.openDoor(door);
-                soundManager.playSound("mcOpenNormalDoor_sfx");
-                door.setCurrentTexture(door.getOpenTexture());
-                keys -= 1;
-            }
+
 
             if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")) {
                 colManager.setWonLevel(true);

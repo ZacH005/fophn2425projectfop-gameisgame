@@ -373,7 +373,7 @@ public class ScreenManager extends Game {
 
 
     private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/FinalAnim.png"));
+        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/FinalAnimAdjusted.png"));
 
         int frameWidth = 64, frameHeight = 64, walkAnimationFrames = 9, idleAnimationFrames = 2, y = 0;
 
@@ -411,29 +411,29 @@ public class ScreenManager extends Game {
 
                     characterUpAnimation = new Animation<>(0.05f, walkFrames);
                     break;
-                case 1536:
+                case 0:
                     characterDownIdleAnimation = new Animation<>(0.25f, idleFrames);
                     break;
-                case 1408:
+                case 256:
                     characterUpIdleAnimation = new Animation<>(0.25f, idleFrames);
                     break;
-                case 1472:
+                case 64:
                     characterLeftIdleAnimation = new Animation<>(0.25f, idleFrames);
                     break;
-                case 1600:
+                case 192:
                     characterRightIdleAnimation = new Animation<>(0.25f, idleFrames);
                     break;
                 case 3008:
-                    characterRightAttackAnimation = new Animation<>(0.1f, attackLeftFrames);
+                    characterRightAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
                     break;
                 case 3072:
-                    characterDownAttackAnimation = new Animation<>(0.25f, attackLeftFrames);
+                    characterDownAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
                     break;
                 case 3136:
-                    characterLeftAttackAnimation = new Animation<>(0.25f, attackLeftFrames);
+                    characterLeftAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
                     break;
                 case 3200:
-                    characterUpAttackAnimation = new Animation<>(0.25f, attackLeftFrames);
+                    characterUpAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
                     break;
             }
             y += frameHeight;

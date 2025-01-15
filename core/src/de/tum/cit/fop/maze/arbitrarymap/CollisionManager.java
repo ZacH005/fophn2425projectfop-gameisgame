@@ -96,7 +96,10 @@ public class CollisionManager {
         return collisionObjects;
     }
 
-//    public List<Rectangle> getTrapObjects() {
+    public List<RectangleMapObject> getEventObjects() {
+        return eventObjects;
+    }
+    //    public List<Rectangle> getTrapObjects() {
 //        return trapObjects;
 //    }
 }
