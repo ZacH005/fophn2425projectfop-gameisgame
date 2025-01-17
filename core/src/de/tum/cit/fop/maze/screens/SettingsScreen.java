@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -18,6 +20,11 @@ import de.tum.cit.fop.maze.SoundManager;
 
 public class SettingsScreen implements Screen {
     private final Stage stage;
+    private  Stage stage2;
+    private Table table;
+    private Table table2;
+    private Texture bg;
+    private Texture overlayTexture;
     private SoundManager soundManager;
     private Slider music;
     /**
@@ -27,20 +34,23 @@ public class SettingsScreen implements Screen {
      */
     public SettingsScreen(ScreenManager game) {
         var camera = new OrthographicCamera();
-        camera.zoom = 1.5f;
+        camera.zoom = 1f;
 
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
-
-        Table table = new Table(); // Create a table for layout
+        stage2 = new Stage(viewport, game.getSpriteBatch());
+        table = new Table(); // Create a table for layout
+        table2 = new Table();
+        table2.setFillParent(true);
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
+        stage2.addActor(table2);
 
         soundManager = game.getSoundManager();
 
 
         // Add a label as a title
-        table.add(new Label("Settings", game.getSkin(), "title")).padBottom(80).row();
+        table2.add(new Label("Settings", game.getSkin(), "title")).padBottom((float)viewport.getScreenHeight()/2);
 
         music = new Slider(0, 1, 0.3f, false, game.getSkin());
 
@@ -94,9 +104,42 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
+
+        int mouseX = Gdx.input.getX();
+        int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+        float scaleX = Gdx.graphics.getWidth() / (float) bg.getWidth();
+        float scaleY = Gdx.graphics.getHeight() / (float) bg.getHeight();
+
+//        float scaleX = viewport.getScreenWidth()/(float)bg.getWidth();
+//        float scaleY = viewport.getScreenHeight()/(float)bg.getHeight();
+        float scale = Math.min(scaleX, scaleY);
+        float bgWidth = bg.getWidth() * scale;
+        float bgHeight = bg.getHeight() * scale;
+        float bgX = (Gdx.graphics.getWidth() - bgWidth) / 2f;
+        float bgY = (Gdx.graphics.getHeight() - bgHeight) / 2f;
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
+        stage.getBatch().begin();
+
+        stage.getBatch().draw(bg, bgX, bgY, bgWidth, bgHeight);
+        stage.getBatch().end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
+
+        stage.getBatch().begin();
+        // Draw the overlay texture slightly offset to center it on the cursor
+//        stage.setDebugAll(true);
+        stage.getBatch().setColor(1f,1f,1f,0.5f);
+        stage.getBatch().draw(overlayTexture, mouseX - 3840/2f, mouseY -  2160/2f);
+        stage.getBatch().setColor(1f,1f,1f,1f);
+
+        stage.getBatch().end();
+
+
+        stage2.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
+        stage2.draw(); // Draw the stage
+
     }
 
     @Override
@@ -112,6 +155,9 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void show() {
+        bg = new Texture(Gdx.files.internal("Menu UI Design.png"),true);
+        overlayTexture = new Texture(Gdx.files.internal("DK-MenuVersion2.png"),true);
+
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
     }

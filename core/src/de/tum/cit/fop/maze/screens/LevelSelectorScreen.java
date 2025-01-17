@@ -5,6 +5,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,31 +21,40 @@ import de.tum.cit.fop.maze.entity.User;
 
 public class LevelSelectorScreen extends ScreenAdapter {
     private Stage stage;
+    private Stage stage2;
+    private Table table;
+    private Table table2;
     private ScreenManager game;
     private User user;
     private SoundManager soundManager;
+    private Texture bg;
+    private Texture overlayTexture;
     public LevelSelectorScreen(ScreenManager game) {
         this.game = game;
         this.user = game.getUser(); // Assume the game class provides access to the user
 
         var camera = new OrthographicCamera();
-        camera.zoom = 1.5f;
+        camera.zoom = 1f;
 
         // Create a viewport with the camera
         Viewport viewport = new ScreenViewport(camera);
 
         // Create a stage for UI elements
         stage = new Stage(viewport, game.getSpriteBatch());
+        stage2 = new Stage(viewport, game.getSpriteBatch());
         this.soundManager = game.getSoundManager();
 
 
         // Create a table for layout
-        Table table = new Table();
-        table.setFillParent(true); // Make the table fill the stage
-        stage.addActor(table); // Add the table to the stage
+        table = new Table();
+        table2 = new Table();
 
+        table.setFillParent(true); // Make the table fill the stage
+        table2.setFillParent(true);
+        stage.addActor(table); // Add the table to the stage
+        stage2.addActor(table2);
         // Add a label for the title
-        table.add(new Label("Select Level", game.getSkin(), "title")).padBottom(80).row();
+        table2.add(new Label("Select Level", game.getSkin(), "title")).padBottom((float)viewport.getScreenHeight()/1.3f);
 
         // Load .tmx files from the levels directory
         loadLevelButtons(table);
@@ -110,9 +120,43 @@ public class LevelSelectorScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+
+
+        int mouseX = Gdx.input.getX();
+        int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+        float scaleX = Gdx.graphics.getWidth() / (float) bg.getWidth();
+        float scaleY = Gdx.graphics.getHeight() / (float) bg.getHeight();
+
+//        float scaleX = viewport.getScreenWidth()/(float)bg.getWidth();
+//        float scaleY = viewport.getScreenHeight()/(float)bg.getHeight();
+        float scale = Math.min(scaleX, scaleY);
+        float bgWidth = bg.getWidth() * scale;
+        float bgHeight = bg.getHeight() * scale;
+        float bgX = (Gdx.graphics.getWidth() - bgWidth) / 2f;
+        float bgY = (Gdx.graphics.getHeight() - bgHeight) / 2f;
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
+        stage.getBatch().begin();
+
+        stage.getBatch().draw(bg, bgX, bgY, bgWidth, bgHeight);
+        stage.getBatch().end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
+
+        stage.getBatch().begin();
+        // Draw the overlay texture slightly offset to center it on the cursor
+//        stage.setDebugAll(true);
+        stage.getBatch().setColor(1f,1f,1f,0.5f);
+        stage.getBatch().draw(overlayTexture, mouseX - 3840/2f, mouseY -  2160/2f);
+        stage.getBatch().setColor(1f,1f,1f,1f);
+        stage.getBatch().end();
+
+
+        stage2.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
+        stage2.draw(); // Draw the stage
+
+
+
     }
 
     @Override
@@ -127,6 +171,8 @@ public class LevelSelectorScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        bg = new Texture(Gdx.files.internal("Menu UI Design.png"),true);
+        overlayTexture = new Texture(Gdx.files.internal("DK-MenuVersion2.png"),true);
         Gdx.input.setInputProcessor(stage); // Set the input processor so the stage can receive input events
     }
 
