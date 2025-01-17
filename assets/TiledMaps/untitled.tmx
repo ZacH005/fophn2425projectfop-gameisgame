@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="53" nextobjectid="38">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="53" nextobjectid="48">
  <tileset firstgid="1" source="Ground_rocks.tsx"/>
  <tileset firstgid="2263" name="Water_detilazation" tilewidth="16" tileheight="16" tilecount="2886" columns="37">
   <image source="water_detilazation.png" width="592" height="1248"/>
@@ -3283,17 +3283,18 @@
  <tileset firstgid="8814" source="dwarvenMines.tsx"/>
  <tileset firstgid="8910" source="Objects_animated3.tsx"/>
  <tileset firstgid="10626" source="details.tsx"/>
- <layer id="1" name="Tile Layer 1" width="30" height="30">
+ <tileset firstgid="11186" source="../../../fophn2425projectfop-gameisgameorg/assets/TiledMaps/Objects.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJztz6ENADAMBLFXYRfK/psFdIKiSJGB8ekqSS1xzzPVnv4HAAD40dU0wNw=
   </data>
  </layer>
- <layer id="2" name="Elevated" width="30" height="30">
+ <layer id="2" name="Elevated" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt0z9LQlEYx/GHqy+iHKOhthbXEEMQwYLSwTAsEcohh4aiPwRNBjUU2AvIwaEGq3dh9g4ctd5BY9b3cI90UAqudIjo/ODDc+4Znh9XvCLB0gyJ3OEeD0h7IotYwrK2ggyy3wiaFl2PaOMJCe622FNGknMK25wrSOtnJWGcU8FrpUtXD894QYG7dWygiBKqdJ5iUz8rBeNcGqP3ja4+3iFhkX3GAQ5xNMa+IJmgbzL8+VzDleXOv5azKbv7j3Gt/1cndqtGetV3VP+F3qr+fod7Z7ib9fxpo1f9zjnEjP3znONY0HOQuemf6Y2igzV2rxr7dzjnPf8+b+F9Ve8rssgY9+d07WJPTxupIBTx5yANui5wqaeN3LD31vPncL66d3FxcXFx+U/5AOPgNzc=
   </data>
  </layer>
- <layer id="50" name="Opening" width="30" height="30">
+ <layer id="50" name="Opening" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt0LEJgFAMhOGQaXQN3xq+EbTUTrDSUkfQUpf0JJkhD/E+OFL+EBH6oglbVKTH5uDugeZaoNuheRbolvjz31X4d+2LktBq1G4K7Ga0WrWbA7uvAb3RF2lDb/dFutC7fURERGQe7sAQZQ==
   </data>
@@ -3303,27 +3304,27 @@
    eJztwzEJAAAIADC7+FnF/n1E7OC1wSIAWF33W9YFAPg2ZvMBhQ==
   </data>
  </layer>
- <layer id="19" name="water" width="30" height="30">
+ <layer id="19" name="water" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt1bENACAIAEGGcBP3381SSbRTvvAvof4KiMh6m1OJ6ko/qd6ztVfVJppkd9eXJL1B3Vnyvp/+242h2nazARXoIh4=
   </data>
  </layer>
- <layer id="20" name="water_detailization" width="30" height="30">
+ <layer id="20" name="water_detailization" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt1kVOBEEYgNHGZwYWwyhb3C24bXHd4XY75ATYEZATYNfAXsIBCJNhwqK+5C2r/u5FdXUUfXcRj6JLrrjmJh6VpEdznnjmhdcSzQ2FQn9b0lmuJ0WaDFly5Gko8lkfst8wI4wyxjgTTDLFNDNFnrtpvy222WGXPfY54JAjjsO3LRQKhUK/7MTdccoZ5yW8R27NuuOeh39wf73FouidDz6JPFMZ5VRQSRXV1BAjToJa6gp8h0brmmimhVbaaKeDTrropode+uhngMEC585aN8c8CyyyxDIrrLLGOhskE/65SJEmQ5Yc+cTP874ANZwj2w==
   </data>
  </layer>
- <layer id="21" name="ground" width="30" height="30">
+ <layer id="21" name="ground" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJztlksKwjAQhnOIbLrRpR7AB9Wim+raBwqiOy0+0I3uVBQv2DP5h85AKVQibWORDHwkhel8QyjNhI4QYQyO0Eknj0iradqrg/X+h1cnt0ivqTP41JsrhdiALvBk8V7l64AA3MAETDN4db+lERxjcJfRe02Z7Zx1vVt4dqAK9uBgyPuA5wlaoA9ehrx5f7/WWx5vEVFmr8Wii4//60Ca9y7hXP3Ae4bzouHl+WJOK++9HHtmB9d0Y/PFiVberxO5WZzsWFDNgOaLCqiBOt37ar1SLvtnYPhFD37CoYJrqueGjGaaHt33fO+3E7lH6kHX/QYtp9zV
   </data>
  </layer>
- <layer id="22" name="darker_surface1" width="30" height="30">
+ <layer id="22" name="darker_surface1" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJztllsKhDAMRbuTLmqc0U1o/XD24Avd8iSgGILSFtOIMhcCfuUkaR4a89eRKmuMs8/jcv8v+M7ARgVuT/yXdoslBdeXlyPsnMUWq5C8OK87yQyVVI6xmoA1KzOfKny/+oI6IncA+yiz155F9luRT2dUq+acyfPGHdaAfRPHwvmaouyruGf5juw63w2XYnK1y10JYebKvS1583xzKX3z6Fwc7aJUTN8umgTrin4Kwf+iGGHvSuZyR2UKe35P6776ARGzTWU=
   </data>
  </layer>
- <layer id="37" name="bridge" width="30" height="30">
+ <layer id="37" name="bridge" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJztzQERABAQRcELcaFIQQpSkIKefgjjZszbAmsGAAAA4CfJzbK/f4vOGvA2nT3gHTpnwLt07kvvAdizBWo=
   </data>
@@ -3341,7 +3342,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="49" name="EnemyObjects">
+ <objectgroup id="49" name="EnemyObjects" visible="0">
   <object id="12" x="313.333" y="275.333">
    <properties>
     <property name="type" value="Slime"/>
@@ -3349,7 +3350,7 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="45" name="DoorObjects">
+ <objectgroup id="45" name="DoorObjects" locked="1">
   <object id="15" x="387.12" y="241.878" width="16.59" height="40.91" rotation="-90">
    <properties>
     <property name="doorCollider" type="object" value="6"/>
@@ -3357,7 +3358,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="44" name="EventObjects">
+ <objectgroup id="44" name="EventObjects" visible="0">
   <object id="13" x="194" y="216.667">
    <properties>
     <property name="type" value="Start"/>
@@ -3371,7 +3372,7 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="46" name="PowerUpObjects">
+ <objectgroup id="46" name="PowerUpObjects" visible="0">
   <object id="16" x="243" y="324.5">
    <properties>
     <property name="type" value="Key"/>
@@ -3379,21 +3380,22 @@
    <point/>
   </object>
  </objectgroup>
- <layer id="23" name="bricks2" width="30" height="30">
+ <layer id="23" name="bricks2" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJxjYBgFIxFkyTIw5MgOP3uHq79GAX4w0uIdZO9SIA6is90tQPvsoHYHAnEIEIdC2bR2C8juViDOA+J8KDt/NM+NglEwCkYB2WCg6zB61B3IAFaP9EDtR67DQtH4tLIfvQ7LHyR1GgAkCB2x
   </data>
  </layer>
- <objectgroup id="52" name="BreakableWalls">
+ <objectgroup id="52" name="BreakableWalls" visible="0">
   <object id="36" x="359" y="138" width="101.5" height="102.5"/>
   <object id="37" x="313.5" y="62" width="90.5" height="44"/>
+  <object id="40" x="374.667" y="129.667" width="64.6667" height="126.333"/>
  </objectgroup>
- <layer id="24" name="elevated_space" width="30" height="30">
+ <layer id="24" name="elevated_space" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJzdlr0uBFEYhk9CSFYomMYYdmxUflpUKLiDJYRwBwqrkHAB21BIKFBp3ABuwCoo1k9v1X4KQmJ1npPZidmxOyOTM2eS/ZInOdnJzpP3y8x8X7FbiKKHRUOIJaP6N0kBLuEOVJT//ms4c8ZfXwke4SUmr+v57BEiZf36ytBkCvHRr9brz9WBc8ByfN/QifMEZ3tGjbdWrm3ub6WFmLAcXxcMw4ipximrXq5RvPNWbV+Wa7Mwl47uDctVz3FlC3FtR/cG5ZK1GpJpkP8MKez/f71xVT4hb6NVNqE+HvDOXvA8FmJ4JoPqFO8DzhIccj5S9N0PK/lt/sJZhjPO5xq9Lpu4tzTl9nr3cO5ryu2fv5IbuG1Ab2um2jdNj2fgifOzxrzLOFdMZ59pjvl99no3cOWZ+W/wHmGPcmeiO1OD9hPpm+T6FOzCMb4U/W9TtEcFeRcqvdXRX7fu8eZwrUOvGa2/UepV7o/4dmAMxjXlbank7NM8j2zNOZOuH61qf6g=
   </data>
  </layer>
- <layer id="25" name="bricks3" width="30" height="30">
+ <layer id="25" name="bricks3" width="30" height="30" visible="0">
   <data encoding="base64" compression="zlib">
    eJzLkmVg6AbiNiBGBsuA/KVAHIQmTi2QBTQ3B4vZ2SB7pbHLUQMQ8hd6OFAL0NpfhACt/DUKRsEoGAWjYBSMglEwCkbBKBi6AABsRQuz
   </data>

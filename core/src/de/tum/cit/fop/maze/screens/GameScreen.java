@@ -442,12 +442,12 @@ public class GameScreen implements Screen {
                 double yDiff = key.getPosition().y - player.getPosition().y;
                 double distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
                 // if the distance is greater than 16 let's say
-                if (distance >= 71) {
+                if (distance >= 300) {
                     // mute the key sound
                     soundManager.setKeySoundVolume(0f);
                 } else {
                     // else, increase sound when distance decreases
-                    float keySoundVolume = 1f - (float) distance / 71; // Normalized
+                    float keySoundVolume = 1f - (float) distance / 300; // Normalized
 //                    System.out.println(keySoundVolume+" key sound volume supposdly");
 
                     soundManager.setKeySoundVolume(keySoundVolume);
@@ -562,6 +562,8 @@ public class GameScreen implements Screen {
     public void handleBreaking(TiledMap map) {
         MapLayer objectLayer = map.getLayers().get("BreakableWalls");
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get("Opening");
+        TiledMapTileLayer tileLayer1 = (TiledMapTileLayer) map.getLayers().get("Cracks");
+        TiledMapTileLayer tileLayer2 = (TiledMapTileLayer) map.getLayers().get("Cracks2");
 
         Door door = colManager.checkDoorCollision(player.getCollider());
         if (door != null && player.getKeys() > 0)    {
@@ -578,6 +580,8 @@ public class GameScreen implements Screen {
                 scheduler.schedule(() -> {
                     tiledMap.getLayers().get("Anim").setVisible(false);
                     breakTiles(object, tileLayer, 16, 16);
+                    breakTiles(object,tileLayer1,16,16);
+                    breakTiles(object,tileLayer2,16,16);
                     scheduler.shutdown(); // Shut down the scheduler
                 }, 1200, TimeUnit.MILLISECONDS);
 

@@ -55,7 +55,7 @@ public class Enemy implements Entity {
         damageCollider = new Rectangle(position.x-2,position.y-5,20,20);
         health = 3;
 
-        movementSpeed = 50 * Gdx.graphics.getDeltaTime(); // uses delta time to allow for frames to be bad
+        movementSpeed = 120 * Gdx.graphics.getDeltaTime(); // uses delta time to allow for frames to be bad
 
 //        chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
 //        chaseMusic.setLooping(true);
