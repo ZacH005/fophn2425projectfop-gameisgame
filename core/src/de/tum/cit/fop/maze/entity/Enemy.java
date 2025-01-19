@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.fop.maze.SoundManager;
@@ -22,6 +23,12 @@ public class Enemy implements Entity {
     public Rectangle scanRange;
     private Player player;
     private boolean following;
+    private boolean roaming;
+
+    private Vector2 roamingTarget;
+    private long lastRoamUpdateTime = 0;
+    private long roamDelay = 200;
+
     public Rectangle damageCollider;
 //    private Music chaseMusic;;
     ///sound manager stuff.
@@ -41,6 +48,7 @@ public class Enemy implements Entity {
 
     private float movementSpeed;
     private List<Node> currentPath;
+    private Vector2 savedVector;
 
     public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager) {
         this.player = player;
@@ -49,8 +57,8 @@ public class Enemy implements Entity {
         initialposy = y;
         texture=new Texture("TiledMaps/SlimeA.png");
         animation=new Animation(new TextureRegion(texture),16,3f);
-         scanrangewidth = 100;
-         scanrangeheight = 100;
+        scanrangewidth = 100;
+        scanrangeheight = 100;
         scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
         damageCollider = new Rectangle(position.x-2,position.y-5,20,20);
         health = 3;
@@ -77,6 +85,8 @@ public class Enemy implements Entity {
         mainState.put("bass",1);
 
         this.hud=hud;
+
+        roaming = true;
     }
 
     public void update(float delta, CollisionManager colManager){
@@ -172,10 +182,11 @@ public class Enemy implements Entity {
     public void setMoney(int money) {
 
     }
-    public void takedamage(){
-        health-=1;
-        if(health<=0){
-            isDead=true;
+    public void takedamage(int amount){
+        health -= amount;
+        if (health <= 0) {
+            isDead = true;
+            System.out.println("Enemy defeated!");
         }
     }
 
@@ -200,17 +211,41 @@ public class Enemy implements Entity {
         float distanceY = player.getPosition().y - this.position.y;
         float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-        if (scanRange.overlaps(player.collider) && !following) {
-                following = true;
-                soundManager.onGameStateChange(chaseState);
+        if (scanRange.overlaps(player.collider) && !following && hasClearLineOfSight(position, player.getPosition(), colManager)) {
+//        if (scanRange.overlaps(player.collider) && !following) {
+            roaming = false;
+            following = true;
+            soundManager.onGameStateChange(chaseState);
         }
-        if (distance > 140.0f||distance < 10.0f && following) {
+        if (distance > 140.0f&& following) {
             following = false;
             soundManager.onGameStateChange(mainState);
+            roaming = true;
+            return;
+        }
+        if (distance < 15.0f && following) {
+            following = false;
+            roaming = false;
+            soundManager.onGameStateChange(chaseState);
             return;
         }
 
-        if (following) {
+        if (following && hasClearLineOfSight(position, player.getPosition(), colManager)) {
+            float directionX = player.getPosition().x - this.position.x;
+            float directionY = player.getPosition().y - this.position.y;
+
+            float length = (float) Math.sqrt(directionX * directionX + directionY * directionY);
+
+            if (length > 0) {
+                directionX /= length;
+                directionY /= length;
+            }
+
+            this.position.x += directionX * movementSpeed;
+            this.position.y += directionY * movementSpeed;
+            updateColliders();
+        } else if (following) {
+
             //decides how long until the path si recalculated (rn 500 millisec)
             if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
                 currentPath = findPlayerPath(colManager);
@@ -224,7 +259,7 @@ public class Enemy implements Entity {
                 Node nextNode;
 
                 if (path.size()>2) {
-                     nextNode = path.get(1);
+                    nextNode = path.get(1);
                 } else {
                     nextNode = path.get(0);
                 }
@@ -250,12 +285,79 @@ public class Enemy implements Entity {
                 }
             }
         }
-//        if (currentPath != null)    {
-//            System.out.println("size: "+currentPath.size());
-//            System.out.println("distance: "+distance);
-//            System.out.println("node distance: "+distanceBetween(currentPath.get(0), currentPath.get(currentPath.size()-1)));
-//        }
+
+        //make new vector every update
+        //always update the player movement
+        //load the vector
+
+        // Direction vectors
+        Vector2[] directions = {
+                new Vector2(0, 1),   // Up
+                new Vector2(0, -1),  // Down
+                new Vector2(-1, 0),  // Left
+                new Vector2(1, 0)    // Right
+        };
+
+        if (roaming) {
+            //finds random positon
+            if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
+                movement = (int)(4 * Math.random());
+                lastMovementUpdateTime = TimeUtils.millis();
+            }
+            //constatnyly move in that directoin
+            float newX = this.position.x + (directions[movement].x * movementSpeed * 0.6f);
+            float newY = this.position.y + (directions[movement].y * movementSpeed * 0.6f);
+
+            Vector2 newPosition = new Vector2(newX, newY);
+
+            int retryCount = 0;
+            //collision check
+            while (!hasClearLineOfSight(this.position, newPosition, colManager) && retryCount < 5) {
+                movement = (int)(4 * Math.random());
+
+                //check again
+                newX = this.position.x + (directions[movement].x * movementSpeed * 0.6f);
+                newY = this.position.y + (directions[movement].y * movementSpeed * 0.6f);
+
+                newPosition = new Vector2(newX, newY);
+                retryCount++;
+            }
+
+            if (retryCount < 5) {
+                this.position.x = newX;
+                this.position.y = newY;
+
+                updateColliders();
+            } else {
+                System.out.println("stuck");
+            }
+        }
+
+
     }
+    int movement = 0;
+
+
+    private boolean hasClearLineOfSight(Vector2 start, Vector2 end, CollisionManager colManager) {
+        float steps = 10;
+        float stepX = (end.x - start.x) / steps;
+        float stepY = (end.y - start.y) / steps;
+
+        for (int i = 1; i <= steps; i++) {
+            float checkX = start.x + i * stepX;
+            float checkY = start.y + i * stepY;
+
+            Rectangle checkRect = new Rectangle(checkX, checkY, 16, 16);
+            if (colManager.checkMapCollision(checkRect) != null) {
+//                System.out.println("unclear");
+                return false;
+            }
+        }
+//        System.out.println("clear");
+
+        return true;
+    }
+
 
     private List<Node> findPlayerPath(CollisionManager colManager) {
         Node start = new Node((int) (this.position.x), (int) (this.position.y), null, 0, 0);

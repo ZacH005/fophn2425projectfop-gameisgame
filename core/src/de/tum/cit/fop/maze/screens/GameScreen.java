@@ -314,8 +314,15 @@ public class GameScreen implements Screen {
             BitmapFont font = new BitmapFont();
             font.draw(game.getSpriteBatch(), "FPS: " + fps, 0, 0);
 
+            shapeRenderer.setColor(Color.GOLD);
             shapeRenderer.rect(player.collider.x, player.collider.y, player.collider.width, player.collider.height);
-            for (Enemy enemy : enemies) { // Assuming you have a list of enemies
+            shapeRenderer.setColor(Color.PINK);
+            shapeRenderer.rect(player.getWeapon().getAttackArea().x, player.getWeapon().getAttackArea().y, player.getWeapon().getAttackArea().width,player.getWeapon().getAttackArea().height);
+            shapeRenderer.setColor(1, 0, 0, 0.5f); // Semi-transparent red
+            shapeRenderer.arc(player.collider.x, player.collider.y, player.getWeapon().getRange(),
+                    (float) Math.toDegrees(player.getWeapon().getRotationAngle()) - player.getWeapon().getSectorAngle() / 2, player.getWeapon().getSectorAngle());
+            //enemy related debug
+            for (Enemy enemy : enemies) {
                 List<Node> path = enemy.getCurrentPath();
                 if (path != null) {
                     for (int i = 0; i < path.size() - 1; i++) {
@@ -327,10 +334,10 @@ public class GameScreen implements Screen {
                         shapeRenderer.line(current.x, current.y, next.x, next.y);
                         shapeRenderer.setColor(Color.BLUE);
                         shapeRenderer.point(current.x, current.y, 0);
-                        shapeRenderer.setColor(Color.YELLOW);
                     }
                 }
-
+                shapeRenderer.setColor(Color.YELLOW);
+                shapeRenderer.rect(enemy.position.x-140, enemy.position.y-140, 2*140, 2*140);
                 shapeRenderer.setColor(0, 1, 0, 1);
                 shapeRenderer.rect(enemy.scanRange.x, enemy.scanRange.y, enemy.scanRange.width, enemy.scanRange.height);
                 shapeRenderer.setColor(Color.ORANGE);
@@ -482,20 +489,20 @@ public class GameScreen implements Screen {
 
 
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             showDebugOverlay = !showDebugOverlay;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.move(Player.Direction.LEFT);
             player.setCurrentAnimation(game.getCharacterLeftAnimation());
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 
             player.move(Player.Direction.RIGHT);
             player.setCurrentAnimation(game.getCharacterRightAnimation());
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             handleBreaking(tiledMap);
             if ((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))) {
                 player.setAdjust(true);
@@ -508,13 +515,15 @@ public class GameScreen implements Screen {
                 player.setAdjust(true);
                 player.setCurrentAnimation(game.getcharacterUpAttackAnimation());
             }
-            for (Enemy enemy : enemies) {
-                if ((player.getCollider().overlaps(enemy.damageCollider))) {
-                    player.attack(enemy);
-                } else {
-                    player.attack(null);
-                }
-            }
+
+            player.attack(enemies);
+//            for (Enemy enemy : enemies) {
+//                if ((player.getCollider().overlaps(enemy.damageCollider))){
+//                    player.attack(enemy);
+//                } else {
+//                    player.attack(null);
+//                }
+//            }
 //            float lastDamageTime = 0;
 //            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
 //                // proceed with damage logic
@@ -522,23 +531,27 @@ public class GameScreen implements Screen {
 //                // update last damage time
 //                lastDamageTime = TimeUtils.nanoTime();
 //            }
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             player.move(Player.Direction.UP);
             player.setCurrentAnimation(game.getCharacterUpAnimation());
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             player.move(Player.Direction.DOWN);
             player.setCurrentAnimation(game.getCharacterDownAnimation());
         } else if (!player.isAttack) {
-            if (player.getCurrentAnimation().equals(game.getCharacterDownAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAttackAnimation())) {
+            if (player.getCurrentAnimation().equals(game.getCharacterDownAnimation()) ||
+                    player.getCurrentAnimation().equals(game.getCharacterDownAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
                 player.setAdjust(false);
-            } else if (player.getCurrentAnimation().equals(game.getCharacterRightAnimation()) || player.getCurrentAnimation().equals(game.getCharacterRightAttackAnimation())) {
+            } else if (player.getCurrentAnimation().equals(game.getCharacterRightAnimation()) ||
+                    player.getCurrentAnimation().equals(game.getCharacterRightAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterRightIdleAnimation());
                 player.setAdjust(false);
-            } else if (player.getCurrentAnimation().equals(game.getCharacterLeftAnimation()) || player.getCurrentAnimation().equals(game.getCharacterLeftAttackAnimation())) {
+            } else if (player.getCurrentAnimation().equals(game.getCharacterLeftAnimation()) ||
+                    player.getCurrentAnimation().equals(game.getCharacterLeftAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterLeftIdleAnimation());
                 player.setAdjust(false);
-            } else if (player.getCurrentAnimation().equals(game.getCharacterUpAnimation()) || player.getCurrentAnimation().equals(game.getcharacterUpAttackAnimation())) {
+            } else if (player.getCurrentAnimation().equals(game.getCharacterUpAnimation()) ||
+                    player.getCurrentAnimation().equals(game.getcharacterUpAttackAnimation())) {
                 player.setCurrentAnimation(game.getCharacterUpIdleAnimation());
                 player.setAdjust(false);
             }
@@ -669,28 +682,25 @@ public class GameScreen implements Screen {
             }
         }
 
-// Ensure the finish object is found
-        if (rect == null) {
-            throw new RuntimeException("Finish object not found in eventobjects layer!");
-        }
-
-        // Player's position
-        float playerX = player.getPosition().x;
-        float playerY = player.getPosition().y;
+        if (rect != null) {
+            // Player's position
+            float playerX = player.getPosition().x;
+            float playerY = player.getPosition().y;
 
 // Finish object's position
-        Rectangle finishBounds = rect.getRectangle();
-        float finishX = finishBounds.x + finishBounds.width / 2;
-        float finishY = finishBounds.y + finishBounds.height / 2;
+            Rectangle finishBounds = rect.getRectangle();
+            float finishX = finishBounds.x + finishBounds.width / 2;
+            float finishY = finishBounds.y + finishBounds.height / 2;
 
 // Calculate angle
-        float angle = MathUtils.atan2(finishY - playerY, finishX - playerX) * MathUtils.radiansToDegrees;
+            float angle = MathUtils.atan2(finishY - playerY, finishX - playerX) * MathUtils.radiansToDegrees;
 
-        arrowSprite.setScale(0.05f);
-        arrowSprite.setPosition(playerX-143, playerY-120);
-        arrowSprite.setRotation(90+angle); // Adjust rotation (optional)
+            arrowSprite.setScale(0.05f);
+            arrowSprite.setPosition(playerX-143, playerY-120);
+            arrowSprite.setRotation(90+angle); // Adjust rotation (optional)
 
 // In render method
-        arrowSprite.draw(game.getSpriteBatch());
+            arrowSprite.draw(game.getSpriteBatch());
+        }
     }
 }

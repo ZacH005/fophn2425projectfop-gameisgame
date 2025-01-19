@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="34">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="35">
  <tileset firstgid="1" source="cavesTileset.tsx"/>
  <tileset firstgid="141" source="dwarvenMines.tsx"/>
  <layer id="1" name="Ground" width="30" height="20">
@@ -239,7 +239,14 @@
    </properties>
    <point/>
   </object>
+  <object id="34" x="279.772" y="101.693">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
  </objectgroup>
+ <objectgroup id="15" name="BreakableWalls"/>
  <objectgroup id="10" name="PowerUpObjects">
   <properties>
    <property name="type" value="HeartUp"/>

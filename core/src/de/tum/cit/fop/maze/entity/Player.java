@@ -79,6 +79,8 @@ public class Player implements Entity, Serializable {
 
     private SoundManager soundManager;
 
+    private Weapon weapon;
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
@@ -115,6 +117,8 @@ public class Player implements Entity, Serializable {
         this.lastValidPosition = new Vector2(x, y);
         this.currentTileX = (int) position.x / tileSize;
         this.currentTileY = (int) position.y / tileSize;
+
+        this.weapon = new Weapon("icons/realPickaxe.png", 50);
     }
     public void startFlickering(float time) {
         isFlickering = true;
@@ -126,17 +130,31 @@ public class Player implements Entity, Serializable {
         isFlickering = false;
         flickerAlpha = 1.0f;  // Reset alpha to normal
     }
-    public void attack(Enemy enemy){
-        isAttack=true;
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.schedule(() -> {
-            isAttack = false;
-            enemy.takedamage();
-            adjust=false;
-            System.out.println("attacked");
-            scheduler.shutdown(); // Shut down the scheduler
-        }, 400, TimeUnit.MILLISECONDS);
+    public void attack(List<Enemy> enemies) {
+        for (Enemy enemy : enemies) {
+            if (weapon.isInSector(enemy.getPosition(), position)) {
+                enemy.takedamage(1); // Adjust damage as needed
+            }
+        }
     }
+
+//    public void attack(List<Enemy> enemies){
+//        for (Enemy enemy : enemies) {
+//            if (weapon.getAttackArea().overlaps(enemy.getDamageCollider())) {
+//                System.out.println("attacked");
+//                enemy.takedamage(1); // Adjust damage value
+//            }
+//        }
+////        isAttack=true;
+////        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+////        scheduler.schedule(() -> {
+////            isAttack = false;
+////            enemy.takedamage(1);
+////            adjust=false;
+////            System.out.println("attacked");
+////            scheduler.shutdown(); // Shut down the scheduler
+////        }, 400, TimeUnit.MILLISECONDS);
+//    }
 
 
     public void updateFlickerEffect(float delta) {
@@ -177,7 +195,13 @@ public class Player implements Entity, Serializable {
             Rectangle newPos = new Rectangle(newX-7, newY-7, width-2, height-2);
 
             //door check
-
+//            Door door = colManager.checkDoorCollision(newPos);
+//            if (door != null && keys > 0)    {
+//                colManager.openDoor(door);
+//                soundManager.playSound("mcOpenNormalDoor_sfx");
+//                door.setCurrentTexture(door.getOpenTexture());
+//                keys -= 1;
+//            }
 
             if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")) {
                 colManager.setWonLevel(true);
@@ -221,6 +245,9 @@ public class Player implements Entity, Serializable {
         } else {
 //            animationTime = 0;
         }
+
+        Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+        weapon.update(position, mousePosition);
     }
 
 
@@ -241,6 +268,7 @@ public class Player implements Entity, Serializable {
 
             batch.setColor(1, 1, 1, 1);
         }
+        weapon.render(batch, Gdx.graphics.getDeltaTime(), position);
 
     }
     public void respawn(){
@@ -468,5 +496,13 @@ public class Player implements Entity, Serializable {
 
     public void setKeys(int keys) {
         this.keys = keys;
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
     }
 }
