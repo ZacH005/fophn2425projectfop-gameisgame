@@ -124,7 +124,7 @@ public class ScreenManager extends Game {
         soundManager.loadSound("mcOpenBigDoor_sfx","music/sfxs/mcOpenBigDoor.mp3");
         soundManager.loadSound("mcOpenNormalDoor_sfx","music/sfxs/mcOpenNormalDoor.mp3");
         soundManager.loadSound("mcUsePowerUp_sfx","music/sfxs/mcUsePowerUp.mp3");
-        soundManager.loadSound("mcFootstep_sfx","music/sfxs/mcFootStep.mp3");
+        soundManager.loadSound("footstep_sfx","music/footstep_sfx.mp3");
         soundManager.loadSound("mcHurt_sfx","music/sfxs/mcHurt.mp3");
         soundManager.loadSound("enemyDeath_sfx","music/sfxs/EnemyDeath.mp3");
         soundManager.loadSound("click","music/UI/menuSelect.mp3");

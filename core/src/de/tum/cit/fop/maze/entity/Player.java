@@ -223,7 +223,7 @@ public class Player implements Entity, Serializable {
                     currentTileY = newTileY;
 
                     // Play footstep sound and reset timer
-                    soundManager.playSound("footstep_sfx");
+                    soundManager.playSound("mcFootstep_sfx");
                     footstepTimer = 0f;
                 }
             } else if (colManager.checkMapCollision(newPos).equals("Trap"))   {
