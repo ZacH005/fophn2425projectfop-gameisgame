@@ -34,7 +34,12 @@ public class Player implements Entity, Serializable {
     private int currentTileY;
     private float footstepTimer = 0f;
     private boolean adjust = false;
-    private static final float FOOTSTEP_INTERVAL = 0.2f; // 300 ms between footsteps
+    private static final float FOOTSTEP_INTERVAL = 0.2f;// 300 ms between footsteps
+
+    private boolean isKnockedBack = false;
+    private float knockbackTime = 0f;
+    private static final float KNOCKBACK_DURATION = 0.1f; // Duration of knockback in seconds
+    private Vector2 knockbackVelocity = new Vector2();
 
     private Vector2 velocity;
     private float speed;
@@ -52,6 +57,10 @@ public class Player implements Entity, Serializable {
     private TiledMap tiledMap;
     private int tileSize;
 
+    public boolean isRedEffectActive = false;
+    public float redEffectTime = 0f;
+    public static final float RED_EFFECT_DURATION = 0.2f;
+
     public Rectangle collider;
 
     private List<TiledMapTileLayer> collidable;
@@ -65,6 +74,7 @@ public class Player implements Entity, Serializable {
     private int maxHealth;
     private List<Item> hasEquipped;
     private  int keys=0;
+    public Rectangle newPos;
 
     private float flickerAlpha = 1.0f;  // Initialize alpha to full visibility
     private boolean isFlickering = false;  // Track if the player is flickering
@@ -95,6 +105,7 @@ public class Player implements Entity, Serializable {
         this.isMoving = false;
         this.direction = Direction.DOWN;
         this.animationTime = 0f;
+        this.newPos = new Rectangle(x,y,width,height);
         //added in order that they are shown in the map file, not in the id order
 //        this.collidable = Arrays.asList((TiledMapTileLayer) tiledMap.getLayers().get(1), (TiledMapTileLayer) tiledMap.getLayers().get(2), (TiledMapTileLayer) tiledMap.getLayers().get(3));
 
@@ -110,7 +121,7 @@ public class Player implements Entity, Serializable {
         this.armor = armor;
         this.money = money;
         this.powerups = new ArrayList<>();
-        this.collider = new Rectangle(position.x-tileSize/2, position.y-tileSize/2, width, height);
+        this.collider = new Rectangle(position.x-tileSize/2+5, position.y-tileSize/2, width, height);
         this.maxHealth = 7;
         this.hasEquipped = new ArrayList<>();
 
@@ -156,9 +167,18 @@ public class Player implements Entity, Serializable {
 ////        }, 400, TimeUnit.MILLISECONDS);
 //    }
 
+    public void applyKnockback(Vector2 enemyPosition, float force) {
+        // Calculate the direction of the knockback (away from the enemy)
+        Vector2 knockbackDirection = new Vector2(position.x - enemyPosition.x, position.y - enemyPosition.y).nor();
+        knockbackVelocity.set(knockbackDirection.scl(force));
+        isKnockedBack = true;
+        knockbackTime = 0f;
+    }
+
 
     public void updateFlickerEffect(float delta) {
         if (isFlickering) {
+            stop();
             flickertotaltime += delta;
             flickerTime += delta;
             //stops flickering when time is greater than total animation duration (Ik the variable names could be confusing sorry.)
@@ -185,14 +205,41 @@ public class Player implements Entity, Serializable {
     public void update(float delta, CollisionManager colManager) {
         updateFlickerEffect(delta);
 
+        if (isRedEffectActive) {
+            redEffectTime += delta;
+            if (redEffectTime >= RED_EFFECT_DURATION) {
+                isRedEffectActive = false;
+            }
+        }
+
         footstepTimer += delta; // Update the timer
 
         animationTime += delta;
 
-        if (isMoving) {
-            float newX = position.x + velocity.x * speed * delta;
-            float newY = position.y + velocity.y * speed * delta;
-            Rectangle newPos = new Rectangle(newX-7, newY-7, width-2, height-2);
+        if (isKnockedBack) {
+            knockbackTime += delta;
+            if (knockbackTime < KNOCKBACK_DURATION) {
+                // Apply knockback velocity
+                float newX = position.x + knockbackVelocity.x * delta;
+                float newY = position.y + knockbackVelocity.y * delta;
+                newPos = new Rectangle(newX, newY - 7, width - 2, height - 2);
+
+                if (colManager.checkMapCollision(newPos) == null) {
+                    position.x = newX;
+                    position.y = newY;
+                    collider.x = newX;
+                    collider.y = newY - 8;
+                }
+            } else {
+                // End knockback effect
+                isKnockedBack = false;
+                knockbackVelocity.set(0, 0);
+            }
+        } else {
+            if (isMoving) {
+                float newX = position.x + velocity.x * speed * delta;
+                float newY = position.y + velocity.y * speed * delta;
+                newPos = new Rectangle(newX, newY - 7, width - 2, height - 2);
 
             //door check
 //            Door door = colManager.checkDoorCollision(newPos);
@@ -203,32 +250,35 @@ public class Player implements Entity, Serializable {
 //                keys -= 1;
 //            }
 
-            if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")) {
-                colManager.setWonLevel(true);
-                System.out.println(colManager.isWonLevel());
-            }
-
-            if (colManager.checkMapCollision(newPos) == null) {
-                position.x = newX;
-                position.y = newY;
-                collider.x = newX - 8;
-                collider.y = newY - 8;
-
-                // Detect tile crossing so you can play footstep sound at the right time
-                int newTileX = (int) newX / tileSize;
-                int newTileY = (int) newY / tileSize;
-
-                if ((newTileX != currentTileX || newTileY != currentTileY) && footstepTimer >= FOOTSTEP_INTERVAL) {
-                    currentTileX = newTileX;
-                    currentTileY = newTileY;
-
-                    // Play footstep sound and reset timer
-                    soundManager.playSound("mcFootstep_sfx");
-                    footstepTimer = 0f;
+                if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")) {
+                    colManager.setWonLevel(true);
+                    System.out.println(colManager.isWonLevel());
                 }
-            } else if (colManager.checkMapCollision(newPos).equals("Trap"))   {
-                    respawn();
+
+                if (colManager.checkMapCollision(newPos) == null) {
+                    position.x = newX;
+                    position.y = newY;
+                    collider.x = newX;
+                    collider.y = newY - 8;
+
+                    // Detect tile crossing so you can play footstep sound at the right time
+                    int newTileX = (int) newX / tileSize;
+                    int newTileY = (int) newY / tileSize;
+
+                    if ((newTileX != currentTileX || newTileY != currentTileY) && footstepTimer >= FOOTSTEP_INTERVAL) {
+                        currentTileX = newTileX;
+                        currentTileY = newTileY;
+
+                        // Play footstep sound and reset timer
+                        soundManager.playSound("mcFootstep_sfx");
+                        footstepTimer = 0f;
+                    }
+                } else if (colManager.checkMapCollision(newPos).equals("Trap")) {
+                    RectangleMapObject r=(RectangleMapObject) colManager.getMapCollider(newPos);
+                    redEffectTime=0f;
+                    isRedEffectActive=true;
                     takeDamage(0.25f);
+                    applyKnockback(new Vector2((r.getRectangle().x+(r.getRectangle().getWidth()/2)),(r.getRectangle().y+(r.getRectangle().getHeight()/2))),1200);
                     startFlickering(2f);
             }
 
@@ -242,8 +292,9 @@ public class Player implements Entity, Serializable {
 //            }
 
 //            animationTime += delta;
-        } else {
+            } else {
 //            animationTime = 0;
+            }
         }
 
         Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
@@ -255,9 +306,11 @@ public class Player implements Entity, Serializable {
 //        System.out.println(health);
         if (currentAnimation != null) {
             if (isFlickering) {
-                batch.setColor(1,1,1,flickerAlpha);
+                batch.setColor(1, 1, 1, flickerAlpha); // Flicker effect
+            } else if (isRedEffectActive) {
+                batch.setColor(0.7f, 0, 0, 1); // Red tint for damage effect
             } else {
-                batch.setColor(1,1,1,1);
+                batch.setColor(1, 1, 1, 1); // Normal color
             }
             TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
             if(adjust) {
@@ -391,7 +444,7 @@ public class Player implements Entity, Serializable {
     @Override
     public void setPosition(Vector2 position) {
         this.position = position;
-        collider.x = position.x-8;
+        collider.x = position.x;
         collider.y = position.y-8;
     }
 

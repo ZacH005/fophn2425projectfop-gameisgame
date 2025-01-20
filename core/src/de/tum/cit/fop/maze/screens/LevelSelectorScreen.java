@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -29,6 +30,8 @@ public class LevelSelectorScreen extends ScreenAdapter {
     private SoundManager soundManager;
     private Texture bg;
     private Texture overlayTexture;
+    private ParticleEffect particleEffect;
+
     public LevelSelectorScreen(ScreenManager game) {
         this.game = game;
         this.user = game.getUser(); // Assume the game class provides access to the user
@@ -121,7 +124,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
-
+        soundManager.setKeySoundVolume(0f);
         int mouseX = Gdx.input.getX();
         int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
         float scaleX = Gdx.graphics.getWidth() / (float) bg.getWidth();
@@ -138,6 +141,11 @@ public class LevelSelectorScreen extends ScreenAdapter {
         stage.getBatch().begin();
 
         stage.getBatch().draw(bg, bgX, bgY, bgWidth, bgHeight);
+        ///PARTICLEEEEEEEEEEEEEES
+        particleEffect.start();
+        particleEffect.draw(stage.getBatch(),delta);
+        particleEffect.setPosition(Gdx.graphics.getWidth()/2f ,Gdx.graphics.getHeight()/2f-100);
+
         stage.getBatch().end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
@@ -171,6 +179,13 @@ public class LevelSelectorScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+
+        ///PARTICLEEEEEEEEEEEEEES
+        particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("particles/effects/Particle Park Flame.p"), Gdx.files.internal("particles/images"));
+        particleEffect.setPosition(Gdx.graphics.getWidth()/2f ,Gdx.graphics.getHeight()/2f-100);
+        particleEffect.scaleEffect(5f);
+
         bg = new Texture(Gdx.files.internal("Menu UI Design.png"),true);
         overlayTexture = new Texture(Gdx.files.internal("DK-MenuVersion2.png"),true);
         Gdx.input.setInputProcessor(stage); // Set the input processor so the stage can receive input events

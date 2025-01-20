@@ -6,7 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -49,6 +51,12 @@ public class GameScreen implements Screen {
     //Map Path
     private final ScreenManager game;
     private final OrthographicCamera camera;
+    private Texture ovrly;
+    private float pulseTimer = 0f; // Timer for the pulsing effect
+    private final float PULSE_SPEED = 8f; // Adjust this to control the pulse speed (higher = faster)
+    private final float MIN_ALPHA = 0.3f; // Minimum alpha value for the effect
+    private final float MAX_ALPHA = 0.8f; // Maximum alpha value for the effect
+
 //    private final BitmapFont font;
 
     //Tiled map which is an object
@@ -66,6 +74,7 @@ public class GameScreen implements Screen {
     private List<Powerup> mapPowerups;
 
     private float tileSize;
+    private ParticleEffect particleEffect;
     private boolean following=false;
 
     private ShapeRenderer shapeRenderer;
@@ -123,6 +132,8 @@ public class GameScreen implements Screen {
         this.colManager = new CollisionManager(mapManager.getCollisionObjects(), mapManager.getDoorObjects(), mapManager.getEventObjects());
         isGameOver = false;
 
+        ovrly=new Texture("bld.png");
+
         //THIS IS ALL PLAYER THINGS:
         Optional<RectangleMapObject> startObject = mapManager.getEventObjects().stream()
                 .filter(recObj -> "Start".equals(recObj.getProperties().get("type")))
@@ -155,6 +166,18 @@ public class GameScreen implements Screen {
         player = new Player(startPlayerX, startPlayerY, tiledMap, 3, 100, new ArrayList<String>(), 0, soundManager);
         player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
 
+        particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("TiledMaps/particles/hh.p"), Gdx.files.internal("TiledMaps/particles/"));
+        particleEffect.getEmitters().forEach(emitter -> {
+            for (TextureRegion region : emitter.getSprites()) { // Use getSprites() for multiple textures
+                region.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            }
+        });
+        // Set the position of the particle effect
+        particleEffect.setPosition(startPlayerX,startPlayerY );
+
+        // Start the particle effect
+        particleEffect.start();
         hud = new HUD(game.getSpriteBatch(), game, player);
 
         enemies = new ArrayList<>();
@@ -240,9 +263,9 @@ public class GameScreen implements Screen {
                 winLevel();
             }
             //health trigger
-//            if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-//                player.setHealth(player.getHealth() - 1);
-//            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+                player.setHealth(player.getHealth() - 1);
+            }
             if (player.getHealth() == 0) {
 
                 isGameOver = true;
@@ -286,6 +309,11 @@ public class GameScreen implements Screen {
         camera.update();
         //basically its just saying the map should be shown in (camera)
         mapRenderer.setView(camera);
+        if(player.getHealth()<2) {
+            mapRenderer.getBatch().setColor(0.7f, 0.7f, 0.7f, 1f);
+        }else{
+            mapRenderer.getBatch().setColor(1f, 1f, 1f, 1f);
+        }
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
 
@@ -322,7 +350,8 @@ public class GameScreen implements Screen {
             shapeRenderer.arc(player.collider.x, player.collider.y, player.getWeapon().getRange(),
                     (float) Math.toDegrees(player.getWeapon().getRotationAngle()) - player.getWeapon().getSectorAngle() / 2, player.getWeapon().getSectorAngle());
             //enemy related debug
-            for (Enemy enemy : enemies) {
+            shapeRenderer.rect(player.newPos.x, player.newPos.y, player.newPos.width, player.newPos.height);
+            for (Enemy enemy : enemies) { // Assuming you have a list of enemies
                 List<Node> path = enemy.getCurrentPath();
                 if (path != null) {
                     for (int i = 0; i < path.size() - 1; i++) {
@@ -379,9 +408,16 @@ public class GameScreen implements Screen {
         //draws doors and sets their textures
         mapManager.getDoorObjects().forEach(door -> game.getSpriteBatch().draw(door.getCurrentTexture(), door.getColliderObject().getRectangle().x, door.getColliderObject().getRectangle().y));
 
-
+        trapexplosion();
 // Render the player and enemy
         player.render(game.getSpriteBatch());
+        particleEffect.update(Gdx.graphics.getDeltaTime());
+
+        // Clear the screen and render the particle effect
+        particleEffect.draw(game.getSpriteBatch());
+
+        // Restart the effect if it's finished
+
         drawarrow();
         for (Enemy enemy : enemies) {
             if(!enemy.isDead){
@@ -391,7 +427,7 @@ public class GameScreen implements Screen {
 
 
 // Apply the dark circle overlay
-        game.getSpriteBatch().setColor(1, 1, 1, 0.9f);
+//        game.getSpriteBatch().setColor(1, 1, 1, 0.9f);
 //        game.getSpriteBatch().draw(darkCircleoverlay, player.getPosition().x - darkCircleoverlay.getWidth() / 4, player.getPosition().y - darkCircleoverlay.getHeight() / 4, 960, 540);
         game.getSpriteBatch().setColor(1, 1, 1, 1);
 
@@ -401,6 +437,20 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().setProjectionMatrix(hud.stage.getCamera().combined);
         hud.updateHearts(player.getHealth());
         hud.stage.draw();
+        pulseTimer += delta * PULSE_SPEED;
+
+        // Calculate the alpha value using a sine wave
+        float bloodAlpha = MIN_ALPHA + (MAX_ALPHA - MIN_ALPHA) * ((float) Math.sin(pulseTimer) * 0.5f + 0.5f);
+
+        // Draw the pulsing blood overlay
+        game.getSpriteBatch().begin();
+        game.getSpriteBatch().setColor(0.8f, 0f, 0f, bloodAlpha);
+        if(player.getHealth()<2) {// Set red color with pulsing alpha
+            game.getSpriteBatch().draw(ovrly, 0, 0, 1580, 1080); // Replace `ovrly` with your blood overlay texture
+        }
+        game.getSpriteBatch().setColor(1f, 1f, 1f, 1f); // Reset color to default
+        game.getSpriteBatch().end();
+
 
         //this is so that some walls render after the player (over), but now that collisions are working this isn't as necessary, could be useful for smth else
 //        mapRenderer.render(new int[]{1, 2});
@@ -497,12 +547,23 @@ public class GameScreen implements Screen {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.move(Player.Direction.LEFT);
-            player.setCurrentAnimation(game.getCharacterLeftAnimation());
+            if(player.isSprinting()){
+                player.setCurrentAnimation(game.getRunLeftAnimation());
+            }
+            else {
+                player.setCurrentAnimation(game.getCharacterLeftAnimation());
+            }
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 
             player.move(Player.Direction.RIGHT);
-            player.setCurrentAnimation(game.getCharacterRightAnimation());
+            if(player.isSprinting()){
+                player.setCurrentAnimation(game.getRunRightAnimation());
+            }
+            else {
+                player.setCurrentAnimation(game.getCharacterRightAnimation());
+            }
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            particleEffect.reset();
             handleBreaking(tiledMap);
             if ((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))) {
                 player.setAdjust(true);
@@ -533,25 +594,31 @@ public class GameScreen implements Screen {
 //            }
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             player.move(Player.Direction.UP);
-            player.setCurrentAnimation(game.getCharacterUpAnimation());
+            if(player.isSprinting()){
+                player.setCurrentAnimation(game.getRunUpAnimation());
+            }
+            else {
+                player.setCurrentAnimation(game.getCharacterUpAnimation());
+            }
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             player.move(Player.Direction.DOWN);
-            player.setCurrentAnimation(game.getCharacterDownAnimation());
+            if(player.isSprinting()){
+                player.setCurrentAnimation(game.getRunDownAnimation());
+            }
+            else {
+                player.setCurrentAnimation(game.getCharacterDownAnimation());
+            }
         } else if (!player.isAttack) {
-            if (player.getCurrentAnimation().equals(game.getCharacterDownAnimation()) ||
-                    player.getCurrentAnimation().equals(game.getCharacterDownAttackAnimation())) {
+            if (player.getCurrentAnimation().equals(game.getCharacterDownAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAttackAnimation())||player.getCurrentAnimation().equals(game.getRunDownAnimation())) {
                 player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
                 player.setAdjust(false);
-            } else if (player.getCurrentAnimation().equals(game.getCharacterRightAnimation()) ||
-                    player.getCurrentAnimation().equals(game.getCharacterRightAttackAnimation())) {
+            } else if (player.getCurrentAnimation().equals(game.getCharacterRightAnimation()) || player.getCurrentAnimation().equals(game.getCharacterRightAttackAnimation())||player.getCurrentAnimation().equals(game.getRunRightAnimation())) {
                 player.setCurrentAnimation(game.getCharacterRightIdleAnimation());
                 player.setAdjust(false);
-            } else if (player.getCurrentAnimation().equals(game.getCharacterLeftAnimation()) ||
-                    player.getCurrentAnimation().equals(game.getCharacterLeftAttackAnimation())) {
+            } else if (player.getCurrentAnimation().equals(game.getCharacterLeftAnimation()) || player.getCurrentAnimation().equals(game.getCharacterLeftAttackAnimation())||player.getCurrentAnimation().equals(game.getRunLeftAnimation())) {
                 player.setCurrentAnimation(game.getCharacterLeftIdleAnimation());
                 player.setAdjust(false);
-            } else if (player.getCurrentAnimation().equals(game.getCharacterUpAnimation()) ||
-                    player.getCurrentAnimation().equals(game.getcharacterUpAttackAnimation())) {
+            } else if (player.getCurrentAnimation().equals(game.getCharacterUpAnimation()) || player.getCurrentAnimation().equals(game.getcharacterUpAttackAnimation())||player.getCurrentAnimation().equals(game.getRunUpAnimation())) {
                 player.setCurrentAnimation(game.getCharacterUpIdleAnimation());
                 player.setAdjust(false);
             }
@@ -626,6 +693,27 @@ public class GameScreen implements Screen {
 
     public void setPaused(boolean paused) {
         isPaused = paused;
+    }
+    public void trapexplosion(){
+        for (RectangleMapObject object : mapManager.getCollisionObjects()) {
+            String objectType = object.getProperties().get("type", String.class);
+            if ("Trap".equals(objectType)) {
+                Rectangle objectBounds = object.getRectangle();
+
+                // Check collision with player
+                if (player.newPos.overlaps(objectBounds)) {
+                    System.out.println("f");
+                    // Play particle effect at the object's position
+                    float effectX = objectBounds.x + objectBounds.width / 2;
+                    float effectY = objectBounds.y + objectBounds.height / 2;
+
+                    particleEffect.setPosition(effectX, effectY);
+                    particleEffect.reset();
+                    player.newPos.setX(player.getPosition().x);
+                    player.newPos.setY(player.getPosition().y);// Restart the effect when triggered
+                }
+            }
+        }
     }
 
     @Override

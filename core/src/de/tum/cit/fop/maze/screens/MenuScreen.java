@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -36,8 +38,14 @@ public class MenuScreen implements Screen {
     private Table table2;
     private Viewport viewport;
     private ScreenManager game;
-    private SpriteBatch backgroundBatch;
-
+    ///PARTICLEEEEEEEEEEEEEES
+    private ParticleEffect particleEffect;
+    /// responsive screen
+    float scale ;
+    float bgWidth;
+    float bgHeight;
+    float bgX ;
+    float bgY ;
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
@@ -144,36 +152,39 @@ public class MenuScreen implements Screen {
                 // do cleanups and to save userdata.
             }
         });
-
+        bg = new Texture(Gdx.files.internal("Menu UI Design.png"),true);
+        overlayTexture = new Texture(Gdx.files.internal("DK-MenuVersion2.png"),true);
     }
 
 
     @Override
     public void render(float delta) {
-
+        soundManager.setKeySoundVolume(0);
 
         int mouseX = Gdx.input.getX();
         int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
         float scaleX = Gdx.graphics.getWidth() / (float) bg.getWidth();
         float scaleY = Gdx.graphics.getHeight() / (float) bg.getHeight();
-
-//        float scaleX = viewport.getScreenWidth()/(float)bg.getWidth();
-//        float scaleY = viewport.getScreenHeight()/(float)bg.getHeight();
-        float scale = Math.min(scaleX, scaleY);
-        float bgWidth = bg.getWidth() * scale;
-        float bgHeight = bg.getHeight() * scale;
-        float bgX = (Gdx.graphics.getWidth() - bgWidth) / 2f;
-        float bgY = (Gdx.graphics.getHeight() - bgHeight) / 2f;
+         scale = Math.min(scaleX, scaleY);
+         bgWidth = bg.getWidth() * scale;
+         bgHeight = bg.getHeight() * scale;
+         bgX = (Gdx.graphics.getWidth() - bgWidth) / 2f;
+         bgY = (Gdx.graphics.getHeight() - bgHeight) / 2f;
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
         stage.getBatch().begin();
 
         stage.getBatch().draw(bg, bgX, bgY, bgWidth, bgHeight);
+        ///PARTICLEEEEEEEEEEEEEES
+        particleEffect.start();
+        particleEffect.draw(stage.getBatch(),delta);
+        particleEffect.setPosition(Gdx.graphics.getWidth()/2f ,Gdx.graphics.getHeight()/2f-100);
         stage.getBatch().end();
+
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage.draw(); // Draw the stage
-
         stage.getBatch().begin();
+
         // Draw the overlay texture slightly offset to center it on the cursor
 //        stage.setDebugAll(true);
         stage.getBatch().setColor(1f,1f,1f,0.5f);
@@ -184,9 +195,6 @@ public class MenuScreen implements Screen {
 
         stage2.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
         stage2.draw(); // Draw the stage
-
-
-
     }
 
     @Override
@@ -205,6 +213,13 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
+        soundManager.setKeySoundVolume(0f);
+        ///PARTICLEEEEEEEEEEEEEES
+        particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("particles/effects/Particle Park Flame.p"), Gdx.files.internal("particles/images"));
+        particleEffect.setPosition(Gdx.graphics.getWidth()/2f ,Gdx.graphics.getHeight()/2f-100);
+        particleEffect.scaleEffect(5f);
+
 
         // Set the input processor so the stage can receive input events
 //        batch = new SpriteBatch();
@@ -212,8 +227,7 @@ public class MenuScreen implements Screen {
 //        batch.setProjectionMatrix(stage.getCamera().combined);
 //        backgroundBatch.setProjectionMatrix(stage.getCamera().combined);
 
-        bg = new Texture(Gdx.files.internal("Menu UI Design.png"),true);
-        overlayTexture = new Texture(Gdx.files.internal("DK-MenuVersion2.png"),true);
+
 //        batch.setColor(1f,1f,1f,0.8f);
 
         // Hide the default system cursor

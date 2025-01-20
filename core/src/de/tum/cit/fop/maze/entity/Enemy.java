@@ -455,6 +455,9 @@ public class Enemy implements Entity {
 
     public void attack(){
         player.takeDamage(0.25f);
+        player.redEffectTime=0f;
+        player.isRedEffectActive=true;
+        player.applyKnockback(getPosition(),150);
 
         System.out.println("restarted");
         hud.updateHearts(player.getHealth());

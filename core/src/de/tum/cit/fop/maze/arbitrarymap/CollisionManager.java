@@ -30,6 +30,14 @@ public class CollisionManager {
         }
         return null;
     }
+    public Object getMapCollider(Rectangle thingCollider) {
+        for (RectangleMapObject collider : collisionObjects) {
+            if (thingCollider.overlaps(collider.getRectangle())) {
+                return collider;
+            }
+        }
+        return null;
+    }
 
     public Object checkEventCollision(Rectangle thingCollider) {
         for (RectangleMapObject collider : eventObjects) {

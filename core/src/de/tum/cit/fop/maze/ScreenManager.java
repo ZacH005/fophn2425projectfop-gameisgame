@@ -55,6 +55,10 @@ public class ScreenManager extends Game {
     private Animation<TextureRegion> characterRightAttackAnimation;
     private Animation<TextureRegion> characterDownAttackAnimation;
     private Animation<TextureRegion> characterUpAttackAnimation;
+    private Animation<TextureRegion> runUpAnimation;
+    private Animation<TextureRegion> runDownAnimation;
+    private Animation<TextureRegion> runLeftAnimation;
+    private Animation<TextureRegion> runRightAnimation;
 
     // Music
     private Music backgroundMusic;
@@ -373,7 +377,7 @@ public class ScreenManager extends Game {
 
 
     private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/FinalAnimAdjusted.png"));
+        Texture walkSheet = new Texture(Gdx.files.internal("animations/player/FinalAnimAdjusted2.png"));
 
         int frameWidth = 64, frameHeight = 64, walkAnimationFrames = 9, idleAnimationFrames = 2, y = 0;
 
@@ -382,6 +386,7 @@ public class ScreenManager extends Game {
             Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> attackLeftFrames = new Array<>(TextureRegion.class);
+            Array<TextureRegion> runningframes = new Array<>(TextureRegion.class);
 
 
             for (int col = 0; col < walkAnimationFrames; col++) {
@@ -392,6 +397,9 @@ public class ScreenManager extends Game {
             }
             for (int col = 0; col < 6; col++) {
                 attackLeftFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
+            }
+            for (int col = 0; col < 8; col++) {
+                runningframes.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
             }
             switch (y)  {
                 case 640:
@@ -435,9 +443,37 @@ public class ScreenManager extends Game {
                 case 3200:
                     characterUpAttackAnimation = new Animation<>(0.25f, attackLeftFrames);
                     break;
+                case 2176:
+                    runUpAnimation = new Animation<>(0.05f, runningframes);
+                    break;
+                case 2240:
+                    runLeftAnimation = new Animation<>(0.05f, runningframes);
+                    break;
+                case 2304:
+                    runDownAnimation = new Animation<>(0.05f, runningframes);
+                    break;
+                case 2368:
+                    runRightAnimation = new Animation<>(0.05f, runningframes);
+                    break;
             }
             y += frameHeight;
         }
+    }
+
+    public Animation<TextureRegion> getRunUpAnimation() {
+        return runUpAnimation;
+    }
+
+    public Animation<TextureRegion> getRunDownAnimation() {
+        return runDownAnimation;
+    }
+
+    public Animation<TextureRegion> getRunLeftAnimation() {
+        return runLeftAnimation;
+    }
+
+    public Animation<TextureRegion> getRunRightAnimation() {
+        return runRightAnimation;
     }
 
     public Animation<TextureRegion> getcharacterUpAttackAnimation() {
