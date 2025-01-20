@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -27,6 +28,7 @@ public class SettingsScreen implements Screen {
     private Texture overlayTexture;
     private SoundManager soundManager;
     private Slider music;
+    private ParticleEffect particleEffect;
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
      *
@@ -122,6 +124,12 @@ public class SettingsScreen implements Screen {
         stage.getBatch().begin();
 
         stage.getBatch().draw(bg, bgX, bgY, bgWidth, bgHeight);
+
+        ///PARTICLEEEEEEEEEEEEEES
+        particleEffect.start();
+        particleEffect.draw(stage.getBatch(),delta);
+        particleEffect.setPosition(Gdx.graphics.getWidth()/2f ,Gdx.graphics.getHeight()/2f-100);
+
         stage.getBatch().end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
@@ -155,8 +163,14 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void show() {
+        soundManager.setKeySoundVolume(0f);
         bg = new Texture(Gdx.files.internal("Menu UI Design.png"),true);
         overlayTexture = new Texture(Gdx.files.internal("DK-MenuVersion2.png"),true);
+        ///PARTICLEEEEEEEEEEEEEES
+        particleEffect = new ParticleEffect();
+        particleEffect.load(Gdx.files.internal("particles/effects/Particle Park Flame.p"), Gdx.files.internal("particles/images"));
+        particleEffect.setPosition(Gdx.graphics.getWidth()/2f ,Gdx.graphics.getHeight()/2f-100);
+        particleEffect.scaleEffect(5f);
 
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);

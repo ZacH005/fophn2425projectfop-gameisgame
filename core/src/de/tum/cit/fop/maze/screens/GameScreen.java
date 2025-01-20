@@ -264,9 +264,9 @@ public class GameScreen implements Screen {
                 winLevel();
             }
             //health trigger
-//            if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-//                player.setHealth(player.getHealth() - 1);
-//            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+                player.setHealth(player.getHealth() - 1);
+            }
             if (player.getHealth() == 0) {
 
                 isGameOver = true;
@@ -710,11 +710,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+
         soundManager.dispose();
         mapRenderer.dispose();
         tiledMap.dispose();
         pauseOverlay.dispose();
         shapeRenderer.dispose();
+
     }
 
     @Override

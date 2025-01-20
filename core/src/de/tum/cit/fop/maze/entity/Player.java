@@ -253,6 +253,7 @@ public class Player implements Entity, Serializable {
                     RectangleMapObject r=(RectangleMapObject) colManager.getMapCollider(newPos);
                     redEffectTime=0f;
                     isRedEffectActive=true;
+                    takeDamage(0.25f);
                     applyKnockback(new Vector2((r.getRectangle().x+(r.getRectangle().getWidth()/2)),(r.getRectangle().y+(r.getRectangle().getHeight()/2))),1200);
                     startFlickering(2f);
                 }
