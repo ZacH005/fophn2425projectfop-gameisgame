@@ -3,6 +3,8 @@ package de.tum.cit.fop.maze.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -11,6 +13,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.Item;
@@ -89,13 +93,17 @@ public class Player implements Entity, Serializable {
 
     private SoundManager soundManager;
 
-    private Weapon weapon;
+//    private Weapon weapon;
+
+    private OrthographicCamera camera;
+
+    private Animation<TextureRegion> swipeAnimation;
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
-    public Player(float x, float y, TiledMap tiledMap, float health, int armor, List<String> powerups, int money, SoundManager soundManager) {
+    public Player(float x, float y, TiledMap tiledMap, float health, int armor, List<String> powerups, int money, SoundManager soundManager, OrthographicCamera camera) {
         this.tileSize = 16;
         this.velocity = new Vector2(0, 0);
         this.tiledMap = tiledMap;
@@ -129,7 +137,11 @@ public class Player implements Entity, Serializable {
         this.currentTileX = (int) position.x / tileSize;
         this.currentTileY = (int) position.y / tileSize;
 
-        this.weapon = new Weapon("icons/realPickaxe.png", 50);
+//        this.weapon = new Weapon("icons/realPickaxe.png", 50);
+
+        this.camera = camera;
+
+        loadWeaponAnimation();
     }
     public void startFlickering(float time) {
         isFlickering = true;
@@ -142,12 +154,72 @@ public class Player implements Entity, Serializable {
         flickerAlpha = 1.0f;  // Reset alpha to normal
     }
     public void attack(List<Enemy> enemies) {
+        attackHitbox = getAttackHitbox();
+
         for (Enemy enemy : enemies) {
-            if (weapon.isInSector(enemy.getPosition(), position)) {
-                enemy.takedamage(1); // Adjust damage as needed
+//            if (weapon.isInSector(enemy.getPosition(), position)) {
+//                enemy.takedamage(1); // Adjust damage as needed
+//            }
+
+            if (attackHitbox.overlaps(enemy.damageCollider))    {
+                System.out.println("attacking" + enemy);
+                System.out.println(enemy.getHealth());
+                enemy.takeDamage(1);
             }
         }
+        isAttack = true;
     }
+
+    // Add this method to your Player class
+    public Rectangle getAttackHitbox() {
+        float width = 30; // Adjust as needed
+        float height = 48; // The height should be the same as the player
+
+        float x = position.x;
+        float y = position.y;
+
+        switch (direction) {
+            case LEFT:
+                x -= this.width + 8; // Box extends to the left of the player
+                y -= 40/2f;
+                break;
+            case RIGHT:
+                x += this.width - 8; // Box extends to the right of the player
+                y -= 40/2f;
+                break;
+            case UP:
+//                y += 16f; // Box extends upwards from the player
+                x -= 16f;
+
+                width = 48;
+                height = 30;
+                break;
+            case DOWN:
+                y -= 48/2f; // Box extends downwards from the player
+                x -= 16f;
+                width = 48;
+                height = 30;
+                break;
+        }
+
+        return new Rectangle(x, y, width, height);
+    }
+
+    private Rectangle attackHitbox;
+
+    public void loadWeaponAnimation()    {
+        Texture swipeSheet = new Texture(Gdx.files.internal("animations/player/pickaxeSwipe_real.png"));
+        int frameWidth = 57, frameHeight = 32, swipeAnimationFrames = 5, y = 0;
+
+        Array<TextureRegion> swipeFrames = new Array<>(TextureRegion.class);
+
+        for (int col = 0; col < swipeAnimationFrames; col++) {
+            swipeFrames.add(new TextureRegion(swipeSheet, col*(frameWidth), y, frameWidth, frameHeight));
+        }
+
+        this.swipeAnimation = new Animation<>(0.05f, swipeFrames);
+    }
+
 
 //    public void attack(List<Enemy> enemies){
 //        for (Enemy enemy : enemies) {
@@ -204,6 +276,7 @@ public class Player implements Entity, Serializable {
 
     public void update(float delta, CollisionManager colManager) {
         updateFlickerEffect(delta);
+//        System.out.println(direction);
 
         if (isRedEffectActive) {
             redEffectTime += delta;
@@ -215,6 +288,9 @@ public class Player implements Entity, Serializable {
         footstepTimer += delta; // Update the timer
 
         animationTime += delta;
+
+        if (isAttack)
+            attackAnimationTime += delta;
 
         if (isKnockedBack) {
             knockbackTime += delta;
@@ -280,7 +356,7 @@ public class Player implements Entity, Serializable {
                     takeDamage(0.25f);
                     applyKnockback(new Vector2((r.getRectangle().x+(r.getRectangle().getWidth()/2)),(r.getRectangle().y+(r.getRectangle().getHeight()/2))),1200);
                     startFlickering(2f);
-            }
+                }
 
 //                System.out.println(colManager.checkMapCollision(newPos));
 
@@ -298,7 +374,7 @@ public class Player implements Entity, Serializable {
         }
 
         Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
-        weapon.update(position, mousePosition);
+//        weapon.update(position, mousePosition, camera);
     }
 
 
@@ -321,9 +397,47 @@ public class Player implements Entity, Serializable {
 
             batch.setColor(1, 1, 1, 1);
         }
-        weapon.render(batch, Gdx.graphics.getDeltaTime(), position);
+
+        if (isAttack) {
+            TextureRegion swipeFrame = swipeAnimation.getKeyFrame(attackAnimationTime, false);
+
+            float swipeWidth = attackHitbox.width, swipeHeight = attackHitbox.height, swipeRotation = 0f, swipeY = attackHitbox.y, swipeX = attackHitbox.x;
+
+            if (direction == Direction.UP)  {
+                if (!swipeFrame.isFlipY())
+                    swipeFrame.flip(false, true);
+            }
+            if (direction == Direction.DOWN)  {
+                if (swipeFrame.isFlipY())
+                    swipeFrame.flip(false, true);
+            }
+            if (direction == Direction.RIGHT)  {
+                if (swipeFrame.isFlipY())
+                    swipeFrame.flip(false, true);
+                swipeHeight = attackHitbox.width;
+                swipeWidth = attackHitbox.height;
+                swipeRotation = 90f;
+                swipeX +=32;
+            }
+            if (direction == Direction.LEFT)  {
+                if (!swipeFrame.isFlipY())
+                    swipeFrame.flip(false, true);
+                swipeHeight = attackHitbox.width;
+                swipeWidth = attackHitbox.height;
+                swipeRotation = 90f;
+                swipeX +=32;
+            }
+
+            batch.draw(swipeFrame, swipeX, swipeY, 0f, 0f, swipeWidth, swipeHeight, 1f, 1f, swipeRotation);
+
+        } else {
+            attackAnimationTime = 0;
+        }
+
 
     }
+    private float attackAnimationTime;
+
     public void respawn(){
         setPosition(new Vector2(30,30));
         trapped = false;
@@ -551,11 +665,24 @@ public class Player implements Entity, Serializable {
         this.keys = keys;
     }
 
-    public Weapon getWeapon() {
-        return weapon;
+//    public Weapon getWeapon() {
+//        return weapon;
+//    }
+//
+//    public void setWeapon(Weapon weapon) {
+//        this.weapon = weapon;
+//    }
+
+
+    public Animation<TextureRegion> getSwipeAnimation() {
+        return swipeAnimation;
     }
 
-    public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
+    public void setSwipeAnimation(Animation<TextureRegion> swipeAnimation) {
+        this.swipeAnimation = swipeAnimation;
+    }
+
+    public void setAttackHitbox(Rectangle attackHitbox) {
+        this.attackHitbox = attackHitbox;
     }
 }

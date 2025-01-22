@@ -5,10 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -57,6 +54,8 @@ public class GameScreen implements Screen {
     private final float MIN_ALPHA = 0.3f; // Minimum alpha value for the effect
     private final float MAX_ALPHA = 0.8f; // Maximum alpha value for the effect
 
+
+
 //    private final BitmapFont font;
 
     //Tiled map which is an object
@@ -97,6 +96,8 @@ public class GameScreen implements Screen {
     private List<Enemy> enemies;
 
     private boolean showDebugOverlay = false;
+
+    private float gameTime;
 
     public String getMapPath() {
         return mapPath;
@@ -163,7 +164,7 @@ public class GameScreen implements Screen {
         soundManager.onGameStateChange(mainState);
 
         //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, tiledMap, 3, 100, new ArrayList<String>(), 0, soundManager);
+        player = new Player(startPlayerX, startPlayerY, tiledMap, 3, 100, new ArrayList<String>(), 0, soundManager, camera);
         player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
 
         particleEffect = new ParticleEffect();
@@ -196,6 +197,8 @@ public class GameScreen implements Screen {
             if (enemy != null) {
                 enemies.add(enemy);
             }
+
+            gameTime = TimeUtils.nanoTime();
         }
 
         this.mapPowerups = mapManager.getPowerups();
@@ -231,6 +234,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
+        gameTime+=delta;
+
         if (isPaused) {
             pauseOverlay.setVisible(isPaused);
             pauseOverlay.render(delta);
@@ -290,6 +296,7 @@ public class GameScreen implements Screen {
                 //input updating ; find the method below for details
             handleInput();
             // updating characters
+//            System.out.println(player.getCurrentAnimation().getKeyFrameIndex(gameTime));
             player.update(delta, colManager);
 //            if (colManager.checkListCollision(mapManager.getTrapObjects(), player.collider))
 //                player.takeDamage();
@@ -345,12 +352,19 @@ public class GameScreen implements Screen {
             shapeRenderer.setColor(Color.GOLD);
             shapeRenderer.rect(player.collider.x, player.collider.y, player.collider.width, player.collider.height);
             shapeRenderer.setColor(Color.PINK);
-            shapeRenderer.rect(player.getWeapon().getAttackArea().x, player.getWeapon().getAttackArea().y, player.getWeapon().getAttackArea().width,player.getWeapon().getAttackArea().height);
+//            shapeRenderer.rect(player.getWeapon().getAttackArea().x, player.getWeapon().getAttackArea().y, player.getWeapon().getAttackArea().width,player.getWeapon().getAttackArea().height);
             shapeRenderer.setColor(1, 0, 0, 0.5f); // Semi-transparent red
-            shapeRenderer.arc(player.collider.x, player.collider.y, player.getWeapon().getRange(),
-                    (float) Math.toDegrees(player.getWeapon().getRotationAngle()) - player.getWeapon().getSectorAngle() / 2, player.getWeapon().getSectorAngle());
+//            shapeRenderer.arc(player.collider.x, player.collider.y, player.getWeapon().getRange(),
+//                    (float) Math.toDegrees(player.getWeapon().getRotationAngle()) - player.getWeapon().getSectorAngle() / 2, player.getWeapon().getSectorAngle());
+            shapeRenderer.rect(player.getAttackHitbox().x, player.getAttackHitbox().y, player.getAttackHitbox().width, player.getAttackHitbox().height);
             //enemy related debug
             shapeRenderer.rect(player.newPos.x, player.newPos.y, player.newPos.width, player.newPos.height);
+
+            for (RectangleMapObject walls : mapManager.getCollisionObjects())   {
+                Rectangle wallRec = walls.getRectangle();
+                shapeRenderer.setColor(Color.GRAY);
+                shapeRenderer.rect(wallRec.x, wallRec.y, wallRec.width, wallRec.height);
+            }
             for (Enemy enemy : enemies) { // Assuming you have a list of enemies
                 List<Node> path = enemy.getCurrentPath();
                 if (path != null) {
@@ -411,6 +425,9 @@ public class GameScreen implements Screen {
         trapexplosion();
 // Render the player and enemy
         player.render(game.getSpriteBatch());
+
+
+//        player.getWeapon().render(game.getSpriteBatch(), delta, player.getPosition());
         particleEffect.update(Gdx.graphics.getDeltaTime());
 
         // Clear the screen and render the particle effect
@@ -562,8 +579,9 @@ public class GameScreen implements Screen {
             else {
                 player.setCurrentAnimation(game.getCharacterRightAnimation());
             }
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            particleEffect.reset();
+        } else if((Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && !player.isAttack)){
+            player.stop();
+//            particleEffect.reset();
             handleBreaking(tiledMap);
             if ((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))) {
                 player.setAdjust(true);
@@ -576,7 +594,15 @@ public class GameScreen implements Screen {
                 player.setAdjust(true);
                 player.setCurrentAnimation(game.getcharacterUpAttackAnimation());
             }
+            player.getCurrentAnimation().setPlayMode(Animation.PlayMode.NORMAL);
 
+            //attack cooldown
+
+            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+            scheduler.schedule(() -> {
+                player.isAttack = false;
+                scheduler.shutdown(); // Shut down the scheduler
+            }, 400, TimeUnit.MILLISECONDS);
             player.attack(enemies);
 //            for (Enemy enemy : enemies) {
 //                if ((player.getCollider().overlaps(enemy.damageCollider))){

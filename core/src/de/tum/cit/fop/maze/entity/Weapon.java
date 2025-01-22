@@ -1,11 +1,13 @@
 package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
@@ -20,6 +22,11 @@ public class Weapon {
     private float stateTime; // Time tracking for animation playback
 
 
+    private Vector2 direction;
+    private float pickaxeRotation;
+    private float pickaxePivotX;
+    private float pickaxePivotY;
+
     public Weapon(String texturePath, float range) {
         this.texture = new Texture(texturePath);
         this.animation = null;
@@ -28,6 +35,8 @@ public class Weapon {
         this.attackArea = new Rectangle();
         this.stateTime = 0f;
         loadWeaponAnimation();
+        direction = new Vector2();
+        pickaxeRotation = 0f;
     }
 
     //make width and height, texture,  parameters
@@ -47,17 +56,24 @@ public class Weapon {
     //tangent on the right and left of the player
     //swap sides smoothly when the player attacks
 
-    public void update(Vector2 playerPosition, Vector2 mousePosition) {
-        // Calculate rotation angle based on mouse position
-        rotationAngle = (float) Math.atan2(mousePosition.y - playerPosition.y, mousePosition.x - playerPosition.x);
+    public void update(Vector2 playerPosition, Vector2 mousePosition, OrthographicCamera camera) {
+        mousePosition.set(Gdx.input.getX(), Gdx.input.getY());
+        Vector3 worldMouse = camera.unproject(new Vector3(mousePosition.x, mousePosition.y, 0));
+        mousePosition.set(worldMouse.x, worldMouse.y);
 
-        // Calculate weapon position around the player
-        position.x = playerPosition.x + (float) Math.cos(rotationAngle) * range;
-        position.y = playerPosition.y + (float) Math.sin(rotationAngle) * range;
 
-        // Update attack area (optional for generic collision)
-        attackArea.setPosition(position.x - 16, position.y - 16);
-        attackArea.setSize(32, 32);
+        direction.set(mousePosition.x - playerPosition.x, mousePosition.y - playerPosition.y).nor();
+        pickaxeRotation = direction.angleDeg() - 90f;
+
+        pickaxePivotX = ((32 * 0.33f) / 2f);
+        pickaxePivotY = 0f;
+
+        position.x = position.x + (playerPosition.x + pickaxePivotX + direction.x - position.x);
+        position.y = position.y + (playerPosition.y + pickaxePivotY + direction.y - position.y);
+//        position.x += playerPosition.x - pickaxePivotX;
+//        position.y += playerPosition.y - pickaxePivotY;
+
+//        System.out.println(position);
     }
 
     public void render(SpriteBatch batch, float deltaTime, Vector2 playerPosition) {
@@ -68,19 +84,43 @@ public class Weapon {
         TextureRegion currentFrame = animation.getKeyFrame(stateTime, true);
 
         // Calculate the position of the weapon relative to the player
-        position.x = playerPosition.x + (float) Math.cos(rotationAngle) * range;
-        position.y = playerPosition.y + (float) Math.sin(rotationAngle) * range;
+//        position.x = playerPosition.x + (float) Math.cos(rotationAngle) * range;
+//        position.y = playerPosition.y + (float) Math.sin(rotationAngle) * range;
 
         // Calculate rotation in degrees
         float rotation = (float) Math.toDegrees(rotationAngle);
 
         // Draw the current animation frame
-        batch.draw(currentFrame,
-                position.x - currentFrame.getRegionWidth() / 2f, position.y - currentFrame.getRegionHeight() / 2f, // Position
-                currentFrame.getRegionWidth() / 2f, currentFrame.getRegionHeight() / 2f,                         // Origin
-                currentFrame.getRegionWidth(), currentFrame.getRegionHeight(),                                 // Size
-                1f, 1f, rotation);                                                                            // Scale and Rotation
+//        batch.draw(currentFrame,
+//                position.x - currentFrame.getRegionWidth() / 2f, position.y - currentFrame.getRegionHeight() / 2f, // Position
+//                currentFrame.getRegionWidth() / 2f, currentFrame.getRegionHeight() / 2f,                         // Origin
+//                currentFrame.getRegionWidth(), currentFrame.getRegionHeight(),                                 // Size
+//                1f, 1f, rotation);                                                                            // Scale and Rotation
         //pivot
+
+        if (!currentFrame.isFlipX()) {
+            currentFrame.flip(true, true); // Flip on X-axis
+        }
+
+        float centeredX = position.x - currentFrame.getRegionWidth() / 2f;
+        float centeredY = position.y - currentFrame.getRegionHeight() / 2f;
+//        batch.draw(
+//                currentFrame,
+//                position.x, position.y, // Sword position
+//                pickaxePivotX, pickaxePivotY,
+//                57, 32, // Sword size
+//                1f, 1f, // Scaling
+//                pickaxeRotation // Rotation in degrees
+//        );
+
+//        batch.draw(
+//                currentFrame,
+//                position.x, position.y, // Sword position
+//                pickaxePivotX, pickaxePivotY,
+//                57, 32, // Sword size
+//                1f, 1f, // Scaling
+//                pickaxeRotation // Rotation in degrees
+//        );
     }
 
 

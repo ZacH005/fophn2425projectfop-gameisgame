@@ -112,7 +112,7 @@ public class Enemy implements Entity {
 
     @Override
     public float getHealth() {
-        return 0;
+        return health;
     }
 
     public boolean isFollowing() {
@@ -182,7 +182,7 @@ public class Enemy implements Entity {
     public void setMoney(int money) {
 
     }
-    public void takedamage(int amount){
+    public void takeDamage(int amount){
         health -= amount;
         if (health <= 0) {
             isDead = true;
@@ -211,8 +211,8 @@ public class Enemy implements Entity {
         float distanceY = player.getPosition().y - this.position.y;
         float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-        if (scanRange.overlaps(player.collider) && !following && hasClearLineOfSight(position, player.getPosition(), colManager)) {
-//        if (scanRange.overlaps(player.collider) && !following) {
+//        if (scanRange.overlaps(player.collider) && !following && hasClearLineOfSight(position, player.getPosition(), colManager)) {
+        if (scanRange.overlaps(player.collider) && !following) {
             roaming = false;
             following = true;
             soundManager.onGameStateChange(chaseState);
@@ -248,9 +248,17 @@ public class Enemy implements Entity {
 
             //decides how long until the path si recalculated (rn 500 millisec)
             if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
+                System.out.println("recalculating");
                 currentPath = findPlayerPath(colManager);
                 lastMovementUpdateTime = TimeUtils.millis();
             }
+            if (currentPath == null || currentPath.isEmpty()) {
+                System.out.println("No valid path. Switching to roaming mode.");
+                following = false;
+                roaming = true;
+                return;
+            }
+
             List<Node> path = currentPath;
 
             if (path != null && !path.isEmpty()) {
@@ -284,6 +292,11 @@ public class Enemy implements Entity {
                     currentPath.remove(0);
                 }
             }
+//            else {
+//                following = false;
+//                roaming = true;
+//                System.out.println("out of range");
+//            }
         }
 
         //make new vector every update
@@ -305,8 +318,8 @@ public class Enemy implements Entity {
                 lastMovementUpdateTime = TimeUtils.millis();
             }
             //constatnyly move in that directoin
-            float newX = this.position.x + (directions[movement].x * movementSpeed * 0.6f);
-            float newY = this.position.y + (directions[movement].y * movementSpeed * 0.6f);
+            float newX = this.position.x + (directions[movement].x * movementSpeed * 0.3f);
+            float newY = this.position.y + (directions[movement].y * movementSpeed * 0.3f);
 
             Vector2 newPosition = new Vector2(newX, newY);
 
@@ -316,8 +329,8 @@ public class Enemy implements Entity {
                 movement = (int)(4 * Math.random());
 
                 //check again
-                newX = this.position.x + (directions[movement].x * movementSpeed * 0.6f);
-                newY = this.position.y + (directions[movement].y * movementSpeed * 0.6f);
+                newX = this.position.x + (directions[movement].x * movementSpeed * 0.3f);
+                newY = this.position.y + (directions[movement].y * movementSpeed * 0.3f);
 
                 newPosition = new Vector2(newX, newY);
                 retryCount++;
@@ -360,16 +373,19 @@ public class Enemy implements Entity {
 
 
     private List<Node> findPlayerPath(CollisionManager colManager) {
-        Node start = new Node((int) (this.position.x), (int) (this.position.y), null, 0, 0);
-        Node goal = new Node((int) (player.getPosition().x-7), (int) (player.getPosition().y-7), null, 0, 0);
+        int maxNodes = 7840;
+        Node start = new Node((int) this.position.x, (int) this.position.y, null, 0, 0);
+        Node goal = new Node((int) player.getPosition().x-8, (int) player.getPosition().y-8, null, 0, 0);
 
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fCost));
         Set<Node> closedSet = new HashSet<>();
 
         openSet.add(start);
+        int nodesExplored = 0;
 
         while (!openSet.isEmpty()) {
             Node current = openSet.poll();
+            nodesExplored++;
 
             if (current.equals(goal)) {
                 return reconstructPath(current);
@@ -393,10 +409,19 @@ public class Enemy implements Entity {
                     }
                 }
             }
+
+            if (nodesExplored >= maxNodes) {
+                System.out.println("Pathfinding limit reached. Switching to roaming mode.");
+                following = false;
+                roaming = true;
+                return null;
+            }
         }
 
         return null;
     }
+
+
 
     private List<Node> getNeighbors(Node node, CollisionManager colManager) {
         List<Node> neighbors = new ArrayList<>();
