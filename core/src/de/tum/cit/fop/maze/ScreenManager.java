@@ -407,13 +407,16 @@ public class ScreenManager extends Game {
                     break;
                 case 704:
                     characterRightAnimation = new Animation<>(0.05f, walkFrames);
-                    Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
-                    for (TextureRegion t : walkFrames)  {
-                        TextureRegion flippedFrame = new TextureRegion(t);
-                        flippedFrame.flip(true, false);
-                        leftWalkFrames.add(flippedFrame);
-                    }
-                    characterLeftAnimation = new Animation<>(0.05f, leftWalkFrames);
+//                    Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
+//                    for (TextureRegion t : walkFrames)  {
+//                        TextureRegion flippedFrame = new TextureRegion(t);
+//                        flippedFrame.flip(true, false);
+//                        leftWalkFrames.add(flippedFrame);
+//                    }
+//                    characterLeftAnimation = new Animation<>(0.05f, leftWalkFrames);
+                    break;
+                case 576:
+                    characterLeftAnimation = new Animation<>(0.05f, walkFrames);
                     break;
                 case 512:
 
@@ -432,16 +435,16 @@ public class ScreenManager extends Game {
                     characterRightIdleAnimation = new Animation<>(0.25f, idleFrames);
                     break;
                 case 3008:
-                    characterRightAttackAnimation = new Animation<>(0.05f, attackLeftFrames, Animation.PlayMode.NORMAL);
+                    characterRightAttackAnimation = new Animation<>(0.07f, attackLeftFrames, Animation.PlayMode.NORMAL);
                     break;
                 case 3072:
-                    characterDownAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    characterDownAttackAnimation = new Animation<>(0.07f, attackLeftFrames);
                     break;
                 case 3136:
-                    characterLeftAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    characterLeftAttackAnimation = new Animation<>(0.07f, attackLeftFrames);
                     break;
                 case 3200:
-                    characterUpAttackAnimation = new Animation<>(0.05f, attackLeftFrames);
+                    characterUpAttackAnimation = new Animation<>(0.07f, attackLeftFrames);
                     break;
                 case 2176:
                     runUpAnimation = new Animation<>(0.05f, runningframes);

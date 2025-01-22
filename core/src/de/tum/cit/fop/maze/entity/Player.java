@@ -208,8 +208,8 @@ public class Player implements Entity, Serializable {
     private Rectangle attackHitbox;
 
     public void loadWeaponAnimation()    {
-        Texture swipeSheet = new Texture(Gdx.files.internal("animations/player/pickaxeSwipe_real.png"));
-        int frameWidth = 57, frameHeight = 32, swipeAnimationFrames = 5, y = 0;
+        Texture swipeSheet = new Texture(Gdx.files.internal("animations/player/pickaxeSwipe_dark2 copy.png"));
+        int frameWidth = 57, frameHeight = 32, swipeAnimationFrames = 6, y = 0;
 
         Array<TextureRegion> swipeFrames = new Array<>(TextureRegion.class);
 
@@ -381,6 +381,9 @@ public class Player implements Entity, Serializable {
     public void render(SpriteBatch batch) {
 //        System.out.println(health);
         if (currentAnimation != null) {
+
+            TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
+
             if (isFlickering) {
                 batch.setColor(1, 1, 1, flickerAlpha); // Flicker effect
             } else if (isRedEffectActive) {
@@ -388,7 +391,12 @@ public class Player implements Entity, Serializable {
             } else {
                 batch.setColor(1, 1, 1, 1); // Normal color
             }
-            TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
+
+            if (isAttack)
+                frame = currentAnimation.getKeyFrame(attackAnimationTime, false);
+            else
+                frame = currentAnimation.getKeyFrame(animationTime, true);
+
             if(adjust) {
                 batch.draw(frame, position.x - (width / 2) - 2.5f + 4f, position.y - (height / 2), width * 2.0f, height * 2.0f);
             }else{
@@ -425,7 +433,7 @@ public class Player implements Entity, Serializable {
                 swipeHeight = attackHitbox.width;
                 swipeWidth = attackHitbox.height;
                 swipeRotation = 90f;
-                swipeX +=32;
+                swipeX +=28;
             }
 
             batch.draw(swipeFrame, swipeX, swipeY, 0f, 0f, swipeWidth, swipeHeight, 1f, 1f, swipeRotation);
@@ -433,8 +441,6 @@ public class Player implements Entity, Serializable {
         } else {
             attackAnimationTime = 0;
         }
-
-
     }
     private float attackAnimationTime;
 
