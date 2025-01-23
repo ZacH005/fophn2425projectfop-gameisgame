@@ -217,13 +217,17 @@ public class Enemy implements Entity {
     }
     private boolean hurting;
     public void takeDamage(int amount){
-        health -= amount;
-        soundManager.playSound("enemyHurt");
-        if (health <= 0) {
+        if (health > 0) {
+            health -= amount;
+            Sound hurtSound  = soundManager.getSound("enemyHurt");
+            long id = hurtSound.play(soundManager.getSfxVolume());
+            Random random = new Random();
+            hurtSound.setPitch(id, 0.8f+random.nextFloat()*2);
+            applyKnockback(player.getPosition(), 150);
+        }
+        if (health == 0 && !isDead) {
             isDead = true;
             System.out.println("Enemy defeated!");
-        } else {
-            applyKnockback(player.getPosition(), 150);
         }
     }
 

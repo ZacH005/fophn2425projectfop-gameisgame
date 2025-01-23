@@ -51,6 +51,10 @@ public class SoundManager implements Disposable {
         }
     }
 
+    public Sound getSound(String name)  {
+        return soundEffects.get(name);
+    }
+
     // Load music layers
     public void loadMusicLayer(String name, String filePath) {
         Music music = Gdx.audio.newMusic(Gdx.files.internal(filePath));

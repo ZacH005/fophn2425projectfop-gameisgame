@@ -103,8 +103,10 @@ public class Player implements Entity, Serializable {
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
+    private final Vector2 startPos;
 
     public Player(float x, float y, TiledMap tiledMap, float health, int armor, List<String> powerups, int money, SoundManager soundManager, OrthographicCamera camera) {
+        System.out.println("initilizing player");
         this.tileSize = 16;
         this.velocity = new Vector2(0, 0);
         this.tiledMap = tiledMap;
@@ -124,7 +126,8 @@ public class Player implements Entity, Serializable {
         this.soundManager = soundManager;
 
         ///Entities variables
-        this.position = new Vector2(x, y);
+        this.startPos = new Vector2(x, y);
+        this.position = startPos;
         this.resetpos = new Vector2(25, 25);
         this.health = health;
         this.armor = armor;
@@ -381,6 +384,7 @@ public class Player implements Entity, Serializable {
 
 
     public void render(SpriteBatch batch) {
+//        System.out.println(startPos);
         if (isAttack) {
             TextureRegion swipeFrame = swipeAnimation.getKeyFrame(attackAnimationTime, false);
 
@@ -447,7 +451,7 @@ public class Player implements Entity, Serializable {
     private float attackAnimationTime;
 
     public void respawn(){
-        setPosition(new Vector2(30,30));
+        setPosition(new Vector2(startPos));
         trapped = false;
     }
 

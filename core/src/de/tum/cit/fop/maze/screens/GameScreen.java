@@ -283,7 +283,7 @@ public class GameScreen implements Screen {
             }
             //health trigger
             if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
-                player.setHealth(player.getHealth() - 1);
+                player.setHealth(player.getHealth() - 0.25f);
             }
             if (player.getHealth() == 0) {
 
@@ -523,31 +523,31 @@ public class GameScreen implements Screen {
     }
 
     public void updateKeySound(Key key){
-            // check wich is the closest key
+        // check wich is the closest key
 //            Key closestKey = checkForKeysAndGetTheClosestOne(keysInTheMap);
 
-            // if there's a closest key
-            if (key != null) {
-                // find the distance between this key and the player
-                double xDiff = key.getPosition().x - player.getPosition().x;
-                double yDiff = key.getPosition().y - player.getPosition().y;
-                double distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                // if the distance is greater than 16 let's say
-                if (distance >= 300) {
-                    // mute the key sound
-                    soundManager.setKeySoundVolume(0f);
-                } else {
-                    // else, increase sound when distance decreases
-                    float keySoundVolume = 1f - (float) distance / 300; // Normalized
+        // if there's a closest key
+        if (key != null) {
+            // find the distance between this key and the player
+            double xDiff = key.getPosition().x - player.getPosition().x;
+            double yDiff = key.getPosition().y - player.getPosition().y;
+            double distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+            // if the distance is greater than 16 let's say
+            if (distance >= 300) {
+                // mute the key sound
+                soundManager.setKeySoundVolume(0f);
+            } else {
+                // else, increase sound when distance decreases
+                float keySoundVolume = 1f - (float) distance / 300; // Normalized
 //                    System.out.println(keySoundVolume+" key sound volume supposdly");
 
-                    soundManager.setKeySoundVolume(keySoundVolume);
+                soundManager.setKeySoundVolume(soundManager.getSfxVolume()*keySoundVolume);
 
-                    float currentvol = soundManager.getKeySoundVolume();
+                float currentvol = soundManager.getKeySoundVolume();
 //                    System.out.println(currentvol+" key sound volume actually");
-                }
             }
         }
+    }
 
 
 
