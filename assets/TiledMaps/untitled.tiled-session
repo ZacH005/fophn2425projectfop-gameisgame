@@ -3,17 +3,17 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "newCaveMap.tmx",
+    "activeFile": "untitled2.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
         "CaveMap.tmx": {
             "scale": 2.1732,
-            "selectedLayer": 8,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 69.71286581998893,
-                "y": 210.28897478372903
+                "x": 150.46935394809498,
+                "y": 101.23320449107307
             }
         },
         "Caves-Tileset.tsx": {
@@ -32,6 +32,9 @@
                 "y": 161.15384615384613
             }
         },
+        "Objects.tsx": {
+            "scaleInDock": 1
+        },
         "Objects_animated3.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 2
@@ -41,7 +44,7 @@
             "scaleInEditor": 1
         },
         "cavesTileset.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 1.818,
             "scaleInEditor": 4.63
         },
         "details.tsx": {
@@ -53,59 +56,59 @@
         },
         "dwarfMines.tmx": {
             "expandedObjectLayers": [
-                14,
                 6,
                 9,
-                15,
-                10
+                14,
+                10,
+                15
             ],
             "scale": 6.9899,
-            "selectedLayer": 6,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 44.99349060787709,
-                "y": 588.7065623256414
+                "x": 320.03319074664876,
+                "y": 320.03319074664876
             }
         },
         "dwarvenMines.tsx": {
-            "scaleInDock": 2.0049,
+            "scaleInDock": 1.3166,
             "scaleInEditor": 4.63
         },
         "emptyMap.tmx": {
             "expandedObjectLayers": [
-                3,
+                2,
                 4,
-                2
+                3
             ],
             "scale": 2.085,
-            "selectedLayer": 3,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 54.43645083932854,
-                "y": 288.72901678657075
+                "x": 319.9040767386091,
+                "y": 319.9040767386091
             }
         },
         "newCaveMap.tmx": {
             "expandedObjectLayers": [
-                5,
-                9
+                9,
+                5
             ],
             "scale": 1.56,
-            "selectedLayer": 6,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 82.37179487179486,
-                "y": 204.48717948717947
+                "x": 160.25641025641022,
+                "y": 160.25641025641025
             }
         },
         "newCaveMap2.tmx": {
             "expandedObjectLayers": [
                 11,
-                5,
-                9
+                9,
+                5
             ],
             "scale": 1.785,
-            "selectedLayer": 4,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 154.34173669467785,
-                "y": 230.81232492997202
+                "x": 160.22408963585434,
+                "y": 160.22408963585437
             }
         },
         "newLand.tsx": {
@@ -113,7 +116,7 @@
             "scaleInEditor": 4.63
         },
         "newMines.tsx": {
-            "scaleInDock": 1.4672,
+            "scaleInDock": 2.45,
             "scaleInEditor": 4.63
         },
         "untitled.tmx": {
@@ -132,6 +135,23 @@
         },
         "untitled.tmx#water_coasts": {
             "scaleInDock": 1
+        },
+        "untitled2.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 453.875,
+                "y": 292.375
+            }
+        },
+        "untitled2.tmx#Ground_rocks": {
+            "scaleInDock": 1
+        },
+        "untitled2.tmx#Water_detilazation": {
+            "scaleInDock": 1
+        },
+        "untitled2.tmx#water_coasts": {
+            "scaleInDock": 1
         }
     },
     "last.imagePath": "/Users/zach/IdeaProjects/fophn2425projectfop-gameisgame/assets/TiledMaps/tilesets/adventure",
@@ -142,30 +162,28 @@
     "map.tileWidth": 16,
     "map.width": 100,
     "openFiles": [
-        "cavesTileset.tsx",
         "CaveMap.tmx",
-        "newMines.tsx",
-        "newLand.tsx",
         "newCaveMap.tmx",
-        "dwarvenMines.tsx",
         "dwarfMines.tmx",
-        "newCaveMap2.tmx"
+        "newCaveMap2.tmx",
+        "emptyMap.tmx",
+        "untitled2.tmx"
     ],
     "project": "untitled.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "CaveMap.tmx",
+        "newCaveMap.tmx",
+        "dwarfMines.tmx",
+        "newCaveMap2.tmx",
+        "emptyMap.tmx",
+        "untitled2.tmx",
         "untitled.tmx",
         "Objects_animated3.tsx",
         "Ground_rocks.tsx",
         "doorsAsset.tsx",
         "dwarvenMines.tsx",
-        "newLand.tsx",
-        "cavesTileset.tsx",
-        "newMines.tsx",
-        "CaveMap.tmx",
-        "newCaveMap2.tmx",
-        "dwarfMines.tmx",
-        "newCaveMap.tmx"
+        "newLand.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

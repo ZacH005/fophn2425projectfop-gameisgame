@@ -2,6 +2,7 @@ package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -50,6 +51,13 @@ public class Enemy implements Entity {
     private List<Node> currentPath;
     private Vector2 savedVector;
 
+    private Vector2 knockbackVelocity = new Vector2(0, 0);
+    private float knockbackDuration = 0;
+    private float knockbackTimeElapsed = 0;
+
+    private Sound hurtSound;
+
+
     public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager) {
         this.player = player;
         position = new Vector2(x,y);
@@ -87,15 +95,40 @@ public class Enemy implements Entity {
         this.hud=hud;
 
         roaming = true;
+
+        hurting = false;
     }
 
-    public void update(float delta, CollisionManager colManager){
-        if(!isDead){
+    public void update(float delta, CollisionManager colManager) {
+        if (!isDead) {
             animation.update(delta);
-            updateMovement(colManager);
+
+            if (knockbackDuration > 0) {
+                position.add(knockbackVelocity.x * delta, knockbackVelocity.y * delta);
+
+                //decays over time
+                knockbackTimeElapsed += delta;
+                if (knockbackTimeElapsed >= knockbackDuration) {
+                    knockbackVelocity.set(0, 0);
+                    knockbackDuration = 0;
+                    knockbackTimeElapsed = 0;
+                }
+                updateColliders();
+            } else {
+                updateMovement(colManager);
+            }
             checkDamaging(delta);
         }
     }
+
+    public void applyKnockback(Vector2 sourcePosition, float strength) {
+        Vector2 knockbackDirection = new Vector2(position.x - sourcePosition.x, position.y - sourcePosition.y).nor();
+
+        knockbackVelocity.set(knockbackDirection.scl(strength));
+        knockbackDuration = 0.095f;
+        knockbackTimeElapsed = 0;
+    }
+
     public TextureRegion getEnemy(){
         return animation.getFrame();
     }
@@ -182,11 +215,15 @@ public class Enemy implements Entity {
     public void setMoney(int money) {
 
     }
+    private boolean hurting;
     public void takeDamage(int amount){
         health -= amount;
+        soundManager.playSound("enemyHurt");
         if (health <= 0) {
             isDead = true;
             System.out.println("Enemy defeated!");
+        } else {
+            applyKnockback(player.getPosition(), 150);
         }
     }
 
@@ -241,8 +278,8 @@ public class Enemy implements Entity {
                 directionY /= length;
             }
 
-            this.position.x += directionX * movementSpeed;
-            this.position.y += directionY * movementSpeed;
+            this.position.x += directionX * movementSpeed*0.5f;
+            this.position.y += directionY * movementSpeed*0.5f;
             updateColliders();
         } else if (following) {
 
@@ -282,8 +319,8 @@ public class Enemy implements Entity {
                     directionY /= length;
                 }
 
-                this.position.x += directionX * movementSpeed;
-                this.position.y += directionY * movementSpeed;
+                this.position.x += directionX * movementSpeed * 0.5f;
+                this.position.y += directionY * movementSpeed * 0.5f;
 
                 updateColliders();
 
@@ -491,7 +528,6 @@ public class Enemy implements Entity {
             setPosition(new Vector2(initialposx,initialposy));
             player.startFlickering(cooldownTime);
         }
-
     }
 
     public Rectangle getDamageCollider() {

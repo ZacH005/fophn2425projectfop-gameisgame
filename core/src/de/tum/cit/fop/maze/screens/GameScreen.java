@@ -433,7 +433,7 @@ public class GameScreen implements Screen {
         }
 
         //draws doors and sets their textures
-        mapManager.getDoorObjects().forEach(door -> game.getSpriteBatch().draw(door.getCurrentTexture(), door.getColliderObject().getRectangle().x, door.getColliderObject().getRectangle().y));
+//        mapManager.getDoorObjects().forEach(door -> game.getSpriteBatch().draw(door.getCurrentTexture(), door.getColliderObject().getRectangle().x, door.getColliderObject().getRectangle().y));
 
         trapexplosion();
 // Render the player and enemy
@@ -596,7 +596,7 @@ public class GameScreen implements Screen {
             else {
                 player.setCurrentAnimation(game.getCharacterRightAnimation());
             }
-        } else if((Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && !player.isAttack)){
+        } else if((Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) && !player.isAttack){
             player.stop();
 //            particleEffect.reset();
             handleBreaking(tiledMap);
@@ -690,25 +690,39 @@ public class GameScreen implements Screen {
         TiledMapTileLayer tileLayer2 = (TiledMapTileLayer) map.getLayers().get("Cracks2");
 
         Door door = colManager.checkDoorCollision(player.getCollider());
-        if (door != null && player.getKeys() > 0)    {
-            colManager.openDoor(door);
-            soundManager.playSound("mcOpenNormalDoor_sfx");
-            door.setCurrentTexture(door.getOpenTexture());
-            player.setKeys(player.getKeys()-1);
-        }
-
-        for (MapObject object : objectLayer.getObjects()) {
-            if(player.collider.overlaps(((RectangleMapObject) object).getRectangle())) {
-                tiledMap.getLayers().get("Anim").setVisible(true);
-                ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-                scheduler.schedule(() -> {
-                    tiledMap.getLayers().get("Anim").setVisible(false);
-                    breakTiles(object, tileLayer, 16, 16);
-                    breakTiles(object,tileLayer1,16,16);
-                    breakTiles(object,tileLayer2,16,16);
-                    scheduler.shutdown(); // Shut down the scheduler
-                }, 1200, TimeUnit.MILLISECONDS);
-
+        if (door != null && player.getKeys() > 0)   {
+            if (door.getDoorHealth() > 0)   {
+                switch (door.getDoorHealth())   {
+                    case 2:
+//                        System.out.println("playsound");
+                        soundManager.playSound("mineRock1");
+                        tiledMap.getLayers().get("Anim").setVisible(true);
+                        break;
+                    case 1:
+                        soundManager.playSound("mineRock2");
+//                        System.out.println("playsound");
+                        break;
+                }
+                door.setDoorHealth(door.getDoorHealth()-1);
+//            door.setCurrentTexture(door.getOpenTexture());
+            } else if (door.getDoorHealth() == 0)  {
+                colManager.openDoor(door);
+                soundManager.playSound("mineRock3");
+//                System.out.println("playsound");
+                for (MapObject object : objectLayer.getObjects()) {
+                    if(player.collider.overlaps(((RectangleMapObject) object).getRectangle())) {
+//                        tiledMap.getLayers().get("Anim").setVisible(true);
+//                        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+//                        scheduler.schedule(() -> {
+                            tiledMap.getLayers().get("Anim").setVisible(false);
+                            breakTiles(object, tileLayer, 16, 16);
+                            breakTiles(object,tileLayer1,16,16);
+                            breakTiles(object,tileLayer2,16,16);
+//                            scheduler.shutdown(); // Shut down the scheduler
+//                        }, 1200, TimeUnit.MILLISECONDS);
+                    }
+                }
+                player.setKeys(player.getKeys()-1);
             }
         }
     }

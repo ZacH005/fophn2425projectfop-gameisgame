@@ -54,7 +54,7 @@ public class SettingsScreen implements Screen {
         // Add a label as a title
         table2.add(new Label("Settings", game.getSkin(), "title")).padBottom((float)viewport.getScreenHeight()/2);
 
-        music = new Slider(0, 1, 0.3f, false, game.getSkin());
+        music = new Slider(0, 1, 0.1f, false, game.getSkin());
 
         music.setValue(game.getSoundManager().getMusicVolume());
         table.add(music).width(300);

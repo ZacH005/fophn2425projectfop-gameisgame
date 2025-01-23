@@ -132,6 +132,10 @@ public class ScreenManager extends Game {
         soundManager.loadSound("mcHurt_sfx","music/sfxs/mcHurt.mp3");
         soundManager.loadSound("enemyDeath_sfx","music/sfxs/EnemyDeath.mp3");
         soundManager.loadSound("click","music/UI/menuSelect.mp3");
+        soundManager.loadSound("enemyHurt", "music/hitHurt.wav");
+        soundManager.loadSound("mineRock1", "music/sfx/mineRock1.mp3");
+        soundManager.loadSound("mineRock2", "music/sfx/mineRock2.mp3");
+        soundManager.loadSound("mineRock3", "music/sfx/mineRock3.mp3");
         /// key sound
         soundManager.loadKeySound("music/themes/Key.mp3");
         /// state definition

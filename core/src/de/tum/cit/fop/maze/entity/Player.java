@@ -381,33 +381,6 @@ public class Player implements Entity, Serializable {
 
 
     public void render(SpriteBatch batch) {
-//        System.out.println(health);
-        if (currentAnimation != null) {
-
-            TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
-
-            if (isFlickering) {
-                batch.setColor(1, 1, 1, flickerAlpha); // Flicker effect
-            } else if (isRedEffectActive) {
-                batch.setColor(0.7f, 0, 0, 1); // Red tint for damage effect
-            } else {
-                batch.setColor(1, 1, 1, 1); // Normal color
-            }
-
-            if (isAttack)
-                frame = currentAnimation.getKeyFrame(attackAnimationTime, false);
-            else
-                frame = currentAnimation.getKeyFrame(animationTime, true);
-
-            if(adjust) {
-                batch.draw(frame, position.x - (width / 2) - 2.5f + 4f, position.y - (height / 2), width * 2.0f, height * 2.0f);
-            }else{
-                batch.draw(frame, position.x-(width/2)-2.5f, position.y-(height/2), width*2.0f, height*2.0f);
-            }
-
-            batch.setColor(1, 1, 1, 1);
-        }
-
         if (isAttack) {
             TextureRegion swipeFrame = swipeAnimation.getKeyFrame(attackAnimationTime, false);
 
@@ -442,6 +415,33 @@ public class Player implements Entity, Serializable {
 
         } else {
             attackAnimationTime = 0;
+        }
+
+//        System.out.println(health);
+        if (currentAnimation != null) {
+
+            TextureRegion frame = currentAnimation.getKeyFrame(animationTime, true);
+
+            if (isFlickering) {
+                batch.setColor(1, 1, 1, flickerAlpha); // Flicker effect
+            } else if (isRedEffectActive) {
+                batch.setColor(0.7f, 0, 0, 1); // Red tint for damage effect
+            } else {
+                batch.setColor(1, 1, 1, 1); // Normal color
+            }
+
+            if (isAttack)
+                frame = currentAnimation.getKeyFrame(attackAnimationTime, false);
+            else
+                frame = currentAnimation.getKeyFrame(animationTime, true);
+
+            if(adjust) {
+                batch.draw(frame, position.x - (width / 2) - 2.5f + 4f, position.y - (height / 2), width * 2.0f, height * 2.0f);
+            }else{
+                batch.draw(frame, position.x-(width/2)-2.5f, position.y-(height/2), width*2.0f, height*2.0f);
+            }
+
+            batch.setColor(1, 1, 1, 1);
         }
     }
     private float attackAnimationTime;

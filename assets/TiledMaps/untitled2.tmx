@@ -6560,7 +6560,7 @@
   </tile>
  </tileset>
  <tileset firstgid="15475" source="Objects.tsx"/>
- <layer id="1" name="Tile Layer 1" width="120" height="67">
+ <layer id="1" name="Ground" width="120" height="67">
   <data encoding="base64" compression="zlib">
    eJzt0aENACAMAME6wv6zdKFOgsBiEE3NifOffK2Igg+5r+kOeh9PNwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALwccAKWzA==
   </data>
@@ -6940,7 +6940,7 @@
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="85" x="687.333" y="380.667" width="356" height="67.3333">
+  <object id="85" x="704" y="384" width="339.095" height="59.4885">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
@@ -7168,17 +7168,17 @@
   </object>
   <object id="146" x="834.25" y="467.25" width="10.75" height="7">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Trap"/>
    </properties>
   </object>
   <object id="147" x="913" y="499.25" width="11.75" height="7.25">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Trap"/>
    </properties>
   </object>
   <object id="148" x="993.25" y="466.25" width="11.75" height="8.75">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Trap"/>
    </properties>
   </object>
   <object id="149" x="1013.25" y="448.5" width="21.5" height="9.75">
@@ -7243,7 +7243,7 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="18" name="BreakableWalls" visible="0">
+ <objectgroup id="18" name="BreakableWalls">
   <object id="18" x="375.5" y="128.25" width="61.25" height="128"/>
   <object id="89" x="1184" y="80" width="97" height="143.5"/>
  </objectgroup>

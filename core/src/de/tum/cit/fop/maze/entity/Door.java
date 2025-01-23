@@ -13,6 +13,7 @@ public class Door {
     private Texture closedTexture;
     private Texture openTexture;
     private Texture currentTexture;
+    private int doorHealth;
 
     public Door(RectangleMapObject detectObject) {
         this.detectObject = detectObject;
@@ -22,6 +23,7 @@ public class Door {
         this.closedTexture = new Texture(Gdx.files.internal("icons/lockedDoor.png"));
         this.openTexture = new Texture(Gdx.files.internal("icons/openDoor.png"));
         currentTexture = closedTexture;
+        doorHealth = 2;
     }
 
     public Texture getCurrentTexture()  {
@@ -70,5 +72,13 @@ public class Door {
 
     public Texture getOpenTexture() {
         return openTexture;
+    }
+
+    public int getDoorHealth() {
+        return doorHealth;
+    }
+
+    public void setDoorHealth(int doorHealth) {
+        this.doorHealth = doorHealth;
     }
 }
