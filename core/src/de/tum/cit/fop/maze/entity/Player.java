@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class Player implements Entity, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
     ///footstep sfx
     private int currentTileX;
     private int currentTileY;
@@ -162,9 +163,10 @@ public class Player implements Entity, Serializable {
 //            }
 
             if (attackHitbox.overlaps(enemy.damageCollider))    {
-                System.out.println("attacking" + enemy);
-                System.out.println(enemy.getHealth());
+//                System.out.println("attacking" + enemy);
+//                System.out.println(enemy.getHealth());
                 enemy.takeDamage(1);
+
             }
         }
         isAttack = true;
@@ -172,30 +174,30 @@ public class Player implements Entity, Serializable {
 
     // Add this method to your Player class
     public Rectangle getAttackHitbox() {
-        float width = 30; // Adjust as needed
-        float height = 48; // The height should be the same as the player
+        float width = 30;
+        float height = 48;
 
         float x = position.x;
         float y = position.y;
 
         switch (direction) {
             case LEFT:
-                x -= this.width + 8; // Box extends to the left of the player
+                x -= this.width + 8;
                 y -= 40/2f;
                 break;
             case RIGHT:
-                x += this.width - 8; // Box extends to the right of the player
+                x += this.width - 8;
                 y -= 40/2f;
                 break;
             case UP:
-//                y += 16f; // Box extends upwards from the player
+//                y += 16f;
                 x -= 16f;
 
                 width = 48;
                 height = 30;
                 break;
             case DOWN:
-                y -= 48/2f; // Box extends downwards from the player
+                y -= 48/2f;
                 x -= 16f;
                 width = 48;
                 height = 30;

@@ -30,6 +30,8 @@ public class PauseOverlay {
     private float musicVolume;
     private Map<String,Integer> pauseState = new HashMap<String,Integer>();
 
+    private Slider zoomSlider;
+
     public Map<String, Integer> getPauseState() {
         return pauseState;
     }
@@ -78,6 +80,13 @@ public class PauseOverlay {
         else {
             musicVolume = musicSlider.getValue();
         }
+
+        if(zoomSlider==null){
+            gameScreen.setCameraZoom(1f);
+        } else {
+            gameScreen.setCameraZoom(zoomSlider.getValue());
+        }
+
 
         // Add Resume button
         TextButton resumeButton = new TextButton("Resume", skin);
@@ -143,10 +152,26 @@ public class PauseOverlay {
         table.add(musicSlider).width(300).row();
 
 
+        Label zoomLabel = new Label("Camera Zoom", skin);
+        table.add(zoomLabel).padBottom(20).row();
 
-    // Initialize dimensions
-    lastWidth =Gdx.graphics.getWidth();
-    lastHeight =Gdx.graphics.getHeight();
+        zoomSlider = new Slider(0.2f, 1, 0.1f, false, skin);
+        zoomSlider.setValue(gameScreen.getCameraZoom());
+        zoomSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
+                gameScreen.setCameraZoom(zoomSlider.getValue());
+            }
+        });
+        table.add(zoomSlider).width(300).row();
+
+
+
+
+        // Initialize dimensions
+        lastWidth =Gdx.graphics.getWidth();
+        lastHeight =Gdx.graphics.getHeight();
 
     }
     public float getMusicVolume() {

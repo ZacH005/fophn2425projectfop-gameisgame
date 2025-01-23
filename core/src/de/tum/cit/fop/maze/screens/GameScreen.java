@@ -99,11 +99,15 @@ public class GameScreen implements Screen {
 
     private float gameTime;
 
+    private float cameraZoom;
+
     public String getMapPath() {
         return mapPath;
     }
 
     public GameScreen(ScreenManager game, String mapPath) {
+        cameraZoom = 1f;
+
         this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
 
@@ -116,7 +120,7 @@ public class GameScreen implements Screen {
 
         //this was kinda from before, i don't understand all this
         camera.setToOrtho(false, Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
-        camera.zoom = 1f;
+        camera.zoom = cameraZoom;
         darkCircleoverlay = new Texture("DK.png");
 
 
@@ -253,6 +257,8 @@ public class GameScreen implements Screen {
 
             }
 
+            camera.zoom = cameraZoom;
+
             return;
 
         }
@@ -312,7 +318,7 @@ public class GameScreen implements Screen {
 
 
         // moving the camera with the player
-        camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+        camera.position.set(player.getPosition().x+8, player.getPosition().y+8, 0);
         camera.update();
         //basically its just saying the map should be shown in (camera)
         mapRenderer.setView(camera);
@@ -820,5 +826,13 @@ public class GameScreen implements Screen {
 // In render method
             arrowSprite.draw(game.getSpriteBatch());
         }
+    }
+
+    public float getCameraZoom() {
+        return cameraZoom;
+    }
+
+    public void setCameraZoom(float cameraZoom) {
+        this.cameraZoom = cameraZoom;
     }
 }
