@@ -63,6 +63,17 @@ public class CollisionManager {
             collisionObjects.remove(doorCollider.getColliderObject());
         }
     }
+    public void  removeGem(RectangleMapObject thingCollider) {
+        RectangleMapObject r =null;
+        for(RectangleMapObject collider : collisionObjects) {
+            if(thingCollider.equals(collider)){
+                r=collider;
+            }
+        }
+        if(r!=null){
+            collisionObjects.remove(r);
+        }
+    }
 
 //    private boolean checkWin()  {
 //

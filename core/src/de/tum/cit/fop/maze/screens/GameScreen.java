@@ -17,8 +17,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
 import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.SoundManager;
 
@@ -74,6 +76,7 @@ public class GameScreen implements Screen {
 
     private float tileSize;
     private ParticleEffect particleEffect;
+    private ParticleEffect particleEffect2;
     private boolean following=false;
 
     private ShapeRenderer shapeRenderer;
@@ -169,6 +172,8 @@ public class GameScreen implements Screen {
 
         particleEffect = new ParticleEffect();
         particleEffect.load(Gdx.files.internal("TiledMaps/particles/hh.p"), Gdx.files.internal("TiledMaps/particles/"));
+        particleEffect2=new ParticleEffect();
+        particleEffect2.load(Gdx.files.internal("TiledMaps/particles/vv.p"), Gdx.files.internal("TiledMaps/particles/"));
         particleEffect.getEmitters().forEach(emitter -> {
             for (TextureRegion region : emitter.getSprites()) { // Use getSprites() for multiple textures
                 region.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -176,9 +181,11 @@ public class GameScreen implements Screen {
         });
         // Set the position of the particle effect
         particleEffect.setPosition(startPlayerX,startPlayerY );
+        particleEffect2.setPosition(startPlayerX,startPlayerY );
 
         // Start the particle effect
         particleEffect.start();
+        particleEffect2.start();
         hud = new HUD(game.getSpriteBatch(), game, player);
 
         enemies = new ArrayList<>();
@@ -433,6 +440,10 @@ public class GameScreen implements Screen {
         // Clear the screen and render the particle effect
         particleEffect.draw(game.getSpriteBatch());
 
+        particleEffect2.update(Gdx.graphics.getDeltaTime());
+
+        particleEffect2.draw(game.getSpriteBatch());
+
         // Restart the effect if it's finished
 
         drawarrow();
@@ -583,6 +594,7 @@ public class GameScreen implements Screen {
             player.stop();
 //            particleEffect.reset();
             handleBreaking(tiledMap);
+            handleGemBreak(tiledMap);
             if ((player.getCurrentAnimation().equals(game.getCharacterDownIdleAnimation()) || player.getCurrentAnimation().equals(game.getCharacterDownAnimation()))) {
                 player.setAdjust(true);
                 player.setCurrentAnimation(game.getcharacterDownAttackAnimation());
@@ -694,6 +706,46 @@ public class GameScreen implements Screen {
             }
         }
     }
+    public void handleGemBreak(TiledMap map) {
+        MapLayer objectLayer = map.getLayers().get("BreakableWalls");
+        TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get("additives");
+        RectangleMapObject r=null;
+
+        for (MapObject object : objectLayer.getObjects()) {
+            if ((player.collider.overlaps(((RectangleMapObject) object).getRectangle())) &&
+                    (((RectangleMapObject) object).getProperties().get("type") != null) &&
+                    (((RectangleMapObject) object).getProperties().get("type")).equals("Gem")) {
+
+                r = (RectangleMapObject) object.getProperties().get("collider");
+                particleEffect2.setPosition(r.getRectangle().x + r.getRectangle().getWidth() / 2,
+                        r.getRectangle().y + r.getRectangle().getHeight() / 2);
+                particleEffect2.reset(); // Start the particle effect
+
+                // Delay the breaking effect
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        // Remove the object after the delay
+                        objectLayer.getObjects().remove(object);
+
+                        // Break tiles
+                        breakTiles(object, tileLayer, 16, 16);
+
+                        // Update the player's keys
+                        player.setKeys(player.getKeys() + 1);
+                    }
+                }, 0.2f); // Delay in seconds (1.2 seconds in this case)
+
+                break; // Exit the loop after scheduling
+            }
+        }
+        if(r!=null){
+            System.out.println("Before removal: " + objectLayer.getObjects().getCount());
+            map.getLayers().get("CollisionObjects").getObjects().remove(r);
+            colManager.removeGem(r);
+            System.out.println("After removal: " + objectLayer.getObjects().getCount());
+        }
+    }
     public void breakTiles(MapObject object, TiledMapTileLayer tileLayer, float tileWidth, float tileHeight) {
         // Get object properties
         float objectX = (float) object.getProperties().get("x");
@@ -704,8 +756,8 @@ public class GameScreen implements Screen {
         // Convert to tile coordinates
         int tileXStart = (int) (objectX / tileWidth);
         int tileYStart = (int) (objectY / tileHeight);
-        int tileXEnd = (int) ((objectX + objectWidth) / tileWidth);
-        int tileYEnd = (int) ((objectY + objectHeight) / tileHeight);
+        int tileXEnd = (int) ((objectX + objectWidth) / tileWidth)+1;
+        int tileYEnd = (int) ((objectY + objectHeight) / tileHeight)+1;
 
         // Remove tiles
         for (int x = tileXStart; x < tileXEnd; x++) {
