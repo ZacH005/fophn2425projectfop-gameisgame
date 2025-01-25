@@ -640,8 +640,6 @@ public class GameScreen implements Screen {
             player.move(Player.Direction.UP);
             if(player.isSprinting()){
                 player.setCurrentAnimation(game.getRunUpAnimation());
-
-                soundManager.playSound("mineRock3");
             }
             else {
                 player.setCurrentAnimation(game.getCharacterUpAnimation());
