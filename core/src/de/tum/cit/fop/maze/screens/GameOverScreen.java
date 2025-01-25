@@ -81,7 +81,7 @@ public class GameOverScreen implements Screen {
         table2.add(new Label("GAME OVER!", game.getSkin(), "title")).padBottom((float) viewport.getScreenHeight()/3);
 
 
-// create and add the buttons
+        // create and add the buttons
         TextButton retryButton = new TextButton("Retry", game.getSkin());
         retryButton.addListener(new ChangeListener() {
             @Override
@@ -93,7 +93,7 @@ public class GameOverScreen implements Screen {
         });
         table.add(retryButton).width(300).row();
 
-/// Menu Button
+        /// Menu Button
         TextButton menuButton = new TextButton("Go to Menu", game.getSkin());
         menuButton.addListener(new ChangeListener() {
             @Override

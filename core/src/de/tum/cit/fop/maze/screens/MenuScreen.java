@@ -51,7 +51,7 @@ public class MenuScreen implements Screen {
      *
      * @param game The main game class, used to access global resources and methods.
      */
-    public MenuScreen(ScreenManager game) {
+    public MenuScreen(ScreenManager game,SoundManager soundManager) {
         this.game = game;
         var camera = new OrthographicCamera();
         camera.zoom = 1f; // Set camera zoom for a closer view
@@ -71,7 +71,7 @@ public class MenuScreen implements Screen {
         stage2.addActor(table2);
 
         //sound manager
-        soundManager = game.getSoundManager();
+        this.soundManager = soundManager;
         soundManager.loadSound("click","music/UI/menu_select.ogg");
 
         menuState.put("crackles",1);

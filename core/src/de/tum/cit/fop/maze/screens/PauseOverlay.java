@@ -112,7 +112,7 @@ public class PauseOverlay {
                 soundManager.playSound("click");
                 gameScreen.dispose();
                 String mappath = gameScreen.getMapPath();
-                game.setScreen(new GameScreen(game,mappath));
+                game.setScreen(new GameScreen(game,mappath,soundManager));
 
             }
         });
@@ -126,7 +126,6 @@ public class PauseOverlay {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Go To Menu clicked");
                 soundManager.playSound("click");
-                gameScreen.dispose();
                 game.goToMenu();
             }
         });

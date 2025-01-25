@@ -46,6 +46,7 @@ public class SoundManager implements Disposable {
     // Play a sound effect
     public void playSound(String name) {
         Sound sound = soundEffects.get(name);
+        System.out.println(name);
         if (sound != null) {
             sound.play(sfxVolume);
         }

@@ -108,7 +108,7 @@ public class GameScreen implements Screen {
         return mapPath;
     }
 
-    public GameScreen(ScreenManager game, String mapPath) {
+    public GameScreen(ScreenManager game, String mapPath,SoundManager soundManager) {
         cameraZoom = 1f;
 
         this.mapPath = mapPath;
@@ -157,7 +157,7 @@ public class GameScreen implements Screen {
         }
 
         //sound stuff.
-        this.soundManager = game.getSoundManager();
+        this.soundManager = soundManager;
 
         mainState.put("crackles", 1);
         mainState.put("wind", 1);
@@ -640,6 +640,8 @@ public class GameScreen implements Screen {
             player.move(Player.Direction.UP);
             if(player.isSprinting()){
                 player.setCurrentAnimation(game.getRunUpAnimation());
+
+                soundManager.playSound("mineRock3");
             }
             else {
                 player.setCurrentAnimation(game.getCharacterUpAnimation());
@@ -707,6 +709,7 @@ public class GameScreen implements Screen {
 //            door.setCurrentTexture(door.getOpenTexture());
             } else if (door.getDoorHealth() == 0)  {
                 colManager.openDoor(door);
+
                 soundManager.playSound("mineRock3");
 //                System.out.println("playsound");
                 for (MapObject object : objectLayer.getObjects()) {
@@ -821,7 +824,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        soundManager.dispose();
+
         mapRenderer.dispose();
         tiledMap.dispose();
         pauseOverlay.dispose();

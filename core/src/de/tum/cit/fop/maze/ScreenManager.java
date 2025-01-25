@@ -164,7 +164,7 @@ public class ScreenManager extends Game {
 
     /*** Switches to the menu screen.*/
     public void goToMenu() {
-        this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
+        this.setScreen(new MenuScreen(this,soundManager)); // Set the current screen to MenuScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the game screen if it exists
             gameScreen = null;
@@ -197,7 +197,7 @@ public class ScreenManager extends Game {
             // if a level isn't played then this the one we go to intuitively
             else{
                 System.out.println("loaded :"+file.name()+" map");
-                this.setScreen(new GameScreen(this, ("TiledMaps/"+file.name()) ));
+                this.setScreen(new GameScreen(this, ("TiledMaps/"+file.name()),soundManager));
             }}
 
         }
@@ -319,7 +319,7 @@ public class ScreenManager extends Game {
         TiledMap map = mapLoader.load("assets/TiledMaps/" + levelName + ".tmx");
 
 
-        this.setScreen(new GameScreen(this, "assets/TiledMaps/" + levelName + ".tmx")); // Change to a GameScreen that uses the loaded map
+        this.setScreen(new GameScreen(this, "assets/TiledMaps/" + levelName + ".tmx",soundManager)); // Change to a GameScreen that uses the loaded map
     }
 
 //    private void loadCharacterAnimation() {
