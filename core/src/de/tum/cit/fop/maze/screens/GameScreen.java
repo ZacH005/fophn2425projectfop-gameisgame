@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -27,11 +28,7 @@ import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.*;
 import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 import de.tum.cit.fop.maze.arbitrarymap.MapManager;
-import de.tum.cit.fop.maze.entity.Door;
-import de.tum.cit.fop.maze.entity.Enemy;
-import de.tum.cit.fop.maze.entity.HUD;
-import de.tum.cit.fop.maze.entity.Node;
-import de.tum.cit.fop.maze.entity.Player;
+import de.tum.cit.fop.maze.entity.*;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -104,11 +101,14 @@ public class GameScreen implements Screen {
 
     private float cameraZoom;
 
+    private EnemyManager enemyManager;
+
     public String getMapPath() {
         return mapPath;
     }
 
     public GameScreen(ScreenManager game, String mapPath,SoundManager soundManager) {
+        this.enemyManager = new EnemyManager();
         cameraZoom = 1f;
 
         this.mapPath = mapPath;
@@ -202,7 +202,7 @@ public class GameScreen implements Screen {
 //                System.out.println("Adding powerup");
 
             if ("Slime".equals(type)) {
-                enemy = new Enemy(rectangle.x, rectangle.y, player, hud, soundManager);
+                enemy = new Enemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations());
             }
 
             if (enemy != null) {
@@ -313,7 +313,9 @@ public class GameScreen implements Screen {
             player.update(delta, colManager);
 //            if (colManager.checkListCollision(mapManager.getTrapObjects(), player.collider))
 //                player.takeDamage();
-            enemies.forEach(enemy1 -> enemy1.update(delta, colManager));
+            enemies.forEach(enemy1 -> {
+                enemy1.update(delta, colManager);
+            });
             hud.updateHUD();
         }
 
@@ -437,6 +439,9 @@ public class GameScreen implements Screen {
 
         trapexplosion();
 // Render the player and enemy
+        enemies.forEach(enemy1 -> {
+            enemy1.render(game.getSpriteBatch());
+        });
         player.render(game.getSpriteBatch());
 
 
@@ -453,11 +458,11 @@ public class GameScreen implements Screen {
         // Restart the effect if it's finished
 
         drawarrow();
-        for (Enemy enemy : enemies) {
-            if(!enemy.isDead){
-                game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
-            }
-        }
+//        for (Enemy enemy : enemies) {
+////            if(!enemy.isDead){
+////                game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
+////            }
+//        }
 
 
 // Apply the dark circle overlay

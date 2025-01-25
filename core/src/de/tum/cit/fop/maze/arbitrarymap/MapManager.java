@@ -146,5 +146,8 @@ public class MapManager {
     public List<RectangleMapObject> getEventObjects() {
         return eventObjects;
     }
+
+
+
 }
 
