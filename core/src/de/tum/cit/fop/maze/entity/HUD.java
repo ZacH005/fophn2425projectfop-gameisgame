@@ -23,6 +23,7 @@ public class HUD {
     private Viewport viewport;
 
     private Integer keysno;
+    private int gemsno;
     private float elapsedTime;
     private Integer score;
 
@@ -32,11 +33,14 @@ public class HUD {
     Label timecounterLabel;
     Label worldLabel;
     Label scoreLabel;
+    Label gemLabel;
+    Label gemCount;
 
     private Texture fullHeartTexture;
     private Texture halfHeartTexture;
 
     private Table heartTable;
+    private int maxGems;
 
     private int maxHearts;
     private boolean[] heartStates; // Array to track heart states (true = full, false = half)
@@ -53,8 +57,10 @@ public class HUD {
      */
     public HUD(SpriteBatch batch, ScreenManager game, Player player) {
         keysno = player.getKeys();
+        gemsno=player.getGems();
         elapsedTime = 0;
         score = 0;
+        maxGems = 0;
 
         TextureRegion region= new TextureRegion(new Texture("HUD heart.png"));
 
@@ -98,13 +104,15 @@ public class HUD {
         labelStyle.font = game.getSkin().getFont("font");  // Use the "font" from the skin
         
         keysLabel = new Label(String.format("%03d", keysno), labelStyle);
+        gemLabel = new Label("GEMS", labelStyle);
+        gemCount =new Label(gemsno+"/"+maxGems, labelStyle);
 
 
         timeLabel = new Label("TIME", labelStyle);
 
         timecounterLabel = new Label("00:00", labelStyle);
 
-        worldLabel = new Label("KEYS", labelStyle);
+        worldLabel = new Label("AXES", labelStyle);
 
         heartTable=new Table();
 
@@ -112,15 +120,21 @@ public class HUD {
         
         Table table1=new Table();
         Table table2 =new Table();
+        Table table3 =new Table();
         // Add labels to the table
         table1.add(worldLabel).expandX();
         table1.row();
         table1.add(keysLabel).expandX();
         table.add(table1).expandX();
+        table3.add(gemLabel).expandX();
+        table3.row();
+        table3.add(gemCount).expandX();
+        table.add(table3).expandX();
         table2.add(timeLabel).expandX();
         table2.row();
         table2.add(timecounterLabel).expandX();
         table.add(table2).expandX();
+
 
 
         table.padTop(10);
@@ -149,6 +163,7 @@ public class HUD {
     }
     public void updateHUD(){
         keysLabel.setText(String.format("%03d", player.getKeys()));
+        gemCount.setText(player.getGems()+"/"+maxGems);
 
         // Update elapsed time every frame
         elapsedTime += Gdx.graphics.getDeltaTime(); // deltaTime gives you the time since the last frame
@@ -194,6 +209,10 @@ public class HUD {
      *
      * @param delta Time since the last frame.
      */
+
+    public void setMaxGems(int maxGems) {
+        this.maxGems = maxGems;
+    }
 
     /**
      * Disposes of resources used by the HUD.
