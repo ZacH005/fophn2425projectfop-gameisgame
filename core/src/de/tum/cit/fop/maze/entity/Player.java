@@ -550,7 +550,7 @@ public class Player implements Entity, Serializable {
     public void takeDamage(float x) {
         health -= x;
         System.out.println(health);
-        soundManager.playSound("mcHurt_sfx");
+        soundManager.playSound("playerHurt");
     }
 
     @Override

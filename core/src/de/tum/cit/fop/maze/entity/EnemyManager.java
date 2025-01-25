@@ -39,7 +39,7 @@ public class EnemyManager {
 
         int frameWidth = 64, frameHeight = 64, walkAnimationFrames = 9, idleAnimationFrames = 2, y = 0, knockbackAnimFrames = 1;
 
-        for (int i = 0; i <= 50; i++) {
+        for (int i = 0; i <= 59; i++) {
             Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> attackLeftFrames = new Array<>(TextureRegion.class);
@@ -92,16 +92,16 @@ public class EnemyManager {
                 case 192:
                     skeletonAnimations.put("rightIdle", new Animation<>(0.25f, idleFrames));
                     break;
-                case 3008:
+                case 55*64:
                     skeletonAnimations.put("rightAttack", new Animation<>(0.05f, attackLeftFrames, Animation.PlayMode.NORMAL));
                     break;
-                case 3072:
+                case 56*64:
                     skeletonAnimations.put("downAttack", new Animation<>(0.07f, attackLeftFrames));
                     break;
-                case 3136:
+                case 57*64:
                     skeletonAnimations.put("leftAttack", new Animation<>(0.05f, attackLeftFrames));
                     break;
-                case 3200:
+                case 58*64:
                     skeletonAnimations.put("upAttack", new Animation<>(0.07f, attackLeftFrames));
                     break;
 //                case 2176:
