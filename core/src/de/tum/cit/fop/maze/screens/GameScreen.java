@@ -134,7 +134,7 @@ public class GameScreen implements Screen {
         //decided to load map in the game screen since it's super simple in libgdx with tiled
         // I modified this to load a map from a selector
 
-        tiledMap = new TmxMapLoader().load(mapPath);
+        tiledMap = new TmxMapLoader().load(mapPath);//as
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.mapManager = new MapManager(tiledMap);
         this.colManager = new CollisionManager(mapManager.getCollisionObjects(), mapManager.getDoorObjects(), mapManager.getEventObjects());
