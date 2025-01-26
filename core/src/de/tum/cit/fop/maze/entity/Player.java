@@ -172,7 +172,7 @@ public class Player implements Entity, Serializable {
             if (attackHitbox.overlaps(enemy.damageCollider))    {
 //                System.out.println("attacking" + enemy);
 //                System.out.println(enemy.getHealth());
-                enemy.takeDamage(1);
+                enemy.takeDamage(1f);
 
             }
         }
@@ -558,7 +558,7 @@ public class Player implements Entity, Serializable {
     public void takeDamage(float x) {
         health -= x;
         System.out.println(health);
-        soundManager.playSound("mcHurt_sfx");
+        soundManager.playSound("playerHurt");
     }
 
     @Override

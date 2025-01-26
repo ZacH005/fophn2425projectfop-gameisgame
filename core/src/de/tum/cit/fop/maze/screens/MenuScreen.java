@@ -205,7 +205,7 @@ public class MenuScreen implements Screen {
     @Override
     public void dispose() {
         // Dispose of the stage when screen is disposed
-        batch.dispose();
+//        batch.dispose();
         overlayTexture.dispose();
         bg.dispose();
         stage.dispose();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,6 +13,7 @@ import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import com.badlogic.gdx.utils.TimeUtils;
 import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
+import com.badlogic.gdx.graphics.g2d.Animation;
 
 import java.util.*;
 
@@ -19,62 +21,55 @@ import java.util.*;
 public class Enemy implements Entity {
     public boolean isDead = false;
     public Vector2 position;
-    private Texture texture;
-    private Animation animation;
     public Rectangle scanRange;
     private Player player;
     private boolean following;
     private boolean roaming;
 
-    private Vector2 roamingTarget;
-    private long lastRoamUpdateTime = 0;
-    private long roamDelay = 200;
+    private Animation<TextureRegion> currentAnimation;
+    private float animationTime;
 
     public Rectangle damageCollider;
-//    private Music chaseMusic;;
     ///sound manager stuff.
     private SoundManager soundManager;
     private Map<String,Integer> chaseState = new HashMap<String,Integer>();
     private Map<String,Integer> mainState = new HashMap<String,Integer>();
 
-    private float lastDamageTime; // To track the last damage time
+    private float lastDamageTime;
     private float cooldownTime=2f;
     private HUD hud;
     int scanrangewidth;
     int scanrangeheight;
-    //for some reason if I just create a Vector2 initial position it does not work dk why
+
     private float initialposx;
     private float initialposy;
     private int health;
 
     private float movementSpeed;
     private List<Node> currentPath;
-    private Vector2 savedVector;
 
     private Vector2 knockbackVelocity = new Vector2(0, 0);
     private float knockbackDuration = 0;
     private float knockbackTimeElapsed = 0;
 
-    private Sound hurtSound;
+    private Map<String, Animation<TextureRegion>> animations;
 
+    private Vector2 lastDirection;
 
-    public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager) {
-        this.player = player;
+    public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager, Map<String, Animation<TextureRegion>> animations) {
+
+            this.player = player;
         position = new Vector2(x,y);
         initialposx = x;
         initialposy = y;
-        texture=new Texture("TiledMaps/SlimeA.png");
-        animation=new Animation(new TextureRegion(texture),16,3f);
         scanrangewidth = 100;
         scanrangeheight = 100;
         scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
         damageCollider = new Rectangle(position.x-2,position.y-5,20,20);
         health = 3;
 
-        movementSpeed = 120 * Gdx.graphics.getDeltaTime(); // uses delta time to allow for frames to be bad
+        movementSpeed = 2.5f;
 
-//        chaseMusic = Gdx.audio.newMusic(Gdx.files.internal("ChaseMusic.mp3")); // Replace with your music file
-//        chaseMusic.setLooping(true);
         this.soundManager=soundManager;
         chaseState.put("crackles",0);
         chaseState.put("wind",1);
@@ -97,29 +92,68 @@ public class Enemy implements Entity {
         roaming = true;
 
         hurting = false;
+        this.animations = animations;
+
+        this.currentAnimation = animations.get("downWalk");
     }
 
     public void update(float delta, CollisionManager colManager) {
-        if (!isDead) {
-            animation.update(delta);
+        animationTime += delta;
 
-            if (knockbackDuration > 0) {
-                position.add(knockbackVelocity.x * delta, knockbackVelocity.y * delta);
+        if (isDead) return;
 
-                //decays over time
-                knockbackTimeElapsed += delta;
-                if (knockbackTimeElapsed >= knockbackDuration) {
-                    knockbackVelocity.set(0, 0);
-                    knockbackDuration = 0;
-                    knockbackTimeElapsed = 0;
-                }
-                updateColliders();
-            } else {
-                updateMovement(colManager);
+
+        if (knockbackDuration > 0) {
+            position.add(knockbackVelocity.x * delta, knockbackVelocity.y * delta);
+
+            knockbackTimeElapsed += delta;
+            if (knockbackTimeElapsed >= knockbackDuration) {
+                knockbackVelocity.set(0, 0);
+                knockbackDuration = 0;
+                knockbackTimeElapsed = 0;
             }
-            checkDamaging(delta);
+            hurting = true;
+            attacking = false;
+            updateColliders();
+        } else if (attacking) {
+            attackTimeElapsed += delta;
+
+            if (attackTimeElapsed >= attackDuration) {
+                attacking = false;
+                attackTimeElapsed = 0f;
+            }
+        } else {
+            updateMovement(colManager);
+            hurting = false;
+        }
+
+        // Check for damage/attacks
+        checkDamaging(delta);
+    }
+
+    public void render(SpriteBatch batch) {
+        if (currentAnimation != null) {
+            TextureRegion frame;
+
+            if (isDead) {
+                currentAnimation = animations.get("death");
+                frame = currentAnimation.getKeyFrame(animationTime, false);
+            } else if (hurting) {
+                currentAnimation = animations.get("upKnock");
+                batch.setColor(0.7f, 0, 0, 1);
+                frame = currentAnimation.getKeyFrame(animationTime, true);
+            } else if (attacking) {
+                frame = currentAnimation.getKeyFrame(animationTime, false);
+            } else {
+                frame = currentAnimation.getKeyFrame(animationTime, true);
+            }
+
+            batch.draw(frame, position.x - ((float) 16 / 2), position.y - ((float) 16 / 2), 16 * 2.0f, 16 * 2.0f);
+            batch.setColor(1, 1, 1, 1);
         }
     }
+
+
 
     public void applyKnockback(Vector2 sourcePosition, float strength) {
         Vector2 knockbackDirection = new Vector2(position.x - sourcePosition.x, position.y - sourcePosition.y).nor();
@@ -129,19 +163,14 @@ public class Enemy implements Entity {
         knockbackTimeElapsed = 0;
     }
 
-    public TextureRegion getEnemy(){
-        return animation.getFrame();
-    }
+//    public TextureRegion getEnemy(){
+//        return animation.getFrame();
+//    }
 
     @Override
     public void heal() {
 
     }
-
-    @Override
-    public void takeDamage(float amount) {
-    }
-
 
     @Override
     public float getHealth() {
@@ -216,20 +245,35 @@ public class Enemy implements Entity {
 
     }
     private boolean hurting;
-    public void takeDamage(int amount){
-        if (health > 0) {
-            health -= amount;
-            Sound hurtSound  = soundManager.getSound("enemyHurt");
-            long id = hurtSound.play(soundManager.getSfxVolume());
-            Random random = new Random();
-            hurtSound.setPitch(id, 0.8f+random.nextFloat()*2);
-            applyKnockback(player.getPosition(), 150);
-        }
-        if (health == 0 && !isDead) {
-            isDead = true;
-            System.out.println("Enemy defeated!");
-        }
+//    private float lastHurtingTime = 0, hurtCooldown = 0.2f; // Time in seconds (200f = 200 seconds)
+
+    @Override
+    public void takeDamage(float amount) {
+//            hurting = true;  // Start hurting if the cooldown has passed
+
+//        if (hurting) {
+            // Play hurt sound and apply damage effects here
+            if (health > 0) {
+                health -= amount;
+                Sound hurtSound = soundManager.getSound("enemyHurt");
+                long id = hurtSound.play(soundManager.getSfxVolume());
+                Random random = new Random();
+                hurtSound.setPitch(id, 0.8f + random.nextFloat() * 2);
+                applyKnockback(player.getPosition(), 150);
+            }
+
+            if (health == 0 && !isDead) {
+                isDead = true;
+                soundManager.onGameStateChange(mainState);
+                System.out.println("Enemy defeated!");
+            }
+
+            // After hurting is active for the cooldown duration, set it to false
+//            if (TimeUtils.nanoTime() - lastHurtingTime >= hurtCooldown * 1000000000L) {
+//            }
+//        }
     }
+
 
     @Override
     public void saveState(String filename) {
@@ -245,7 +289,8 @@ public class Enemy implements Entity {
     }
 
     ///beginning of movement
-    long lastMovementUpdateTime = 0, movementDelay = 500;
+    private long lastMovementUpdateTime = 0, movementDelay = 500;
+    private boolean attacking = false;
 
     public void updateMovement(CollisionManager colManager) {
         float distanceX = player.getPosition().x - this.position.x;
@@ -256,6 +301,8 @@ public class Enemy implements Entity {
         if (scanRange.overlaps(player.collider) && !following) {
             roaming = false;
             following = true;
+            soundManager.onGameStateChange(chaseState);
+        } else if (scanRange.overlaps(player.collider) && following)    {
             soundManager.onGameStateChange(chaseState);
         }
         if (distance > 140.0f&& following) {
@@ -285,6 +332,12 @@ public class Enemy implements Entity {
             this.position.x += directionX * movementSpeed*0.5f;
             this.position.y += directionY * movementSpeed*0.5f;
             updateColliders();
+
+            if (Math.abs(directionX) > Math.abs(directionY)) {
+                currentAnimation = directionX > 0 ? animations.get("rightWalk") : animations.get("leftWalk");
+            } else {
+                currentAnimation = directionY > 0 ? animations.get("upWalk") : animations.get("downWalk");
+            }
         } else if (following) {
 
             //decides how long until the path si recalculated (rn 500 millisec)
@@ -295,6 +348,7 @@ public class Enemy implements Entity {
             }
             if (currentPath == null || currentPath.isEmpty()) {
                 System.out.println("No valid path. Switching to roaming mode.");
+//                currentAnimation = animations.get("downIdle");
                 following = false;
                 roaming = true;
                 return;
@@ -332,6 +386,12 @@ public class Enemy implements Entity {
                 if (length < movementSpeed) {
                     currentPath.remove(0);
                 }
+
+                if (Math.abs(directionX) > Math.abs(directionY)) {
+                    currentAnimation = directionX > 0 ? animations.get("rightWalk") : animations.get("leftWalk");
+                } else {
+                    currentAnimation = directionY > 0 ? animations.get("upWalk") : animations.get("downWalk");
+                }
             }
 //            else {
 //                following = false;
@@ -346,28 +406,29 @@ public class Enemy implements Entity {
 
         // Direction vectors
         Vector2[] directions = {
-                new Vector2(0, 1),   // Up
-                new Vector2(0, -1),  // Down
-                new Vector2(-1, 0),  // Left
-                new Vector2(1, 0)    // Right
+                new Vector2(0, 1),
+                new Vector2(0, -1),
+                new Vector2(-1, 0),
+                new Vector2(1, 0),
+                new Vector2(0, 0)
         };
 
         if (roaming) {
             //finds random positon
             if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
-                movement = (int)(4 * Math.random());
+                movement = (int)(5 * Math.random());
                 lastMovementUpdateTime = TimeUtils.millis();
             }
             //constatnyly move in that directoin
-            float newX = this.position.x + (directions[movement].x * movementSpeed * 0.3f);
-            float newY = this.position.y + (directions[movement].y * movementSpeed * 0.3f);
+            float newX = this.position.x + (directions[movement].x * movementSpeed * 0.2f);
+            float newY = this.position.y + (directions[movement].y * movementSpeed * 0.2f);
 
             Vector2 newPosition = new Vector2(newX, newY);
 
             int retryCount = 0;
             //collision check
             while (!hasClearLineOfSight(this.position, newPosition, colManager) && retryCount < 5) {
-                movement = (int)(4 * Math.random());
+                movement = (int)(5 * Math.random());
 
                 //check again
                 newX = this.position.x + (directions[movement].x * movementSpeed * 0.3f);
@@ -383,7 +444,48 @@ public class Enemy implements Entity {
 
                 updateColliders();
             } else {
+                currentAnimation = animations.get("downIdle");
                 System.out.println("stuck");
+            }
+
+            if (!directions[movement].equals(new Vector2(0, 0)))
+                lastDirection = directions[movement];
+
+            switch (movement)   {
+                case 0:
+                    currentAnimation = animations.get("upWalk");
+                    break;
+                case 1:
+                    currentAnimation = animations.get("downWalk");
+                    break;
+                case 2:
+                    currentAnimation = animations.get("leftWalk");
+                    break;
+                case 3:
+                    currentAnimation = animations.get("rightWalk");
+                    break;
+                case 4:
+                    if (lastDirection == null)  {
+                        currentAnimation = animations.get("downIdle");
+                        break;
+                    }
+                    if (lastDirection.x > 0)    {
+                        currentAnimation = animations.get("rightIdle");
+                        break;
+                    }
+                    if (lastDirection.x < 0)    {
+                        currentAnimation = animations.get("leftIdle");
+                        break;
+                    }
+                    if (lastDirection.y < 0)    {
+                        currentAnimation = animations.get("downIdle");
+                        break;
+                    }
+                    if (lastDirection.y > 0)    {
+                        currentAnimation = animations.get("upIdle");
+                        break;
+                    }
+                    break;
             }
         }
 
@@ -452,7 +554,7 @@ public class Enemy implements Entity {
             }
 
             if (nodesExplored >= maxNodes) {
-                System.out.println("Pathfinding limit reached. Switching to roaming mode.");
+//                System.out.println("Pathfinding limit reached. Switching to roaming mode.");
                 following = false;
                 roaming = true;
                 return null;
@@ -517,20 +619,39 @@ public class Enemy implements Entity {
 
     ///end of movement
 
-
+    private float attackDuration = 0.3f;
+    private float attackTimeElapsed = 0f;
 
     public void attack(){
+        attacking = true;
+        attackTimeElapsed = 0f;
+
+        float directionX = player.getPosition().x - this.position.x;
+        float directionY = player.getPosition().y - this.position.y;
+
+        if (Math.abs(directionX) > Math.abs(directionY)) {
+            currentAnimation = directionX > 0 ? animations.get("rightAttack") : animations.get("leftAttack");
+        } else {
+            currentAnimation = directionY > 0 ? animations.get("upAttack") : animations.get("downAttack");
+        }
+
+        animationTime = 0f;
+
+//        Sound attackSound = soundManager.getSound("enemyDeath_sfx");
+//        attackSound.play(soundManager.getSfxVolume());
+
         player.takeDamage(0.25f);
         player.redEffectTime=0f;
         player.isRedEffectActive=true;
         player.applyKnockback(getPosition(),150);
 
-        System.out.println("restarted");
+//        System.out.println("restarted");
         hud.updateHearts(player.getHealth());
-        if(player.getHealth()%1==0){
+        if(player.getHealth()%1 ==0){
             player.respawn();
             setPosition(new Vector2(initialposx,initialposy));
             player.startFlickering(cooldownTime);
+            roaming = true;
         }
     }
 

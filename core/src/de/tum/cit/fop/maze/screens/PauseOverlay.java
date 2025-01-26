@@ -70,12 +70,13 @@ public class PauseOverlay {
         table.add(label).padBottom(80).row();
 
         if(musicSlider==null){
-            if(game.getPassedVolumeSettingToPause()!=0.1234f){
+//            if(game.getPassedVolumeSettingToPause()!=0.1234f){
+//                musicVolume = game.getPassedVolumeSettingToPause();
+//            }
+//            else {
                 musicVolume = game.getPassedVolumeSettingToPause();
-            }
-            else {
-                musicVolume = 0.5f;
-            }
+                soundManager.setSfxVolume(musicVolume = game.getPassedVolumeSettingToPause());
+//            }
         }
         else {
             musicVolume = musicSlider.getValue();
