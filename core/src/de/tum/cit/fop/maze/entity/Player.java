@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import de.tum.cit.fop.maze.ScreenShake;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.Item;
@@ -41,7 +42,7 @@ public class Player implements Entity, Serializable {
     private boolean adjust = false;
     private static final float FOOTSTEP_INTERVAL = 0.2f;// 300 ms between footsteps
 
-    private boolean isKnockedBack = false;
+    public boolean isKnockedBack = false;
     private float knockbackTime = 0f;
     private static final float KNOCKBACK_DURATION = 0.1f; // Duration of knockback in seconds
     private Vector2 knockbackVelocity = new Vector2();
@@ -105,7 +106,9 @@ public class Player implements Entity, Serializable {
     }
     private final Vector2 startPos;
 
-    public Player(float x, float y, TiledMap tiledMap, float health, int armor, List<String> powerups, int money, SoundManager soundManager, OrthographicCamera camera) {
+    private ScreenShake screenShake;
+
+    public Player(float x, float y, TiledMap tiledMap, float health, int armor, List<String> powerups, int money, SoundManager soundManager, OrthographicCamera camera, ScreenShake screenShake) {
         System.out.println("initilizing player");
         this.tileSize = 16;
         this.velocity = new Vector2(0, 0);
@@ -146,6 +149,8 @@ public class Player implements Entity, Serializable {
         this.camera = camera;
 
         loadWeaponAnimation();
+
+        this.screenShake = screenShake;
     }
     public void startFlickering(float time) {
         isFlickering = true;
@@ -169,6 +174,7 @@ public class Player implements Entity, Serializable {
 //                System.out.println("attacking" + enemy);
 //                System.out.println(enemy.getHealth());
                 enemy.takeDamage(1f);
+                screenShake.startShake(0.3f, 0.5f);
 
             }
         }
@@ -224,25 +230,6 @@ public class Player implements Entity, Serializable {
 
         this.swipeAnimation = new Animation<>(0.05f, swipeFrames);
     }
-
-
-//    public void attack(List<Enemy> enemies){
-//        for (Enemy enemy : enemies) {
-//            if (weapon.getAttackArea().overlaps(enemy.getDamageCollider())) {
-//                System.out.println("attacked");
-//                enemy.takedamage(1); // Adjust damage value
-//            }
-//        }
-////        isAttack=true;
-////        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-////        scheduler.schedule(() -> {
-////            isAttack = false;
-////            enemy.takedamage(1);
-////            adjust=false;
-////            System.out.println("attacked");
-////            scheduler.shutdown(); // Shut down the scheduler
-////        }, 400, TimeUnit.MILLISECONDS);
-//    }
 
     public void applyKnockback(Vector2 enemyPosition, float force) {
         // Calculate the direction of the knockback (away from the enemy)
@@ -488,35 +475,6 @@ public class Player implements Entity, Serializable {
         this.speed = speed;
     }
 
-//    public boolean isColliding(float newX, float newY)  {
-//        boolean colliding = false;
-//        int i = 0;
-//        //checks through all wall layers, (alse checks for an offset to avoid entering walls)
-//        while (!colliding && i < collidable.size())  {
-//            colliding = colliding || checkCollision(newX+5, newY, collidable.get(i)) || checkCollision(newX-5, newY, collidable.get(i));
-//            //colliding = colliding || checkCollision(newX-6, newY, collidable.get(i));
-//            //skipping the back walls to it keeps the current overlap
-//            if (i != 2)
-//                colliding = colliding || checkCollision(newX, newY - 7, collidable.get(i));
-//            i++;
-//        }
-//        return colliding;
-//    }
-
-    private boolean checkCollision(float newX, float newY, TiledMapTileLayer wallLayer) {
-        TiledMapTileLayer.Cell cell = null;
-
-        //gets the next tile xy value
-        int tileX = (int) newX / tileSize;
-        int tileY = (int) newY / tileSize;
-
-        //actually gets the tile
-        cell = wallLayer.getCell(tileX, tileY);
-
-        //since its checking the walls, basically if the tile is there it's a wall
-        return cell != null;
-    }
-
     ///Items
     public void equipItem(Item item) {
         hasEquipped.add(item);
@@ -551,6 +509,7 @@ public class Player implements Entity, Serializable {
         health -= x;
         System.out.println(health);
         soundManager.playSound("playerHurt");
+        screenShake.startShake(0.5f, 1f);
     }
 
     @Override
@@ -676,15 +635,6 @@ public class Player implements Entity, Serializable {
     public void setKeys(int keys) {
         this.keys = keys;
     }
-
-//    public Weapon getWeapon() {
-//        return weapon;
-//    }
-//
-//    public void setWeapon(Weapon weapon) {
-//        this.weapon = weapon;
-//    }
-
 
     public Animation<TextureRegion> getSwipeAnimation() {
         return swipeAnimation;

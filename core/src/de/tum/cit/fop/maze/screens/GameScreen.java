@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import de.tum.cit.fop.maze.ScreenManager;
+import de.tum.cit.fop.maze.ScreenShake;
 import de.tum.cit.fop.maze.SoundManager;
 
 import de.tum.cit.fop.maze.abilities.*;
@@ -53,10 +54,6 @@ public class GameScreen implements Screen {
     private final float MIN_ALPHA = 0.3f; // Minimum alpha value for the effect
     private final float MAX_ALPHA = 0.8f; // Maximum alpha value for the effect
 
-
-
-//    private final BitmapFont font;
-
     //Tiled map which is an object
     private TiledMap tiledMap;
     Texture arrowTexture = new Texture("icons/File1.png");
@@ -68,7 +65,6 @@ public class GameScreen implements Screen {
 
     private Player player;
     private int keysCollectedCounter;
-//    private Enemy enemy;
     private List<Powerup> mapPowerups;
 
     private float tileSize;
@@ -102,6 +98,8 @@ public class GameScreen implements Screen {
     private float cameraZoom;
 
     private EnemyManager enemyManager;
+
+    private ScreenShake screenShake;
 
     public String getMapPath() {
         return mapPath;
@@ -169,9 +167,12 @@ public class GameScreen implements Screen {
 
 
         soundManager.onGameStateChange(mainState);
+        screenShake = new ScreenShake();
+        screenShake.setOriginalPosition(camera.position.x, camera.position.y);
+
 
         //just initializing the player
-        player = new Player(startPlayerX, startPlayerY, tiledMap, 3, 100, new ArrayList<String>(), 0, soundManager, camera);
+        player = new Player(startPlayerX, startPlayerY, tiledMap, 3, 100, new ArrayList<String>(), 0, soundManager, camera, screenShake);
         player.setCurrentAnimation(game.getCharacterDownIdleAnimation());
 
         particleEffect = new ParticleEffect();
@@ -329,6 +330,9 @@ public class GameScreen implements Screen {
         // moving the camera with the player
         camera.position.set(player.getPosition().x+8, player.getPosition().y+8, 0);
         camera.update();
+        screenShake.setOriginalPosition(camera.position.x, camera.position.y);
+        screenShake.update(delta, camera);
+
         //basically its just saying the map should be shown in (camera)
         mapRenderer.setView(camera);
         if(player.getHealth()<2) {
@@ -338,15 +342,6 @@ public class GameScreen implements Screen {
         }
         //literally just renders the map. that's it... but it is now rendering layers specfiically ina. diff order
         mapRenderer.render();
-
-//        System.out.println(player.getKeys());
-
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.setColor(1, 0, 0, 1); // Red color
-//        shapeRenderer.rect(enemy.damageCollider.getX(), enemy.damageCollider.getY(), enemy.damageCollider.width, enemy.damageCollider.height);
-//        shapeRenderer.rect(player.collider.getX(), player.collider.getY(), player.collider.width, player.collider.height);
-//        shapeRenderer.end();
 
         //shapes need to be outside spritebatch
         shapeRenderer.setProjectionMatrix(camera.combined);
@@ -367,10 +362,7 @@ public class GameScreen implements Screen {
             shapeRenderer.setColor(Color.GOLD);
             shapeRenderer.rect(player.collider.x, player.collider.y, player.collider.width, player.collider.height);
             shapeRenderer.setColor(Color.PINK);
-//            shapeRenderer.rect(player.getWeapon().getAttackArea().x, player.getWeapon().getAttackArea().y, player.getWeapon().getAttackArea().width,player.getWeapon().getAttackArea().height);
             shapeRenderer.setColor(1, 0, 0, 0.5f); // Semi-transparent red
-//            shapeRenderer.arc(player.collider.x, player.collider.y, player.getWeapon().getRange(),
-//                    (float) Math.toDegrees(player.getWeapon().getRotationAngle()) - player.getWeapon().getSectorAngle() / 2, player.getWeapon().getSectorAngle());
             shapeRenderer.rect(player.getAttackHitbox().x, player.getAttackHitbox().y, player.getAttackHitbox().width, player.getAttackHitbox().height);
             //enemy related debug
             shapeRenderer.rect(player.newPos.x, player.newPos.y, player.newPos.width, player.newPos.height);
@@ -434,9 +426,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        //draws doors and sets their textures
-//        mapManager.getDoorObjects().forEach(door -> game.getSpriteBatch().draw(door.getCurrentTexture(), door.getColliderObject().getRectangle().x, door.getColliderObject().getRectangle().y));
-
         trapexplosion();
 // Render the player and enemy
         enemies.forEach(enemy1 -> {
@@ -444,8 +433,6 @@ public class GameScreen implements Screen {
         });
         player.render(game.getSpriteBatch());
 
-
-//        player.getWeapon().render(game.getSpriteBatch(), delta, player.getPosition());
         particleEffect.update(Gdx.graphics.getDeltaTime());
 
         // Clear the screen and render the particle effect
@@ -458,11 +445,6 @@ public class GameScreen implements Screen {
         // Restart the effect if it's finished
 
         drawarrow();
-//        for (Enemy enemy : enemies) {
-////            if(!enemy.isDead){
-////                game.getSpriteBatch().draw(enemy.getEnemy(), enemy.position.x, enemy.position.y);
-////            }
-//        }
 
 
 // Apply the dark circle overlay
@@ -495,7 +477,6 @@ public class GameScreen implements Screen {
 //        mapRenderer.render(new int[]{1, 2});
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
-
     }
 
     //let's find the closest key
@@ -627,20 +608,7 @@ public class GameScreen implements Screen {
                 scheduler.shutdown(); // Shut down the scheduler
             }, 400, TimeUnit.MILLISECONDS);
             player.attack(enemies);
-//            for (Enemy enemy : enemies) {
-//                if ((player.getCollider().overlaps(enemy.damageCollider))){
-//                    player.attack(enemy);
-//                } else {
-//                    player.attack(null);
-//                }
-//            }
-//            float lastDamageTime = 0;
-//            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
-//                // proceed with damage logic
-//                attack();
-//                // update last damage time
-//                lastDamageTime = TimeUtils.nanoTime();
-//            }
+
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             player.move(Player.Direction.UP);
             if(player.isSprinting()){
@@ -717,15 +685,10 @@ public class GameScreen implements Screen {
 //                System.out.println("playsound");
                 for (MapObject object : objectLayer.getObjects()) {
                     if(player.collider.overlaps(((RectangleMapObject) object).getRectangle())) {
-//                        tiledMap.getLayers().get("Anim").setVisible(true);
-//                        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-//                        scheduler.schedule(() -> {
-                            tiledMap.getLayers().get("Anim").setVisible(false);
-                            breakTiles(object, tileLayer, 16, 16);
-                            breakTiles(object,tileLayer1,16,16);
-                            breakTiles(object,tileLayer2,16,16);
-//                            scheduler.shutdown(); // Shut down the scheduler
-//                        }, 1200, TimeUnit.MILLISECONDS);
+                        tiledMap.getLayers().get("Anim").setVisible(false);
+                        breakTiles(object, tileLayer, 16, 16);
+                        breakTiles(object,tileLayer1,16,16);
+                        breakTiles(object,tileLayer2,16,16);
                     }
                 }
                 player.setKeys(player.getKeys()-1);
@@ -798,6 +761,7 @@ public class GameScreen implements Screen {
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
+
     public void trapexplosion(){
         for (RectangleMapObject object : mapManager.getCollisionObjects()) {
             String objectType = object.getProperties().get("type", String.class);
@@ -806,7 +770,6 @@ public class GameScreen implements Screen {
 
                 // Check collision with player
                 if (player.newPos.overlaps(objectBounds)) {
-                    System.out.println("f");
                     // Play particle effect at the object's position
                     float effectX = objectBounds.x + objectBounds.width / 2;
                     float effectY = objectBounds.y + objectBounds.height / 2;

@@ -120,6 +120,7 @@ public class Enemy implements Entity {
 
             if (attackTimeElapsed >= attackDuration) {
                 attacking = false;
+                following = true;
                 attackTimeElapsed = 0f;
             }
         } else {
@@ -393,18 +394,8 @@ public class Enemy implements Entity {
                     currentAnimation = directionY > 0 ? animations.get("upWalk") : animations.get("downWalk");
                 }
             }
-//            else {
-//                following = false;
-//                roaming = true;
-//                System.out.println("out of range");
-//            }
         }
 
-        //make new vector every update
-        //always update the player movement
-        //load the vector
-
-        // Direction vectors
         Vector2[] directions = {
                 new Vector2(0, 1),
                 new Vector2(0, -1),
