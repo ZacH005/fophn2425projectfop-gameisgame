@@ -171,8 +171,6 @@ public class Player implements Entity, Serializable {
 //            }
 
             if (attackHitbox.overlaps(enemy.damageCollider))    {
-//                System.out.println("attacking" + enemy);
-//                System.out.println(enemy.getHealth());
                 enemy.takeDamage(1f);
                 screenShake.startShake(0.3f, 0.5f);
 
