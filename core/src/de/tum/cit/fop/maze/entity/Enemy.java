@@ -71,7 +71,7 @@ public class Enemy implements Entity {
         damageCollider = new Rectangle(position.x-2,position.y-5,20,20);
         health = 3;
 
-        movementSpeed = 2.5f;
+        movementSpeed = 5.5f;
 
         this.soundManager=soundManager;
         chaseState.put("crackles",0);

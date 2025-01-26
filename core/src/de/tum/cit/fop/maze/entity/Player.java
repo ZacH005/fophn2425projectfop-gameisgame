@@ -108,7 +108,9 @@ public class Player implements Entity, Serializable {
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
-    private final Vector2 startPos;
+    private float startposx;
+    private float startposy;
+    private Vector2 startPos;
 
     private ScreenShake screenShake;
 
@@ -138,6 +140,8 @@ public class Player implements Entity, Serializable {
         this.gems=0;
         this.startPos = new Vector2(x, y);
         this.position = startPos;
+        startposx=x;
+        startposy=y;
         this.resetpos = new Vector2(25, 25);
         this.health = health;
         this.armor = armor;
@@ -454,7 +458,7 @@ public class Player implements Entity, Serializable {
     private float attackAnimationTime;
 
     public void respawn(){
-        setPosition(new Vector2(startPos));
+        setPosition(new Vector2(startposx,startposy));
         trapped = false;
     }
 
