@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import java.util.Random;
 
 public class ScreenShake {
-    private float duration; // Remaining time for the shake
-    private float intensity; // Intensity of the shake
+    private float duration;
+    private float intensity;
     private Random random;
     private float originalX;
     private float originalY;
@@ -23,15 +23,12 @@ public class ScreenShake {
         if (duration > 0) {
             duration -= delta;
 
-            // Generate random offsets for the shake
             float offsetX = (random.nextFloat() - 0.5f) * 2 * intensity;
             float offsetY = (random.nextFloat() - 0.5f) * 2 * intensity;
 
-            // Apply the shake to the camera
             camera.position.set(originalX + offsetX, originalY + offsetY, 0);
             camera.update();
         } else {
-            // Reset camera position after the shake
             camera.position.set(originalX, originalY, 0);
             camera.update();
         }

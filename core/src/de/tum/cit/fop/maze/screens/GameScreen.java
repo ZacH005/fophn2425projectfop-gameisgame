@@ -184,13 +184,7 @@ public class GameScreen implements Screen {
                 region.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
             }
         });
-        // Set the position of the particle effect
-        particleEffect.setPosition(startPlayerX,startPlayerY );
-        particleEffect2.setPosition(startPlayerX,startPlayerY );
 
-        // Start the particle effect
-        particleEffect.start();
-        particleEffect2.start();
         hud = new HUD(game.getSpriteBatch(), game, player);
 
         enemies = new ArrayList<>();
@@ -679,9 +673,11 @@ public class GameScreen implements Screen {
 //                        System.out.println("playsound");
                         soundManager.playSound("mineRock1");
                         tiledMap.getLayers().get("Anim").setVisible(true);
+                        screenShake.startShake(0.3f, 0.5f);
                         break;
                     case 1:
                         soundManager.playSound("mineRock2");
+                        screenShake.startShake(0.3f, 0.8f);
 //                        System.out.println("playsound");
                         break;
                 }
@@ -699,6 +695,7 @@ public class GameScreen implements Screen {
                         breakTiles(object,tileLayer1,16,16);
                         breakTiles(object,tileLayer2,16,16);
                     }
+                    screenShake.startShake(0.4f, 3);
                 }
                 player.setKeys(player.getKeys()-1);
             }
@@ -718,6 +715,8 @@ public class GameScreen implements Screen {
                 particleEffect2.setPosition(r.getRectangle().x + r.getRectangle().getWidth() / 2,
                         r.getRectangle().y + r.getRectangle().getHeight() / 2);
                 particleEffect2.reset(); // Start the particle effect
+                screenShake.startShake(0.3f, 3);
+                soundManager.playSound("gemBreak");
 
                 // Delay the breaking effect
                 Timer.schedule(new Timer.Task() {

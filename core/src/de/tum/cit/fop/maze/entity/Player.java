@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -111,6 +112,8 @@ public class Player implements Entity, Serializable {
 
     private ScreenShake screenShake;
 
+    private ParticleEffect hurtParticle;
+
     public Player(float x, float y, TiledMap tiledMap, float health, int armor, List<String> powerups, int money, SoundManager soundManager, OrthographicCamera camera, ScreenShake screenShake) {
         System.out.println("initilizing player");
         this.tileSize = 16;
@@ -155,6 +158,9 @@ public class Player implements Entity, Serializable {
         loadWeaponAnimation();
 
         this.screenShake = screenShake;
+
+        hurtParticle = new ParticleEffect();
+        hurtParticle.load(Gdx.files.internal("particles/effects/Particle Park Blood.p"), Gdx.files.internal("particles/images"));
     }
     public void startFlickering(float time) {
         isFlickering = true;
@@ -176,8 +182,10 @@ public class Player implements Entity, Serializable {
 
             if (attackHitbox.overlaps(enemy.damageCollider))    {
                 enemy.takeDamage(1f);
-                screenShake.startShake(0.3f, 0.5f);
-
+                if (enemy.isDead)
+                    screenShake.startShake(0.3f, 1f);
+                else
+                    screenShake.startShake(0.3f, 0.5f);
             }
         }
         isAttack = true;
@@ -269,6 +277,7 @@ public class Player implements Entity, Serializable {
     boolean trapped = false;
 
     public void update(float delta, CollisionManager colManager) {
+        hurtParticle.update(Gdx.graphics.getDeltaTime());
         updateFlickerEffect(delta);
 //        System.out.println(direction);
 
@@ -373,6 +382,7 @@ public class Player implements Entity, Serializable {
 
 
     public void render(SpriteBatch batch) {
+        hurtParticle.draw(batch);
 //        System.out.println(startPos);
         if (isAttack) {
             TextureRegion swipeFrame = swipeAnimation.getKeyFrame(attackAnimationTime, false);
@@ -515,6 +525,9 @@ public class Player implements Entity, Serializable {
         health -= x;
         System.out.println(health);
         soundManager.playSound("playerHurt");
+        hurtParticle.setPosition(position.x + width / 2,
+                position.y + height / 2);
+        hurtParticle.reset();
         screenShake.startShake(0.5f, 1f);
     }
 

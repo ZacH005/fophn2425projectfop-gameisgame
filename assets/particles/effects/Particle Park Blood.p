@@ -4,8 +4,8 @@ active: true
 lowMin: 25.0
 lowMax: 25.0
 - Duration - 
-lowMin: 200.0
-lowMax: 200.0
+lowMin: 100.0
+lowMax: 100.0
 - Count - 
 min: 0
 max: 500
@@ -22,8 +22,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1000.0
-highMax: 1000.0
+highMin: 100.0
+highMax: 300.0
 relative: false
 scalingCount: 1
 scaling0: 1.0

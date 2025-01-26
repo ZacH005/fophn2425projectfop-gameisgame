@@ -137,6 +137,7 @@ public class ScreenManager extends Game {
         soundManager.loadSound("mineRock2", "music/sfx/mineRock2.mp3");
         soundManager.loadSound("mineRock3", "music/sfx/mineRock3.mp3");
         soundManager.loadSound("playerHurt", "music/game_sfx/MC_sfx/hitHurt.wav");
+        soundManager.loadSound("gemBreak", "music/sfx/glass-break-2-80964.mp3");
 
         /// key sound
         soundManager.loadKeySound("music/themes/Key.mp3");

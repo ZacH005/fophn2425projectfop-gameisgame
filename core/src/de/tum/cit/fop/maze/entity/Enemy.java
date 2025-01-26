@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -56,6 +57,8 @@ public class Enemy implements Entity {
 
     private Vector2 lastDirection;
 
+    private ParticleEffect hurtParticle;
+
     public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager, Map<String, Animation<TextureRegion>> animations) {
 
             this.player = player;
@@ -95,9 +98,13 @@ public class Enemy implements Entity {
         this.animations = animations;
 
         this.currentAnimation = animations.get("downWalk");
+
+        hurtParticle = new ParticleEffect();
+        hurtParticle.load(Gdx.files.internal("particles/effects/Particle Park Blood.p"), Gdx.files.internal("particles/images"));
     }
 
     public void update(float delta, CollisionManager colManager) {
+        hurtParticle.update(delta);
         animationTime += delta;
 
         if (isDead) return;
@@ -133,6 +140,8 @@ public class Enemy implements Entity {
     }
 
     public void render(SpriteBatch batch) {
+        hurtParticle.draw(batch);
+
         if (currentAnimation != null) {
             TextureRegion frame;
 
@@ -254,20 +263,23 @@ public class Enemy implements Entity {
 
 //        if (hurting) {
             // Play hurt sound and apply damage effects here
-            if (health > 0) {
-                health -= amount;
-                Sound hurtSound = soundManager.getSound("enemyHurt");
-                long id = hurtSound.play(soundManager.getSfxVolume());
-                Random random = new Random();
-                hurtSound.setPitch(id, 0.8f + random.nextFloat() * 2);
-                applyKnockback(player.getPosition(), 150);
-            }
+        if (health > 0) {
+            health -= amount;
+            Sound hurtSound = soundManager.getSound("enemyHurt");
+            long id = hurtSound.play(soundManager.getSfxVolume());
+            Random random = new Random();
+            hurtSound.setPitch(id, 0.8f + random.nextFloat() * 2);
+            applyKnockback(player.getPosition(), 150);
+        }
+        hurtParticle.setPosition(damageCollider.x + damageCollider.width / 2,
+            damageCollider.y + damageCollider.height / 2);
+        hurtParticle.reset();
 
-            if (health == 0 && !isDead) {
-                isDead = true;
-                soundManager.onGameStateChange(mainState);
-                System.out.println("Enemy defeated!");
-            }
+        if (health == 0 && !isDead) {
+            isDead = true;
+            soundManager.onGameStateChange(mainState);
+            System.out.println("Enemy defeated!");
+        }
 
             // After hurting is active for the cooldown duration, set it to false
 //            if (TimeUtils.nanoTime() - lastHurtingTime >= hurtCooldown * 1000000000L) {
