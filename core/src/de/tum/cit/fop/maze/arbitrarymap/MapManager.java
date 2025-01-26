@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Rectangle;
+import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.HeartUp;
 import de.tum.cit.fop.maze.abilities.Key;
 import de.tum.cit.fop.maze.abilities.Powerup;
@@ -24,16 +25,18 @@ public class MapManager {
     private List<Powerup> powerups = new ArrayList<>();
     private List<RectangleMapObject> eventObjects = new ArrayList<>();
     private List<RectangleMapObject> enemies = new ArrayList<>();
-//    private List<Rectangle> trapObjects = new ArrayList<>();
+    private SoundManager soundManager;
+    //    private List<Rectangle> trapObjects = new ArrayList<>();
 
-    public MapManager(TiledMap tiledMap) {
+    public MapManager(TiledMap tiledMap, SoundManager soundManager) {
         this.map = tiledMap;
-
+        this.soundManager = soundManager;
         loadCollisionObjects();
         loadPowerupObjects();
         loadDoorObjects();
         loadEventObjects();
         loadEnemies();
+
     }
 
     private void loadCollisionObjects() {
@@ -104,12 +107,12 @@ public class MapManager {
 //                System.out.println("Adding powerup");
 
                 if ("SpeedUp".equals(type)) {
-                    powerup = new SpeedUp(rectangle.x, rectangle.y);
+                    powerup = new SpeedUp(rectangle.x, rectangle.y,this.soundManager);
                 } else if ("HeartUp".equals(type)) {
-                    powerup = new HeartUp(rectangle.x, rectangle.y);
+                    powerup = new HeartUp(rectangle.x, rectangle.y,this.soundManager);
                 }
                  else if("Key".equals(type)) {
-                     powerup = new Key(rectangle.x, rectangle.y);
+                     powerup = new Key(rectangle.x, rectangle.y,this.soundManager);
                 }
 
                 if (powerup != null) {

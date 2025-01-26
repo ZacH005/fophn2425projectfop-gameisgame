@@ -20,6 +20,9 @@ import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.entity.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LevelSelectorScreen extends ScreenAdapter {
     private Stage stage;
     private Stage stage2;
@@ -31,8 +34,9 @@ public class LevelSelectorScreen extends ScreenAdapter {
     private Texture bg;
     private Texture overlayTexture;
     private ParticleEffect particleEffect;
-
+    Map<String,Integer> menuState = new HashMap<String,Integer>();
     public LevelSelectorScreen(ScreenManager game) {
+
         this.game = game;
         this.user = game.getUser(); // Assume the game class provides access to the user
 
@@ -46,8 +50,14 @@ public class LevelSelectorScreen extends ScreenAdapter {
         stage = new Stage(viewport, game.getSpriteBatch());
         stage2 = new Stage(viewport, game.getSpriteBatch());
         this.soundManager = game.getSoundManager();
-
-
+        menuState.put("crackles",1);
+        menuState.put("wind",1);
+        menuState.put("piano",1);
+        menuState.put("strings",0);
+        menuState.put("pad",0);
+        menuState.put("drums",0);
+        menuState.put("bass",0);
+        soundManager.onGameStateChange(menuState);
         // Create a table for layout
         table = new Table();
         table2 = new Table();

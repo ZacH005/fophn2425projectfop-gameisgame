@@ -101,6 +101,7 @@ public class SoundManager implements Disposable {
     // Set music volume without unmuting muted layers
     public void setMusicVolume(float volume) {
         musicVolume = volume;
+        setSfxVolume(musicVolume);
         for (String layerName : musicLayers.keySet()) {
             Music music = musicLayers.get(layerName);
             if (music != null && !layerMuteStates.get(layerName)) {

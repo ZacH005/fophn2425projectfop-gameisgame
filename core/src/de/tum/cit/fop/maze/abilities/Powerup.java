@@ -9,14 +9,13 @@ import de.tum.cit.fop.maze.entity.Player;
 public abstract class Powerup extends GameEffect implements Collectable<Powerup> {
     private Vector2 position;
     private Rectangle collider;
-    private transient Sound pickUpSound;
     private boolean isEquipped;
 
-    public Powerup(String name, String description, String texturePath, float x, float y, Sound pickUpSound) {
+    public Powerup(String name, String description, String texturePath, float x, float y) {
         super(name, description, texturePath);
         this.position = new Vector2(x, y);
         this.collider = new Rectangle(x, y, 16, 16);
-        this.pickUpSound = pickUpSound;
+
         this.isEquipped = false;
     }
 
@@ -28,9 +27,7 @@ public abstract class Powerup extends GameEffect implements Collectable<Powerup>
         isEquipped = equipped;
     }
 
-    public Sound getPickUpSound() {
-        return pickUpSound;
-    }
+
 
     public Vector2 getPosition() {
         return position;
@@ -41,7 +38,6 @@ public abstract class Powerup extends GameEffect implements Collectable<Powerup>
     }
 
     public Powerup pickUp() {
-        pickUpSound.play();
         return this;
     }
 

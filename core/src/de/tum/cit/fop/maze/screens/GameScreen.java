@@ -131,10 +131,21 @@ public class GameScreen implements Screen {
         //MAP STUFF::
         //decided to load map in the game screen since it's super simple in libgdx with tiled
         // I modified this to load a map from a selector
+        //sound stuff.
+        this.soundManager = soundManager;
+        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH" + soundManager);
+        mainState.put("crackles", 1);
+        mainState.put("wind", 1);
+        mainState.put("piano", 1);
+        mainState.put("strings", 0);
+        mainState.put("pad", 1);
+        mainState.put("drums", 0);
+        mainState.put("bass", 1);
+        soundManager.onGameStateChange(mainState);
 
         tiledMap = new TmxMapLoader().load(mapPath);//as
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        this.mapManager = new MapManager(tiledMap);
+        this.mapManager = new MapManager(tiledMap,soundManager);
         this.colManager = new CollisionManager(mapManager.getCollisionObjects(), mapManager.getDoorObjects(), mapManager.getEventObjects());
         isGameOver = false;
 
@@ -154,19 +165,7 @@ public class GameScreen implements Screen {
             startPlayerY = (float) start.getProperties().get("y");
         }
 
-        //sound stuff.
-        this.soundManager = soundManager;
 
-        mainState.put("crackles", 1);
-        mainState.put("wind", 1);
-        mainState.put("piano", 1);
-        mainState.put("strings", 0);
-        mainState.put("pad", 1);
-        mainState.put("drums", 0);
-        mainState.put("bass", 1);
-
-
-        soundManager.onGameStateChange(mainState);
         screenShake = new ScreenShake();
         screenShake.setOriginalPosition(camera.position.x, camera.position.y);
 
@@ -423,6 +422,7 @@ public class GameScreen implements Screen {
         }
 
         trapexplosion();
+
 // Render the player and enemy
         enemies.forEach(enemy1 -> {
             enemy1.render(game.getSpriteBatch());
@@ -788,10 +788,11 @@ public class GameScreen implements Screen {
 
                 // Check collision with player
                 if (player.newPos.overlaps(objectBounds)) {
+                    //play sound before particles
+                    soundManager.playSound("xplsv");
                     // Play particle effect at the object's position
                     float effectX = objectBounds.x + objectBounds.width / 2;
                     float effectY = objectBounds.y + objectBounds.height / 2;
-
                     particleEffect.setPosition(effectX, effectY);
                     particleEffect.reset();
                     player.newPos.setX(player.getPosition().x);

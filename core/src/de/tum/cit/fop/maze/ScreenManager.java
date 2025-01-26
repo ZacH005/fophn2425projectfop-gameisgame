@@ -118,9 +118,11 @@ public class ScreenManager extends Game {
         ///sfxs
         soundManager.loadSound("losing sound","music/losing_sound.mp3");
 
-        soundManager.loadSound("mcCollectKey_sfx","music/sfxs/mcCollectKey.mp3");
-        soundManager.loadSound("mcCollectSpeedUp_sfx","music/sfxs/mcCollectSpeedUp.mp3");
-        soundManager.loadSound("mcCollectHeart_sfx","music/sfxs/mcCollectHeart.mp3");
+        soundManager.loadSound("xplsv","music/sfxs/xplsv.mp3");
+
+        soundManager.loadSound("mcCollectKey_sfx","music/sfxs/mcCollectKey2.mp3");
+        soundManager.loadSound("mcCollectSpeedUp_sfx","music/sfxs/mcPickSpeedUp.mp3");
+        soundManager.loadSound("mcCollectHeart_sfx","music/sfxs/mcPickHeart.mp3");
         soundManager.loadSound("mcPunch_sfx","music/sfxs/mcPunch.mp3");
         soundManager.loadSound("mcDeath_sfx","music/sfxs/mcDeath.mp3");
         soundManager.loadSound("mcHitWithAxe_sfx","music/sfxs/mcHitsEnemyWithAxe.mp3");
@@ -137,10 +139,10 @@ public class ScreenManager extends Game {
         soundManager.loadSound("mineRock2", "music/sfx/mineRock2.mp3");
         soundManager.loadSound("mineRock3", "music/sfx/mineRock3.mp3");
         soundManager.loadSound("playerHurt", "music/game_sfx/MC_sfx/hitHurt.wav");
-        soundManager.loadSound("gemBreak", "music/sfx/glass-break-2-80964.mp3");
+        soundManager.loadSound("gemBreak", "music/sfxs/Gembr.mp3");
 
         /// key sound
-        soundManager.loadKeySound("music/themes/Key.mp3");
+        soundManager.loadKeySound("music/themes/Axe_nearby.mp3");
         /// state definition
         mainState.put("crackles",1);
         mainState.put("wind",1);
