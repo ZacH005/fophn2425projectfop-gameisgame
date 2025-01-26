@@ -5,13 +5,13 @@ active: false
 lowMin: 170.0
 lowMax: 170.0
 - Count - 
-min: 0
+min: 3
 max: 200
 - Emission - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 0.0
-highMax: 0.0
+lowMin: 1.0
+lowMax: 1.0
+highMin: 3.0
+highMax: 3.0
 relative: false
 scalingCount: 2
 scaling0: 0.0
@@ -64,8 +64,8 @@ timeline0: 0.0
 - X Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 425.0
-highMax: 425.0
+highMin: 429.0
+highMax: 429.0
 relative: true
 scalingCount: 3
 scaling0: 0.0

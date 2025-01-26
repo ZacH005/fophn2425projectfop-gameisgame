@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class Player implements Entity, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+    private int maxGems=0;
 
     ///footstep sfx
     private int currentTileX;
@@ -41,6 +42,7 @@ public class Player implements Entity, Serializable {
     private float footstepTimer = 0f;
     private boolean adjust = false;
     private static final float FOOTSTEP_INTERVAL = 0.2f;// 300 ms between footsteps
+    private boolean isAttackingWall=false;
 
     public boolean isKnockedBack = false;
     private float knockbackTime = 0f;
@@ -62,6 +64,7 @@ public class Player implements Entity, Serializable {
 
     private TiledMap tiledMap;
     private int tileSize;
+    private int gems;
 
     public boolean isRedEffectActive = false;
     public float redEffectTime = 0f;
@@ -129,6 +132,7 @@ public class Player implements Entity, Serializable {
         this.soundManager = soundManager;
 
         ///Entities variables
+        this.gems=0;
         this.startPos = new Vector2(x, y);
         this.position = startPos;
         this.resetpos = new Vector2(25, 25);
@@ -316,7 +320,7 @@ public class Player implements Entity, Serializable {
 //                keys -= 1;
 //            }
 
-                if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")) {
+                if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")&& gems==maxGems) {
                     colManager.setWonLevel(true);
                     System.out.println(colManager.isWonLevel());
                 }
@@ -399,9 +403,13 @@ public class Player implements Entity, Serializable {
                 swipeRotation = 90f;
                 swipeX +=28;
             }
-
+            if (isAttackingWall){
+                batch.setColor(1f,1f,0f,1f);
+            }
             batch.draw(swipeFrame, swipeX, swipeY, 0f, 0f, swipeWidth, swipeHeight, 1f, 1f, swipeRotation);
-
+            if (isAttackingWall){
+                batch.setColor(1f,1f,1f,1f);
+            }
         } else {
             attackAnimationTime = 0;
         }
@@ -513,6 +521,14 @@ public class Player implements Entity, Serializable {
     @Override
     public float getHealth() {
         return health;
+    }
+
+    public int getGems() {
+        return gems;
+    }
+
+    public void setGems(int gems) {
+        this.gems = gems;
     }
 
     @Override
@@ -644,5 +660,13 @@ public class Player implements Entity, Serializable {
 
     public void setAttackHitbox(Rectangle attackHitbox) {
         this.attackHitbox = attackHitbox;
+    }
+
+    public void setMaxGems(int maxGems) {
+        this.maxGems = maxGems;
+    }
+
+    public void setAttackingWall(boolean attackingWall) {
+        isAttackingWall = attackingWall;
     }
 }

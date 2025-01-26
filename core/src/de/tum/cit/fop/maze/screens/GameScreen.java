@@ -132,7 +132,7 @@ public class GameScreen implements Screen {
         //decided to load map in the game screen since it's super simple in libgdx with tiled
         // I modified this to load a map from a selector
 
-        tiledMap = new TmxMapLoader().load(mapPath);
+        tiledMap = new TmxMapLoader().load(mapPath);//as
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         this.mapManager = new MapManager(tiledMap);
         this.colManager = new CollisionManager(mapManager.getCollisionObjects(), mapManager.getDoorObjects(), mapManager.getEventObjects());
@@ -220,6 +220,8 @@ public class GameScreen implements Screen {
                 .filter(Key.class::isInstance)
                 .map(Key.class::cast)
                 .collect(Collectors.toList());
+        hud.setMaxGems(gemCounter());
+        player.setMaxGems(gemCounter());
     }
 //    public void completeLevel(){
 //        //updates the index of the map being played
@@ -664,6 +666,13 @@ public class GameScreen implements Screen {
 
         Door door = colManager.checkDoorCollision(player.getCollider());
         if (door != null && player.getKeys() > 0)   {
+            player.setAttackingWall(true);
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    player.setAttackingWall(false);
+                }
+            }, 0.2f);
             if (door.getDoorHealth() > 0)   {
                 switch (door.getDoorHealth())   {
                     case 2:
@@ -721,9 +730,9 @@ public class GameScreen implements Screen {
                         breakTiles(object, tileLayer, 16, 16);
 
                         // Update the player's keys
-                        player.setKeys(player.getKeys() + 1);
+                        player.setGems(player.getGems() + 1);
                     }
-                }, 0.2f); // Delay in seconds (1.2 seconds in this case)
+                }, 0.15f); // Delay in seconds (1.2 seconds in this case)
 
                 break; // Exit the loop after scheduling
             }
@@ -754,6 +763,16 @@ public class GameScreen implements Screen {
                 tileLayer.setCell(x, y, null); // Clear the tile
             }
         }
+    }
+    public int gemCounter(){
+        MapLayer objectLayer = tiledMap.getLayers().get("BreakableWalls");
+        int count =0;
+        for(MapObject object : objectLayer.getObjects()) {
+            if((object.getProperties().get("type")!=null)&&(object.getProperties().get("type").equals("Gem"))) {
+                count++;
+            }
+        }
+        return count;
     }
 
 
