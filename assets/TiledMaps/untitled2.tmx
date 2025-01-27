@@ -6791,7 +6791,7 @@
   </object>
   <object id="47" x="239.5" y="448.5" width="21.5" height="191">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
   <object id="48" x="262.5" y="463.5" width="42" height="178.5">

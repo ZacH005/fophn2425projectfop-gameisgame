@@ -324,6 +324,7 @@ public class GameScreen implements Screen {
 
         // moving the camera with the player
         camera.position.set(player.getPosition().x+8, player.getPosition().y+8, 0);
+        clampCamera();
         camera.update();
         screenShake.setOriginalPosition(camera.position.x, camera.position.y);
         screenShake.update(delta, camera);
@@ -463,7 +464,7 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().begin();
         game.getSpriteBatch().setColor(0.8f, 0f, 0f, bloodAlpha);
         if(player.getHealth()<2) {// Set red color with pulsing alpha
-            game.getSpriteBatch().draw(ovrly, 0, 0, 1580, 1080); // Replace `ovrly` with your blood overlay texture
+            game.getSpriteBatch().draw(ovrly, 0, 0, hud.stage.getViewport().getScreenWidth(), hud.stage.getViewport().getScreenHeight()); // Replace `ovrly` with your blood overlay texture
         }
         game.getSpriteBatch().setColor(1f, 1f, 1f, 1f); // Reset color to default
         game.getSpriteBatch().end();
@@ -814,6 +815,15 @@ public class GameScreen implements Screen {
         tiledMap.dispose();
         pauseOverlay.dispose();
         shapeRenderer.dispose();
+    }
+    private void clampCamera() {
+        // Calculate camera half dimensions
+        float halfViewportWidth = camera.viewportWidth / 2;
+        float halfViewportHeight = camera.viewportHeight / 2;
+
+        // Clamp the camera position within world bounds
+        camera.position.x = MathUtils.clamp(camera.position.x, halfViewportWidth, 1920 - halfViewportWidth);
+        camera.position.y = MathUtils.clamp(camera.position.y, halfViewportHeight, 1080 - halfViewportHeight);
     }
 
     @Override

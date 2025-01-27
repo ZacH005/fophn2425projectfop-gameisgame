@@ -204,11 +204,7 @@ public class HUD {
     }
 
 
-    /**
-     * Updates the world timer, score, or other HUD elements.
-     *
-     * @param delta Time since the last frame.
-     */
+
 
     public void setMaxGems(int maxGems) {
         this.maxGems = maxGems;

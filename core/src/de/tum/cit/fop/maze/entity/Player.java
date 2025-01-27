@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
 import de.tum.cit.fop.maze.ScreenShake;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.Collectable;
@@ -36,6 +37,8 @@ public class Player implements Entity, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private int maxGems=0;
+    private boolean isTakingDamage = false;
+    private Timer.Task damageTask;
 
     ///footstep sfx
     private int currentTileX;
@@ -307,7 +310,7 @@ public class Player implements Entity, Serializable {
                 float newY = position.y + knockbackVelocity.y * delta;
                 newPos = new Rectangle(newX, newY - 7, width - 2, height - 2);
 
-                if (colManager.checkMapCollision(newPos) == null) {
+                if (colManager.checkMapCollision(newPos) == null||colManager.checkMapCollision(newPos).equals("Water")) {
                     position.x = newX;
                     position.y = newY;
                     collider.x = newX;
@@ -338,7 +341,7 @@ public class Player implements Entity, Serializable {
                     System.out.println(colManager.isWonLevel());
                 }
 
-                if (colManager.checkMapCollision(newPos) == null) {
+                if (colManager.checkMapCollision(newPos) == null||colManager.checkMapCollision(newPos).equals("Water")) {
                     position.x = newX;
                     position.y = newY;
                     collider.x = newX;
@@ -362,7 +365,14 @@ public class Player implements Entity, Serializable {
                     isRedEffectActive=true;
                     takeDamage(0.25f);
                     applyKnockback(new Vector2((r.getRectangle().x+(r.getRectangle().getWidth()/2)),(r.getRectangle().y+(r.getRectangle().getHeight()/2))),1200);
-                    startFlickering(2f);
+                    startFlickering(0.5f);
+                }
+                if (colManager.checkMapCollision(newPos)!= null && colManager.checkMapCollision(newPos).equals("Water")) {
+                    if (!isTakingDamage) {
+                        startTakingDamage();
+                    }
+                } else {
+                    stopTakingDamage();
                 }
 
 //                System.out.println(colManager.checkMapCollision(newPos));
@@ -382,6 +392,32 @@ public class Player implements Entity, Serializable {
 
         Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 //        weapon.update(position, mousePosition, camera);
+    }
+    private void startTakingDamage() {
+        isTakingDamage = true;
+        speed=50f;
+        // Schedule damage task
+        damageTask = new Timer.Task() {
+            @Override
+            public void run() {
+                takeDamage(0.25f);
+            }
+        };
+
+        Timer.schedule(damageTask, 0, 1f); // Repeat every 0.2 seconds
+    }
+
+    private void stopTakingDamage() {
+        if (damageTask != null) {
+            damageTask.cancel(); // Stop the repeating task
+            damageTask = null;
+        }
+        if(isTakingDamage){
+            speed=150f;
+            setSprinting(false);
+        }
+        isTakingDamage = false;
+
     }
 
 
