@@ -192,7 +192,8 @@ public class ScreenManager extends Game {
         for(FileHandle file : tmxFiles) {
             // if the level is completed don't open it
             if(tmxFiles.size == user.getCompletedLevels().size()){
-                this.setScreen(new LevelSelectorScreen(this));
+                user.resetCompletedLevels();
+                this.setScreen(new MenuScreen(this,soundManager));
                 break;
             }
             else{
