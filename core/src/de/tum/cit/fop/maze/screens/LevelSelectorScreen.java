@@ -57,6 +57,8 @@ public class LevelSelectorScreen extends ScreenAdapter {
         menuState.put("pad",0);
         menuState.put("drums",0);
         menuState.put("bass",0);
+        menuState.put("slowerDrums", 1);
+
         soundManager.onGameStateChange(menuState);
         // Create a table for layout
         table = new Table();

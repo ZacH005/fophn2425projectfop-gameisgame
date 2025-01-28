@@ -46,6 +46,7 @@ public class VictoryScreen implements Screen {
         winState.put("drums",0);
         winState.put("bass",0);
         winState.put("key_sound",0);
+        winState.put("slowerDrums", 1);
         soundManager.onGameStateChange(winState);
     }
 

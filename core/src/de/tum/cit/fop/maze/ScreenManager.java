@@ -107,13 +107,14 @@ public class ScreenManager extends Game {
             user = new User("Player1");
         }
         ///sound layers
-        soundManager.loadMusicLayer("bass","music/themes/Bass.mp3");
-        soundManager.loadMusicLayer("piano","music/themes/Piano.mp3");
-        soundManager.loadMusicLayer("drums","music/themes/Drums.mp3");
-        soundManager.loadMusicLayer("pad","music/themes/Pad.mp3");
-        soundManager.loadMusicLayer("strings","music/themes/Strings.mp3");
-        soundManager.loadMusicLayer("wind","music/themes/Wind.mp3");
-        soundManager.loadMusicLayer("crackles","music/themes/Crackles.mp3");
+        soundManager.loadMusicLayer("bass","music/themes/Bass2.mp3");
+        soundManager.loadMusicLayer("piano","music/themes/Piano2.mp3");
+        soundManager.loadMusicLayer("drums","music/themes/Drums2.mp3");
+        soundManager.loadMusicLayer("slowerDrums","music/themes/slowerdrums.mp3");
+        soundManager.loadMusicLayer("pad","music/themes/Pad2.mp3");
+        soundManager.loadMusicLayer("strings","music/themes/Strings2.mp3");
+        soundManager.loadMusicLayer("wind","music/themes/Wind2.mp3");
+        soundManager.loadMusicLayer("crackles","music/themes/Crackles2.mp3");
 
         ///sfxs
         soundManager.loadSound("losing sound","music/losing_sound.mp3");

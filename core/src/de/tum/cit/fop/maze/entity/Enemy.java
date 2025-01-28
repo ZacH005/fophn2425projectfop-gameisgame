@@ -81,6 +81,7 @@ public class Enemy implements Entity {
         chaseState.put("pad",0);
         chaseState.put("drums",1);
         chaseState.put("bass",1);
+        chaseState.put("slowerDrums", 0);
 
         mainState.put("crackles",1);
         mainState.put("wind",1);
@@ -89,6 +90,7 @@ public class Enemy implements Entity {
         mainState.put("pad",1);
         mainState.put("drums",0);
         mainState.put("bass",1);
+        mainState.put("slowerDrums", 1);
 
         this.hud=hud;
 

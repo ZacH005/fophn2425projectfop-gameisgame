@@ -81,6 +81,7 @@ public class MenuScreen implements Screen {
         menuState.put("pad",0);
         menuState.put("drums",0);
         menuState.put("bass",0);
+        menuState.put("slowerDrums", 1);
 
 
         // Add a label as a title

@@ -141,6 +141,7 @@ public class GameScreen implements Screen {
         mainState.put("pad", 1);
         mainState.put("drums", 0);
         mainState.put("bass", 1);
+        mainState.put("slowerDrums", 1);
         soundManager.onGameStateChange(mainState);
 
         tiledMap = new TmxMapLoader().load(mapPath);//as
