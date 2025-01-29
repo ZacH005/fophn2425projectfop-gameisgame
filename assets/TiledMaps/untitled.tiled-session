@@ -140,11 +140,14 @@
             "scaleInDock": 1
         },
         "untitled2.tmx": {
+            "expandedObjectLayers": [
+                17
+            ],
             "scale": 1,
-            "selectedLayer": 0,
+            "selectedLayer": 19,
             "viewCenter": {
-                "x": 820.5,
-                "y": 541.5
+                "x": 894.5,
+                "y": 677
             }
         },
         "untitled2.tmx#Ground_rocks": {
@@ -157,11 +160,14 @@
             "scaleInDock": 1
         },
         "untitled3.tmx": {
-            "scale": 0.85796875,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                19
+            ],
+            "scale": 3,
+            "selectedLayer": 18,
             "viewCenter": {
-                "x": 959.8251684574759,
-                "y": 535.5672919322528
+                "x": 203.83333333333334,
+                "y": 699.6666666666666
             }
         },
         "untitled3.tmx#Water_detilazation": {
@@ -171,11 +177,11 @@
             "scaleInDock": 1
         },
         "untitledee.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 0,
+            "scale": 1.5,
+            "selectedLayer": 23,
             "viewCenter": {
-                "x": 590.6666666666667,
-                "y": 583.3333333333333
+                "x": 495,
+                "y": 588
             }
         },
         "untitledee.tmx#Ground_rocks": {

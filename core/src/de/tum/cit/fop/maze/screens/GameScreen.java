@@ -195,7 +195,8 @@ public class GameScreen implements Screen {
             String type = enemySpawn.getProperties().get("type", String.class);
 
             if ("Slime".equals(type)) {
-                enemy = new Enemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations());
+//                enemy = new Enemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations());
+                enemy = new MeleeEnemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations());
             }
 
             if (enemy != null) {
@@ -369,21 +370,21 @@ public class GameScreen implements Screen {
                 shapeRenderer.rect(wallRec.x, wallRec.y, wallRec.width, wallRec.height);
             }
             for (Enemy enemy : enemies) { // Assuming you have a list of enemies
-                List<Node> path = enemy.getCurrentPath();
-                if (path != null) {
-                    for (int i = 0; i < path.size() - 1; i++) {
-                        Node current = path.get(i);
-                        Node next = path.get(i + 1);
-
-                        // Draw a line between nodes
-                        shapeRenderer.setColor(1, 0, 0, 1); // Red for the path
-                        shapeRenderer.line(current.x, current.y, next.x, next.y);
-                        shapeRenderer.setColor(Color.BLUE);
-                        shapeRenderer.point(current.x, current.y, 0);
-                    }
-                }
+//                List<Node> path = enemy.getCurrentPath();
+//                if (path != null) {
+//                    for (int i = 0; i < path.size() - 1; i++) {
+//                        Node current = path.get(i);
+//                        Node next = path.get(i + 1);
+//
+//                        // Draw a line between nodes
+//                        shapeRenderer.setColor(1, 0, 0, 1); // Red for the path
+//                        shapeRenderer.line(current.x, current.y, next.x, next.y);
+//                        shapeRenderer.setColor(Color.BLUE);
+//                        shapeRenderer.point(current.x, current.y, 0);
+//                    }
+//                }
                 shapeRenderer.setColor(Color.YELLOW);
-                shapeRenderer.rect(enemy.position.x-140, enemy.position.y-140, 2*140, 2*140);
+                shapeRenderer.rect(enemy.getPosition().x-140, enemy.getPosition().y-140, 2*140, 2*140);
                 shapeRenderer.setColor(0, 1, 0, 1);
                 shapeRenderer.rect(enemy.scanRange.x, enemy.scanRange.y, enemy.scanRange.width, enemy.scanRange.height);
                 shapeRenderer.setColor(Color.ORANGE);
