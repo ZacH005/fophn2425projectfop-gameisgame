@@ -223,4 +223,9 @@ public abstract class Enemy implements Entity {
      * @param delta The time elapsed since the last update.
      */
     protected abstract void updateProjectiles(float delta);
+
+    @Override
+    public Vector2 getPosition() {
+        return position;
+    }
 }

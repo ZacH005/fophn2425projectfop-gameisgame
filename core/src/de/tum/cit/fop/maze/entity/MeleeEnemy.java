@@ -519,7 +519,7 @@ public class MeleeEnemy extends Enemy {
 
     @Override
     public Vector2 getPosition() {
-        return null;
+        return position;
     }
 
     @Override

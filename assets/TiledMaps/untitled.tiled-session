@@ -27,6 +27,54 @@
             "scaleInDock": 2,
             "scaleInEditor": 1
         },
+        "Level 1.tmx": {
+            "scale": 0.27015625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1051.2434933487566,
+                "y": 682.938114517062
+            }
+        },
+        "Level 1.tmx#Ground_rocks": {
+            "scaleInDock": 1
+        },
+        "Level 1.tmx#Water_detilazation": {
+            "scaleInDock": 1
+        },
+        "Level 1.tmx#water_coasts": {
+            "scaleInDock": 1
+        },
+        "Level 2.tmx": {
+            "scale": 0.27015625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 958.7044534412956,
+                "y": 534.8756506651245
+            }
+        },
+        "Level 2.tmx#Water_detilazation": {
+            "scaleInDock": 1
+        },
+        "Level 2.tmx#water_coasts": {
+            "scaleInDock": 1
+        },
+        "Level 3.tmx": {
+            "scale": 0.27015625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 958.7044534412956,
+                "y": 534.8756506651245
+            }
+        },
+        "Level 3.tmx#Ground_rocks": {
+            "scaleInDock": 1
+        },
+        "Level 3.tmx#Water_detilazation": {
+            "scaleInDock": 1
+        },
+        "Level 3.tmx#water_coasts": {
+            "scaleInDock": 1
+        },
         "MapOne.tmx": {
             "scale": 1.3,
             "selectedLayer": 0,
@@ -163,11 +211,11 @@
             "expandedObjectLayers": [
                 19
             ],
-            "scale": 3,
+            "scale": 1.0469,
             "selectedLayer": 18,
             "viewCenter": {
-                "x": 960,
-                "y": 536.1666666666666
+                "x": 243.57627280542553,
+                "y": 796.1600916993027
             }
         },
         "untitled3.tmx#Water_detilazation": {
@@ -181,10 +229,10 @@
                 19
             ],
             "scale": 1.5,
-            "selectedLayer": 23,
+            "selectedLayer": 21,
             "viewCenter": {
-                "x": 960,
-                "y": 536.3333333333333
+                "x": 192,
+                "y": 463.66666666666663
             }
         },
         "untitledee.tmx#Ground_rocks": {
@@ -200,8 +248,8 @@
             "scale": 0.8786,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 796.7220578192578,
-                "y": 701.6844980651035
+                "x": 268.60915092192124,
+                "y": 754.0405190075119
             }
         },
         "untitledfinal.tmx#Water_detilazation": {
