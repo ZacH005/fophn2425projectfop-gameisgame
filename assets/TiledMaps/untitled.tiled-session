@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "untitled2.tmx",
+    "activeFile": "untitledfinal.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -143,11 +143,11 @@
             "expandedObjectLayers": [
                 17
             ],
-            "scale": 1,
+            "scale": 0.75,
             "selectedLayer": 19,
             "viewCenter": {
-                "x": 894.5,
-                "y": 677
+                "x": 960,
+                "y": 528.6666666666665
             }
         },
         "untitled2.tmx#Ground_rocks": {
@@ -166,8 +166,8 @@
             "scale": 3,
             "selectedLayer": 18,
             "viewCenter": {
-                "x": 203.83333333333334,
-                "y": 699.6666666666666
+                "x": 960,
+                "y": 536.1666666666666
             }
         },
         "untitled3.tmx#Water_detilazation": {
@@ -177,11 +177,14 @@
             "scaleInDock": 1
         },
         "untitledee.tmx": {
+            "expandedObjectLayers": [
+                19
+            ],
             "scale": 1.5,
             "selectedLayer": 23,
             "viewCenter": {
-                "x": 495,
-                "y": 588
+                "x": 960,
+                "y": 536.3333333333333
             }
         },
         "untitledee.tmx#Ground_rocks": {
@@ -191,6 +194,20 @@
             "scaleInDock": 1
         },
         "untitledee.tmx#water_coasts": {
+            "scaleInDock": 1
+        },
+        "untitledfinal.tmx": {
+            "scale": 0.8786,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 796.7220578192578,
+                "y": 701.6844980651035
+            }
+        },
+        "untitledfinal.tmx#Water_detilazation": {
+            "scaleInDock": 1
+        },
+        "untitledfinal.tmx#water_coasts": {
             "scaleInDock": 1
         }
     },
@@ -202,28 +219,26 @@
     "map.tileWidth": 16,
     "map.width": 100,
     "openFiles": [
-        "CaveMap.tmx",
-        "newCaveMap.tmx",
-        "dwarfMines.tmx",
-        "newCaveMap2.tmx",
-        "emptyMap.tmx",
-        "untitled2.tmx"
+        "untitled2.tmx",
+        "untitled3.tmx",
+        "untitledee.tmx",
+        "untitledfinal.tmx"
     ],
     "project": "untitled.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "untitled2.tmx",
+        "untitled3.tmx",
+        "untitledee.tmx",
+        "untitledfinal.tmx",
         "CaveMap.tmx",
         "newCaveMap.tmx",
         "dwarfMines.tmx",
         "newCaveMap2.tmx",
         "emptyMap.tmx",
-        "untitled2.tmx",
         "untitled.tmx",
         "Objects_animated3.tsx",
-        "Ground_rocks.tsx",
-        "doorsAsset.tsx",
-        "dwarvenMines.tsx",
-        "newLand.tsx"
+        "Ground_rocks.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

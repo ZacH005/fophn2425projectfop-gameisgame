@@ -14,9 +14,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 import java.util.*;
 
-public class MeleeEnemy extends Enemy {
-    public MeleeEnemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations, int health) {
+public class RangeEnemy extends Enemy {
+    private List<Projectile> projectiles = new ArrayList<>();
+
+    private Rectangle shootingRange;
+
+    public RangeEnemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations, int health) {
         super(x, y, player, hud, soundManager, animations, health);
+        shootingRange = new Rectangle(position.x-140, position.y-140, 2*140, 2*140);
     }
 
     @Override
@@ -35,15 +40,18 @@ public class MeleeEnemy extends Enemy {
 
         animationTime = 0f;
 
-        player.takeDamage(0.25f);
-        player.redEffectTime = 0f;
-        player.isRedEffectActive = true;
-        player.applyKnockback(getPosition(), 150);
+        Vector2 direction = new Vector2(directionX, directionY).nor();
+        projectiles.add(new Projectile(position.x, position.y, direction, 200f));
 
-        hud.updateHearts(player.getHealth());
-        if (player.getHealth() % 1 == 0) {
-            player.startFlickering(cooldownTime);
-        }
+//        player.takeDamage(0.25f);
+//        player.redEffectTime = 0f;
+//        player.isRedEffectActive = true;
+//        player.applyKnockback(getPosition(), 150);
+//
+//        hud.updateHearts(player.getHealth());
+//        if (player.getHealth() % 1 == 0) {
+//            player.startFlickering(cooldownTime);
+//        }
     }
 
 
@@ -338,7 +346,7 @@ public class MeleeEnemy extends Enemy {
     }
 
     private double heuristic(Node a, Node b) {
-        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)); // Euclidean distance
+        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
 
     //decides how many nodes get placed (ex. every 2 nodes), higher number = smoother movement (but leads to problems read bug sheet)
@@ -378,40 +386,71 @@ public class MeleeEnemy extends Enemy {
         }
     }
 
+    @Override
+    public void updateProjectiles(float delta) {
+        for (Projectile projectile : projectiles) {
+            projectile.update(delta);
+        }
+        projectiles.removeIf(projectile -> !projectile.isActive());
 
-    private boolean firstAttackReady = false;
+        shootingRange.setPosition(position.x-140, position.y-140);
+    }
 
     @Override
-    protected void checkDamaging() {
-        if (damageCollider.overlaps(player.collider)) {
-            if (!firstAttackReady) {
-                float firstAttackDelay = 0.5f;
-                com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        firstAttackReady = true;
-                    }
-                }, firstAttackDelay);
-                return;
-            }
-
-            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1_000_000_000L) {
-                attack();
-                lastDamageTime = TimeUtils.nanoTime();
-            }
-        } else {
-            firstAttackReady = false;
+    public void renderProjectiles(SpriteBatch batch) {
+        for (Projectile projectile : projectiles) {
+            projectile.render(batch);
         }
     }
 
     @Override
-    protected void renderProjectiles(SpriteBatch batch) {
+    protected void checkDamaging() {
 
-    }
+        ArrayList<Projectile> activeShots = new ArrayList<>();
+        projectiles.stream().filter(Projectile::isActive).forEach(activeShots::add);
 
-    @Override
-    protected void updateProjectiles(float delta) {
+        if (shootingRange.overlaps(player.collider))   {
+            System.out.println("in range");
+            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1_000_000_000L) {
+                System.out.println("shooting");
+                attack();
+                lastDamageTime = TimeUtils.nanoTime();
+            }
+        }
 
+        for (Projectile projectile : activeShots)   {
+            if (projectile.getCollider().overlaps(player.collider)) {
+                player.takeDamage(0.25f);
+                player.redEffectTime = 0f;
+                player.isRedEffectActive = true;
+                player.applyKnockback(getPosition(), 150);
+
+                hud.updateHearts(player.getHealth());
+                if (player.getHealth() % 1 == 0) {
+                    player.startFlickering(cooldownTime);
+                }
+                projectile.deactivate();
+            }
+        }
+//        if (damageCollider.overlaps(player.collider)) {
+//            if (!firstAttackReady) {
+//                float firstAttackDelay = 0.5f;
+//                com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
+//                    @Override
+//                    public void run() {
+//                        firstAttackReady = true;
+//                    }
+//                }, firstAttackDelay);
+//                return;
+//            }
+//
+//            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1_000_000_000L) {
+//                attack();
+//                lastDamageTime = TimeUtils.nanoTime();
+//            }
+//        } else {
+//            firstAttackReady = false;
+//        }
     }
 
     /// ENTITY METHODS
@@ -511,5 +550,13 @@ public class MeleeEnemy extends Enemy {
     @Override
     public void loadState(String filename) {
 
+    }
+
+    public Rectangle getShootingRange() {
+        return shootingRange;
+    }
+
+    public void setShootingRange(Rectangle shootingRange) {
+        this.shootingRange = shootingRange;
     }
 }

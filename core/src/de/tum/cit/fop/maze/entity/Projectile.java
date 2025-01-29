@@ -10,14 +10,14 @@ import com.badlogic.gdx.math.Vector2;
 public class Projectile {
     private Vector2 position;
     private Vector2 velocity;
-    private Rectangle bounds;
+    private Rectangle collider;
     private float speed;
     private boolean active;
 
     public Projectile(float x, float y, Vector2 direction, float speed) {
         this.position = new Vector2(x, y);
         this.velocity = direction.nor().scl(speed);
-        this.bounds = new Rectangle(x, y, 8, 8); // Adjust size as needed
+        this.collider = new Rectangle(x, y, 8, 8);
         this.speed = speed;
         this.active = true;
     }
@@ -25,10 +25,9 @@ public class Projectile {
     public void update(float delta) {
         if (!active) return;
         position.add(velocity.x * delta, velocity.y * delta);
-        bounds.setPosition(position.x, position.y);
+        collider.setPosition(position.x, position.y);
 
-        // Deactivate if out of bounds
-        if (position.x < 0 || position.y < 0 || position.x > 1920 || position.y > 1080) { // Adjust based on your map
+        if (position.x < 0 || position.y < 0 || position.x > 1920 || position.y > 1080) {
             active = false;
         }
     }
@@ -45,8 +44,8 @@ public class Projectile {
         return active;
     }
 
-    public Rectangle getBounds() {
-        return bounds;
+    public Rectangle getCollider() {
+        return collider;
     }
 
     public void deactivate() {

@@ -48,16 +48,16 @@ public abstract class Enemy implements Entity {
     protected boolean attacking = false;
     protected float attackDuration = 0.3f;
     protected float attackTimeElapsed = 0f;
-    protected int movement = 0;
 
-    public Enemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations) {
+
+    public Enemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations, int health) {
         this.player = player;
         this.position = new Vector2(x, y);
         this.scanrangewidth = 100;
         this.scanrangeheight = 100;
         this.scanRange = new Rectangle(position.x - scanrangewidth / 2f + 8, position.y - scanrangeheight / 2f + 4, scanrangeheight, scanrangewidth);
         this.damageCollider = new Rectangle(position.x - 2, position.y - 5, 20, 20);
-        this.health = 3;
+        this.health = health;
         this.movementSpeed = 3.5f;
         this.soundManager = soundManager;
         this.hud = hud;
@@ -123,6 +123,7 @@ public abstract class Enemy implements Entity {
         }
 
         checkDamaging();
+        updateProjectiles(delta);
     }
 
     public void render(SpriteBatch batch) {
@@ -147,6 +148,7 @@ public abstract class Enemy implements Entity {
             batch.draw(frame, position.x - ((float) 16 / 2), position.y - ((float) 16 / 2), 16 * 2.0f, 16 * 2.0f);
             batch.setColor(1, 1, 1, 1);
         }
+        renderProjectiles(batch);
     }
 
     public void updateColliders() {
@@ -172,5 +174,8 @@ public abstract class Enemy implements Entity {
         knockbackTimeElapsed = 0;
     }
 
-    // Other common methods (e.g., applyKnockback, takeDamage, etc.) can remain here
+    protected abstract void renderProjectiles(SpriteBatch batch);
+    protected abstract void updateProjectiles(float delta);
+
+        // Other common methods (e.g., applyKnockback, takeDamage, etc.) can remain here
 }

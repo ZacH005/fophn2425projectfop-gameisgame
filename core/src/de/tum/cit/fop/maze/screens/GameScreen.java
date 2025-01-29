@@ -133,7 +133,7 @@ public class GameScreen implements Screen {
         // I modified this to load a map from a selector
         //sound stuff.
         this.soundManager = soundManager;
-        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH" + soundManager);
+//        System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH" + soundManager);
         mainState.put("crackles", 1);
         mainState.put("wind", 1);
         mainState.put("piano", 1);
@@ -195,8 +195,9 @@ public class GameScreen implements Screen {
             String type = enemySpawn.getProperties().get("type", String.class);
 
             if ("Slime".equals(type)) {
-//                enemy = new Enemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations());
-                enemy = new MeleeEnemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations());
+                enemy = new MeleeEnemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations(), 3);
+            } else if ("Range".equals(type))    {
+                enemy = new RangeEnemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations(), 2);
             }
 
             if (enemy != null) {
@@ -385,6 +386,8 @@ public class GameScreen implements Screen {
 //                }
                 shapeRenderer.setColor(Color.YELLOW);
                 shapeRenderer.rect(enemy.getPosition().x-140, enemy.getPosition().y-140, 2*140, 2*140);
+                if (enemy instanceof RangeEnemy)
+                    shapeRenderer.rect(((RangeEnemy) enemy).getShootingRange().x, ((RangeEnemy) enemy).getShootingRange().y,  ((RangeEnemy) enemy).getShootingRange().width, ((RangeEnemy) enemy).getShootingRange().height);
                 shapeRenderer.setColor(0, 1, 0, 1);
                 shapeRenderer.rect(enemy.scanRange.x, enemy.scanRange.y, enemy.scanRange.width, enemy.scanRange.height);
                 shapeRenderer.setColor(Color.ORANGE);

@@ -394,7 +394,7 @@ public class Player implements Entity, Serializable {
     }
     private void startTakingDamage() {
         isTakingDamage = true;
-        speed=50f;
+        speed/=2;
         // Schedule damage task
         damageTask = new Timer.Task() {
             @Override
@@ -412,7 +412,7 @@ public class Player implements Entity, Serializable {
             damageTask = null;
         }
         if(isTakingDamage){
-            speed=150f;
+            speed*=2;
             setSprinting(false);
         }
         isTakingDamage = false;
