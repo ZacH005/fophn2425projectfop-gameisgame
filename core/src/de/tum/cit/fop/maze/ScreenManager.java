@@ -204,7 +204,10 @@ public class ScreenManager extends Game {
             // if a level isn't played then this the one we go to intuitively
             else{
                 System.out.println("loaded :"+file.name()+" map");
-                this.setScreen(new GameScreen(this, ("TiledMaps/"+file.name()),soundManager));
+                GameScreen newGameScreen = new GameScreen(this, ("TiledMaps/"+file.name()),soundManager);
+                newGameScreen.getPlayer().loadState("playerstate.txt");
+                this.setScreen(newGameScreen);
+
             }}
 
         }
