@@ -88,6 +88,7 @@ public class LevelSelectorScreen extends ScreenAdapter {
         }
         /// sort the levels in order using only their names since they have the same extention
         tmxFiles.sort(Comparator.comparing(file -> ((FileHandle) file).nameWithoutExtension()));
+        tmxFiles.reverse();
 
         // If no levels are found, show a message
         if (tmxFiles.size == 0) {

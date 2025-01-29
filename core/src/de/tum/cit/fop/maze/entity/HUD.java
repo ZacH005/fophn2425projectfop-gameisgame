@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.fop.maze.ScreenManager;
@@ -35,12 +36,16 @@ public class HUD {
     Label scoreLabel;
     Label gemLabel;
     Label gemCount;
+    Label tutorialLabel;
 
     private Texture fullHeartTexture;
     private Texture halfHeartTexture;
 
     private Table heartTable;
     private int maxGems;
+    private boolean isTutorial;
+    float timer=0;
+    float timer2=0;
 
     private int maxHearts;
     private boolean[] heartStates; // Array to track heart states (true = full, false = half)
@@ -55,12 +60,13 @@ public class HUD {
      *
      * @param batch The SpriteBatch used for rendering.
      */
-    public HUD(SpriteBatch batch, ScreenManager game, Player player) {
+    public HUD(SpriteBatch batch, ScreenManager game, Player player,boolean isTutorial) {
         keysno = player.getKeys();
         gemsno=player.getGems();
         elapsedTime = 0;
         score = 0;
         maxGems = 0;
+        this.isTutorial = isTutorial;
 
         TextureRegion region= new TextureRegion(new Texture("HUD heart.png"));
 
@@ -101,7 +107,8 @@ public class HUD {
         // Labels setup code...
 
         labelStyle = new Label.LabelStyle();
-        labelStyle.font = game.getSkin().getFont("font");  // Use the "font" from the skin
+        labelStyle.font = game.getSkin().getFont("font");
+        tutorialLabel = new Label("Pick up the golden axe.", labelStyle); // Use the "font" from the skin
         
         keysLabel = new Label(String.format("%03d", keysno), labelStyle);
         gemLabel = new Label("GEMS", labelStyle);
@@ -138,9 +145,15 @@ public class HUD {
 
 
         table.padTop(10);
+        Table tutorialTable = new Table();
+        tutorialTable.bottom();  // Position at the bottom of the screen
+        tutorialTable.setFillParent(true);
+        tutorialTable.add(tutorialLabel).expandX().padBottom(10);
         // Add the table to the stage
         stage.addActor(table);
-
+        if(isTutorial) {
+            stage.addActor(tutorialTable);
+        }
         // Create table for hearts
 
 
@@ -161,9 +174,37 @@ public class HUD {
             }
         });
     }
-    public void updateHUD(){
+    public void updateHUD(float delta){
         keysLabel.setText(String.format("%03d", player.getKeys()));
         gemCount.setText(player.getGems()+"/"+maxGems);
+        if(isTutorial){
+            System.out.println(player.getHitexit());
+            if(player.getKeys()==1&&player.getBrokenwalls()==0){
+                tutorialLabel.setText("You need golden axes to break walls. Approach the wall and press Space to break.");
+            }else if(player.getKeys()==0&&player.getBrokenwalls()==1&&player.getGems()==0){
+                timer+=delta;
+                if(timer>3f){
+                    tutorialLabel.setText("Press Space to break the gem. No golden axe is required.");
+                }else {
+                    tutorialLabel.setText("Watch Out ! The water is toxic.");
+                }
+            }
+            else if(player.getGems()==1&&player.getHitexit()==0){
+                tutorialLabel.setText("Follow the arrow indicator to find the exit.");
+            }
+            else if(player.getHitexit()==1){
+                timer2+=delta;
+                if(timer2<=6f){
+                    tutorialLabel.setText("You have 1/2 gems. Collect all gems to unlock the exit");
+                }
+                else if(timer2>6f&&timer2<10f){
+                    tutorialLabel.setText("You might run into trouble on your way! Use your axe to defend yourself. Have fun exploring!");
+                }
+                else{
+                    tutorialLabel.setVisible(false);
+                }
+            }
+        }
 
         // Update elapsed time every frame
         elapsedTime += Gdx.graphics.getDeltaTime(); // deltaTime gives you the time since the last frame

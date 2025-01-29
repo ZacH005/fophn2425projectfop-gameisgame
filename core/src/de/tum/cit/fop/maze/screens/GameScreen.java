@@ -183,8 +183,12 @@ public class GameScreen implements Screen {
                 region.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
             }
         });
+        if(mapPath.endsWith("UTutorial.tmx")){
+            hud = new HUD(game.getSpriteBatch(), game, player,true);
+        }else{
+            hud = new HUD(game.getSpriteBatch(), game, player,false);
+        }
 
-        hud = new HUD(game.getSpriteBatch(), game, player);
 
         enemies = new ArrayList<>();
 
@@ -217,6 +221,7 @@ public class GameScreen implements Screen {
                 .collect(Collectors.toList());
         hud.setMaxGems(gemCounter());
         player.setMaxGems(gemCounter());
+
     }
 //    public void completeLevel(){
 //        //updates the index of the map being played
@@ -314,7 +319,7 @@ public class GameScreen implements Screen {
             enemies.forEach(enemy1 -> {
                 enemy1.update(delta, colManager);
             });
-            hud.updateHUD();
+            hud.updateHUD(delta);
         }
 
 
@@ -705,6 +710,7 @@ public class GameScreen implements Screen {
                     screenShake.startShake(0.4f, 3);
                 }
                 player.setKeys(player.getKeys()-1);
+                player.setBrokenwalls(player.getBrokenwalls()+1);
             }
         }
     }
