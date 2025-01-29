@@ -110,6 +110,8 @@ public class Player implements Entity, Serializable {
 
     private Animation<TextureRegion> swipeAnimation;
 
+    private boolean inWater;
+
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
@@ -380,11 +382,13 @@ public class Player implements Entity, Serializable {
                     startFlickering(0.5f);
                 }
                 if (colManager.checkMapCollision(newPos)!= null && colManager.checkMapCollision(newPos).equals("Water")) {
+                    inWater=true;
                     if (!isTakingDamage) {
                         startTakingDamage();
                     }
                 } else {
                     stopTakingDamage();
+                    inWater=false;
                 }
 
 //                System.out.println(colManager.checkMapCollision(newPos));
@@ -497,11 +501,24 @@ public class Player implements Entity, Serializable {
             else
                 frame = currentAnimation.getKeyFrame(animationTime, true);
 
-            if(adjust) {
-                batch.draw(frame, position.x - (width / 2) - 2.5f + 4f, position.y - (height / 2), width * 2.0f, height * 2.0f);
-            }else{
-                batch.draw(frame, position.x-(width/2)-2.5f, position.y-(height/2), width*2.0f, height*2.0f);
+            if(inWater){
+                TextureRegion headRegion = new TextureRegion(
+                        frame.getTexture(),
+                        frame.getRegionX(), // Start X of the frame
+                        frame.getRegionY(), // Start Y for the head
+                        frame.getRegionWidth(), // Width stays the same
+                        35// Height is only the head
+                );
+                batch.draw(headRegion,position.x - (width / 2) - 2.5f, position.y - (height / 2), width*2.0f, ((height * 2.0f)/64)*35);
+            }else {
+                if (adjust) {
+                    batch.draw(frame, position.x - (width / 2) - 2.5f + 4f, position.y - (height / 2), width * 2.0f, height * 2.0f);
+                } else {
+                    batch.draw(frame, position.x - (width / 2) - 2.5f, position.y - (height / 2), width * 2.0f, height * 2.0f);
+                }
             }
+
+
 
             batch.setColor(1, 1, 1, 1);
         }
