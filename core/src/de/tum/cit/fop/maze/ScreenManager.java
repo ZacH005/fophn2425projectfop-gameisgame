@@ -21,6 +21,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 //bananas comment
@@ -188,7 +189,9 @@ public class ScreenManager extends Game {
                 tmxFiles.add(file);
             }
         }
-
+        //sort levels
+        tmxFiles.sort(Comparator.comparing(file -> ((FileHandle) file).nameWithoutExtension()).reversed());
+        user.getCompletedLevels().sort(Comparator.reverseOrder());
         //getting the first map that isn't completed by the user.
         for(FileHandle file : tmxFiles) {
             // if the level is completed don't open it
@@ -202,11 +205,12 @@ public class ScreenManager extends Game {
                 continue;
             }
             // if a level isn't played then this the one we go to intuitively
+
             else{
-                System.out.println("loaded :"+file.name()+" map");
                 GameScreen newGameScreen = new GameScreen(this, ("TiledMaps/"+file.name()),soundManager);
                 newGameScreen.getPlayer().loadState("playerstate.txt");
                 this.setScreen(newGameScreen);
+                System.out.println("loaded :"+file.name()+" map");
 
             }}
 

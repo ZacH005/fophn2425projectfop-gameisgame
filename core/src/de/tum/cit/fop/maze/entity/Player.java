@@ -88,6 +88,8 @@ public class Player implements Entity, Serializable {
     private List<Item> hasEquipped;
     private  int keys=0;
     public Rectangle newPos;
+    private int brokenwalls=0;
+    private int hitexit=0;
 
     private float flickerAlpha = 1.0f;  // Initialize alpha to full visibility
     private boolean isFlickering = false;  // Track if the player is flickering
@@ -276,6 +278,14 @@ public class Player implements Entity, Serializable {
         }
     }
 
+    public int getBrokenwalls() {
+        return brokenwalls;
+    }
+
+    public void setBrokenwalls(int brokenwalls) {
+        this.brokenwalls = brokenwalls;
+    }
+
     public void setCurrentAnimation(Animation<TextureRegion> animation) {
         this.currentAnimation = animation;
     }
@@ -334,6 +344,9 @@ public class Player implements Entity, Serializable {
 //                door.setCurrentTexture(door.getOpenTexture());
 //                keys -= 1;
 //            }
+                if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")) {
+                    hitexit=1;
+                }
 
                 if (colManager.checkEventCollision(newPos) != null && colManager.checkEventCollision(newPos).equals("Finish")&& gems==maxGems) {
                     colManager.setWonLevel(true);
@@ -419,6 +432,9 @@ public class Player implements Entity, Serializable {
 
     }
 
+    public int getHitexit() {
+        return hitexit;
+    }
 
     public void render(SpriteBatch batch) {
         hurtParticle.draw(batch);

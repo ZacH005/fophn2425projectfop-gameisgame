@@ -3350,7 +3350,7 @@
    eJzt2c0RgjAQBtC0QwtqNdqIZ+1GG5RROJiLFxLi7nszTI5sYL8dfkoBAAAARnOYSjlOe1dBK+f53l7c37DkN7as+a37Omqf/9u+bnOt9w3qrfs6ap//274ec63PDerNkt+ssuQ3K/mNTX4BAADGcZrex7XHykfv7xzr+Vqt3uu/9b4e6/larUuGWezxnXKZoeZyB+ZZbP4zxCa/Y6ifE4mlfk7cin6JLfN8zjATI+/tl1YzcSSR90bu/GYgvwAAAAAAAAAAAAAAAACQzwtFx18c
   </data>
  </layer>
- <layer id="15" name="Anim" width="120" height="67">
+ <layer id="15" name="Anim" width="120" height="67" visible="0">
   <data encoding="base64" compression="zlib">
    eJzt2kEKwyAQBdBcp4seJ/fxKDlqtSFQ3BRKounMe+Bane+IkCwLAAAAcDfPx1LqmGqdPH9ktbZFfe+jZXFmHrP79+z9/LuWxZl5ZO3f/lzPPudXibqvb/pzHfWcR93XN1n6N6ss/ctO/8aiXwEAAO7j+JYwYjDeUft1wGBXa7HVmm+D5noP/TvOyHw/5tS/g8zIl3HkG5t85/OGiM0bgl9lvZ+7u7D961Bmr+kKWfPt7sL270OZvaYrZM03C/nGJl8AAAAAAAAAAAAAAAAAyOcFpepkAw==
   </data>

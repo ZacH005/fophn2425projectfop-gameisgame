@@ -7350,12 +7350,6 @@
    </properties>
    <point/>
   </object>
-  <object id="200" x="588.408" y="332.578">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
   <object id="201" x="888.581" y="494.604">
    <properties>
     <property name="type" value="Slime"/>
@@ -7374,79 +7368,13 @@
    </properties>
    <point/>
   </object>
-  <object id="205" x="618" y="334">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="209" x="644" y="381">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="210" x="584.408" y="287.578">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="211" x="611" y="375">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
   <object id="212" x="614" y="289">
    <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="213" x="584" y="325">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="216" x="640" y="336">
-   <properties>
-    <property name="type" value="Slime"/>
+    <property name="type" value="Range"/>
    </properties>
    <point/>
   </object>
   <object id="236" x="475" y="494">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="245" x="565.408" y="335.578">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="247" x="595" y="337">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="251" x="621" y="384">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="254" x="618" y="356">
-   <properties>
-    <property name="type" value="Slime"/>
-   </properties>
-   <point/>
-  </object>
-  <object id="258" x="644" y="403">
    <properties>
     <property name="type" value="Slime"/>
    </properties>

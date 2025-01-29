@@ -62,8 +62,8 @@ public abstract class Enemy implements Entity {
     public Enemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations, int health) {
         this.player = player;
         this.position = new Vector2(x, y);
-        this.scanrangewidth = 100;
-        this.scanrangeheight = 100;
+        this.scanrangewidth = 200;
+        this.scanrangeheight = 200;
         this.scanRange = new Rectangle(position.x - scanrangewidth / 2f + 8, position.y - scanrangeheight / 2f + 4, scanrangeheight, scanrangewidth);
         this.damageCollider = new Rectangle(position.x - 2, position.y - 5, 20, 20);
         this.health = health;
