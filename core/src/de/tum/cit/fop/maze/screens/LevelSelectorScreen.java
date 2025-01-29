@@ -20,6 +20,7 @@ import de.tum.cit.fop.maze.ScreenManager;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.entity.User;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,6 +86,8 @@ public class LevelSelectorScreen extends ScreenAdapter {
                 tmxFiles.add(file);
             }
         }
+        /// sort the levels in order using only their names since they have the same extention
+        tmxFiles.sort(Comparator.comparing(file -> ((FileHandle) file).nameWithoutExtension()));
 
         // If no levels are found, show a message
         if (tmxFiles.size == 0) {
