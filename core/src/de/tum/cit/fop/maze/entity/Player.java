@@ -551,10 +551,11 @@ public class Player implements Entity, Serializable {
 
     @Override
     public void heal() {
-        if (health < maxHealth)
-            health += 1;
-    }
+        if (health < maxHealth) {
+            health = (float) Math.ceil(health+1);
 
+        }
+    }
     public Animation<TextureRegion> getCurrentAnimation() {
         return currentAnimation;
     }
