@@ -126,7 +126,7 @@ public class Player implements Entity, Serializable {
         this.tiledMap = tiledMap;
         this.width = tileSize;
         this.height = tileSize;
-        this.speed = 150;
+        this.speed = 110;
         this.isMoving = false;
         this.direction = Direction.DOWN;
         this.animationTime = 0f;
@@ -218,7 +218,6 @@ public class Player implements Entity, Serializable {
             case UP:
 //                y += 16f;
                 x -= 16f;
-
                 width = 48;
                 height = 30;
                 break;
@@ -259,7 +258,7 @@ public class Player implements Entity, Serializable {
 
     public void updateFlickerEffect(float delta) {
         if (isFlickering) {
-            stop();
+//            stop();
             flickertotaltime += delta;
             flickerTime += delta;
             //stops flickering when time is greater than total animation duration (Ik the variable names could be confusing sorry.)
@@ -364,7 +363,7 @@ public class Player implements Entity, Serializable {
                     redEffectTime=0f;
                     isRedEffectActive=true;
                     takeDamage(0.25f);
-                    applyKnockback(new Vector2((r.getRectangle().x+(r.getRectangle().getWidth()/2)),(r.getRectangle().y+(r.getRectangle().getHeight()/2))),1200);
+                    applyKnockback(new Vector2((r.getRectangle().x+(r.getRectangle().getWidth()/2)),(r.getRectangle().y+(r.getRectangle().getHeight()/2))),800);
                     startFlickering(0.5f);
                 }
                 if (colManager.checkMapCollision(newPos)!= null && colManager.checkMapCollision(newPos).equals("Water")) {

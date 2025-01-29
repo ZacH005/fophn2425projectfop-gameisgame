@@ -165,6 +165,7 @@ public class MenuScreen implements Screen {
         });
         bg = new Texture(Gdx.files.internal("Menu UI Design.png"),true);
         overlayTexture = new Texture(Gdx.files.internal("DK-MenuVersion2.png"),true);
+        table.padTop(100);
     }
 
 

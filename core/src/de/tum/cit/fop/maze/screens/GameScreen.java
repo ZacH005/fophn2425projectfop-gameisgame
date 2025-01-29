@@ -166,7 +166,6 @@ public class GameScreen implements Screen {
             startPlayerY = (float) start.getProperties().get("y");
         }
 
-
         screenShake = new ScreenShake();
         screenShake.setOriginalPosition(camera.position.x, camera.position.y);
 
@@ -194,7 +193,6 @@ public class GameScreen implements Screen {
             Enemy enemy = null;
 
             String type = enemySpawn.getProperties().get("type", String.class);
-//                System.out.println("Adding powerup");
 
             if ("Slime".equals(type)) {
                 enemy = new Enemy(rectangle.x, rectangle.y, player, hud, soundManager, enemyManager.getSkeletonAnimations());
@@ -205,6 +203,7 @@ public class GameScreen implements Screen {
             }
 
             gameTime = TimeUtils.nanoTime();
+
         }
 
         this.mapPowerups = mapManager.getPowerups();
@@ -551,7 +550,8 @@ public class GameScreen implements Screen {
         // and it won't load an level that's added to the completed levels
         // we debug by prinitng which level we complete by pressing X
         // and which levels are we loading
-        game.setScreen(new VictoryScreen(game));
+
+        game.setScreen(new VictoryScreen(game, hud.getElapsedTime()));
         colManager.setWonLevel(false);
     }
 
@@ -784,6 +784,9 @@ public class GameScreen implements Screen {
     }
 
     public void trapexplosion(){
+        mapManager.getCollisionObjects().stream().filter(collision -> collision.getProperties().get("type").equals("Trap"));
+
+
         for (RectangleMapObject object : mapManager.getCollisionObjects()) {
             String objectType = object.getProperties().get("type", String.class);
             if ("Trap".equals(objectType)) {
@@ -819,14 +822,15 @@ public class GameScreen implements Screen {
         shapeRenderer.dispose();
     }
     private void clampCamera() {
-        // Calculate camera half dimensions
-        float halfViewportWidth = camera.viewportWidth / 2;
-        float halfViewportHeight = camera.viewportHeight / 2;
+        // Calculate the half dimensions of the camera's viewport
+        float halfViewportWidth = (camera.viewportWidth * camera.zoom) / 2;
+        float halfViewportHeight = (camera.viewportHeight * camera.zoom) / 2;
 
-        // Clamp the camera position within world bounds
+        // Clamp the camera position within the world bounds
         camera.position.x = MathUtils.clamp(camera.position.x, halfViewportWidth, 1920 - halfViewportWidth);
         camera.position.y = MathUtils.clamp(camera.position.y, halfViewportHeight, 1080 - halfViewportHeight);
     }
+
 
     @Override
     public void show() {
@@ -901,4 +905,6 @@ public class GameScreen implements Screen {
     public void setCameraZoom(float cameraZoom) {
         this.cameraZoom = cameraZoom;
     }
+
+
 }

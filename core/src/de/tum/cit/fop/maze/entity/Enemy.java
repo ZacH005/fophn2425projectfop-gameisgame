@@ -1,13 +1,10 @@
 package de.tum.cit.fop.maze.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import de.tum.cit.fop.maze.SoundManager;
@@ -15,6 +12,7 @@ import de.tum.cit.fop.maze.abilities.Powerup;
 import com.badlogic.gdx.utils.TimeUtils;
 import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.*;
 
@@ -42,8 +40,6 @@ public class Enemy implements Entity {
     int scanrangewidth;
     int scanrangeheight;
 
-    private float initialposx;
-    private float initialposy;
     private int health;
 
     private float movementSpeed;
@@ -61,17 +57,15 @@ public class Enemy implements Entity {
 
     public Enemy(float x, float y,Player player,HUD hud,SoundManager soundManager, Map<String, Animation<TextureRegion>> animations) {
 
-            this.player = player;
+        this.player = player;
         position = new Vector2(x,y);
-        initialposx = x;
-        initialposy = y;
         scanrangewidth = 100;
         scanrangeheight = 100;
         scanRange = new Rectangle(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4,scanrangeheight,scanrangewidth);
         damageCollider = new Rectangle(position.x-2,position.y-5,20,20);
         health = 3;
 
-        movementSpeed = 5.5f;
+        movementSpeed = 3.5f;
 
         this.soundManager=soundManager;
         chaseState.put("crackles",0);
@@ -120,6 +114,7 @@ public class Enemy implements Entity {
                 knockbackVelocity.set(0, 0);
                 knockbackDuration = 0;
                 knockbackTimeElapsed = 0;
+                following = true;
             }
             hurting = true;
             attacking = false;
@@ -215,15 +210,29 @@ public class Enemy implements Entity {
         scanRange.setPosition(position.x-scanrangewidth/2f+8,position.y-scanrangeheight/2f+4);
         damageCollider.setPosition(position.x-2,position.y-5);
     }
+    private float firstAttackDelay = 0.5f; // Delay before first attack (in seconds)
+    private boolean firstAttackReady = false; // Flag for the first attack
+
     private void checkDamaging(float delta) {
         if (damageCollider.overlaps(player.collider)) {
-            // only process if cooldown has passed
-            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1000000000L) {
-                // proceed with damage logic
+            if (!firstAttackReady) {
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        firstAttackReady = true;
+                    }
+                }, firstAttackDelay);
+                return;
+            }
+
+            // Proceed only if the cooldown has passed
+            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1_000_000_000L) {
                 attack();
-                // update last damage time
                 lastDamageTime = TimeUtils.nanoTime();
             }
+        } else {
+            // Reset first attack flag when out of range
+            firstAttackReady = false;
         }
     }
 
@@ -264,7 +273,7 @@ public class Enemy implements Entity {
 //            hurting = true;  // Start hurting if the cooldown has passed
 
 //        if (hurting) {
-            // Play hurt sound and apply damage effects here
+        // Play hurt sound and apply damage effects here
         if (health > 0) {
             health -= amount;
             Sound hurtSound = soundManager.getSound("enemyHurt");
@@ -274,7 +283,7 @@ public class Enemy implements Entity {
             applyKnockback(player.getPosition(), 150);
         }
         hurtParticle.setPosition(damageCollider.x + damageCollider.width / 2,
-            damageCollider.y + damageCollider.height / 2);
+                damageCollider.y + damageCollider.height / 2);
         hurtParticle.reset();
 
         if (health == 0 && !isDead) {
@@ -283,7 +292,7 @@ public class Enemy implements Entity {
             System.out.println("Enemy defeated!");
         }
 
-            // After hurting is active for the cooldown duration, set it to false
+        // After hurting is active for the cooldown duration, set it to false
 //            if (TimeUtils.nanoTime() - lastHurtingTime >= hurtCooldown * 1000000000L) {
 //            }
 //        }
@@ -300,6 +309,26 @@ public class Enemy implements Entity {
         Entity loaded = EntityUtils.loadFromFile(filename,this);
         if (loaded instanceof Enemy loadedEnemy) {
             this.position = loadedEnemy.position;
+        }
+    }
+
+    private void updateScanRange() {
+        float offsetX = 0, offsetY = 0;
+
+        if (lastDirection != null) {
+            if (lastDirection.x > 0) {  // Facing right
+//                offsetX = 16; // Shift right
+                scanRange.set(position.x + offsetX, position.y - scanrangeheight / 2f, scanrangewidth, scanrangeheight);
+            } else if (lastDirection.x < 0) {  // Facing left
+                offsetX = -scanrangewidth +16; // Shift left
+                scanRange.set(position.x + offsetX, position.y - scanrangeheight / 2f, scanrangewidth, scanrangeheight);
+            } else if (lastDirection.y > 0) {  // Facing up
+//                offsetY = 16; // Shift up
+                scanRange.set(position.x - scanrangewidth / 2f, position.y + offsetY, scanrangeheight, scanrangewidth);
+            } else if (lastDirection.y < 0) {  // Facing down
+                offsetY = -scanrangeheight + 16; // Shift down
+                scanRange.set(position.x - scanrangewidth / 2f, position.y + offsetY, scanrangeheight, scanrangewidth);
+            }
         }
     }
 
@@ -329,6 +358,14 @@ public class Enemy implements Entity {
         if (distance < 15.0f && following) {
             following = false;
             roaming = false;
+            float directionX = player.getPosition().x - this.position.x;
+            float directionY = player.getPosition().y - this.position.y;
+
+            if (Math.abs(directionX) > Math.abs(directionY)) {
+                currentAnimation = directionX > 0 ? animations.get("rightIdle") : animations.get("leftIdle");
+            } else {
+                currentAnimation = directionY > 0 ? animations.get("upIdle") : animations.get("downIdle");
+            }
             soundManager.onGameStateChange(chaseState);
             return;
         }
@@ -362,7 +399,7 @@ public class Enemy implements Entity {
                 lastMovementUpdateTime = TimeUtils.millis();
             }
             if (currentPath == null || currentPath.isEmpty()) {
-                System.out.println("No valid path. Switching to roaming mode.");
+                System.out.println("can't find path, roaming now");
 //                currentAnimation = animations.get("downIdle");
                 following = false;
                 roaming = true;
@@ -446,7 +483,6 @@ public class Enemy implements Entity {
             if (retryCount < 5) {
                 this.position.x = newX;
                 this.position.y = newY;
-
                 updateColliders();
             } else {
                 currentAnimation = animations.get("downIdle");
@@ -492,9 +528,8 @@ public class Enemy implements Entity {
                     }
                     break;
             }
+            updateScanRange();
         }
-
-
     }
     int movement = 0;
 
@@ -510,11 +545,9 @@ public class Enemy implements Entity {
 
             Rectangle checkRect = new Rectangle(checkX, checkY, 16, 16);
             if (colManager.checkMapCollision(checkRect) != null) {
-//                System.out.println("unclear");
                 return false;
             }
         }
-//        System.out.println("clear");
 
         return true;
     }
@@ -559,7 +592,6 @@ public class Enemy implements Entity {
             }
 
             if (nodesExplored >= maxNodes) {
-//                System.out.println("Pathfinding limit reached. Switching to roaming mode.");
                 following = false;
                 roaming = true;
                 return null;
@@ -650,13 +682,12 @@ public class Enemy implements Entity {
         player.isRedEffectActive=true;
         player.applyKnockback(getPosition(),150);
 
-//        System.out.println("restarted");
         hud.updateHearts(player.getHealth());
         if(player.getHealth()%1 ==0){
-            player.respawn();
-            setPosition(new Vector2(initialposx,initialposy));
+//            player.respawn();
+//            setPosition(new Vector2(initialposx,initialposy));
             player.startFlickering(cooldownTime);
-            roaming = true;
+//            roaming = true;
         }
     }
 

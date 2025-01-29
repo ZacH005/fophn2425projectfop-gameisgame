@@ -33,8 +33,9 @@ public class VictoryScreen implements Screen {
     private ScreenManager game; // Reference to game class
     private SoundManager soundManager;
     private Map<String,Integer> winState = new HashMap<String,Integer>();
+    private int score;
     // Pass the game instance in the constructor
-    public VictoryScreen(ScreenManager game)
+    public VictoryScreen(ScreenManager game, float time)
     {
         this.game = game; // Store the reference to the game
         this.soundManager = game.getSoundManager();
@@ -48,6 +49,7 @@ public class VictoryScreen implements Screen {
         winState.put("key_sound",0);
         winState.put("slowerDrums", 1);
         soundManager.onGameStateChange(winState);
+        score = (int) (10000-Math.min(time*50-300, 9999));
     }
 
     @Override
@@ -72,9 +74,11 @@ public class VictoryScreen implements Screen {
 
         Label.LabelStyle style = new Label.LabelStyle(game.getSkin().getFont("title"), Color.WHITE); // Access skin from game
         Label gameOverLabel = new Label("You Won", style);
-
-
         table2.add(gameOverLabel).padBottom((float) viewport.getScreenHeight()/3);
+
+        Label.LabelStyle normalStyle = new Label.LabelStyle(game.getSkin().getFont("font"), Color.WHITE); // Access skin from game
+        Label scoreLabel = new Label("Your Score: " + score, normalStyle);
+        table.add(scoreLabel).padBottom(10).row();
 
 // create and add the buttons
 

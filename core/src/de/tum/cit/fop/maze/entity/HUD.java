@@ -195,7 +195,8 @@ public class HUD {
             heart = new Image(frames.get(0));
         }
         else{
-            heart = new Image(frames.get(4-x));
+            int index = Math.max(0, Math.min(4, 4 - x)); // Ensure the index is between 0 and 4
+            heart = new Image(frames.get(index));
         }
         heart.setName("heart_"); // Assign unique names
         heartTable.add(heart).size(54, 42);
@@ -225,5 +226,13 @@ public class HUD {
 
     public void setMaxHearts(int maxHearts) {
         this.maxHearts = maxHearts;
+    }
+
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
     }
 }
