@@ -15,10 +15,24 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import java.util.*;
 
 public class MeleeEnemy extends Enemy {
+    /**
+     * Constructs a MeleeEnemy object with the specified position, player reference, HUD, sound manager, animations, and health.
+     *
+     * @param x            The x-coordinate of the enemy's initial position.
+     * @param y            The y-coordinate of the enemy's initial position.
+     * @param player       The player object that the enemy interacts with.
+     * @param hud          The HUD object for displaying game information.
+     * @param soundManager The sound manager for playing sounds.
+     * @param animations   A map of animations for the enemy.
+     * @param health       The initial health of the enemy.
+     */
     public MeleeEnemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations, int health) {
         super(x, y, player, hud, soundManager, animations, health);
     }
 
+    /**
+     * Initiates an attack on the player. The enemy will face the player and deal damage.
+     */
     @Override
     protected void attack() {
         attacking = true;
@@ -46,25 +60,28 @@ public class MeleeEnemy extends Enemy {
         }
     }
 
-
     private long lastMovementUpdateTime = 0, movementDelay = 500;
     private boolean attacking = false;
 
+    /**
+     * Updates the enemy's movement based on the player's position and collision manager.
+     *
+     * @param colManager The collision manager for handling collisions.
+     */
     @Override
     public void updateMovement(CollisionManager colManager) {
         float distanceX = player.getPosition().x - this.position.x;
         float distanceY = player.getPosition().y - this.position.y;
         float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-//        if (scanRange.overlaps(player.collider) && !following && hasClearLineOfSight(position, player.getPosition(), colManager)) {
         if (scanRange.overlaps(player.collider) && !following) {
             roaming = false;
             following = true;
             soundManager.onGameStateChange(chaseState);
-        } else if (scanRange.overlaps(player.collider) && following)    {
+        } else if (scanRange.overlaps(player.collider) && following) {
             soundManager.onGameStateChange(chaseState);
         }
-        if (distance > 140.0f&& following) {
+        if (distance > 140.0f && following) {
             following = false;
             soundManager.onGameStateChange(mainState);
             roaming = true;
@@ -96,8 +113,8 @@ public class MeleeEnemy extends Enemy {
                 directionY /= length;
             }
 
-            this.position.x += directionX * movementSpeed*0.5f;
-            this.position.y += directionY * movementSpeed*0.5f;
+            this.position.x += directionX * movementSpeed * 0.5f;
+            this.position.y += directionY * movementSpeed * 0.5f;
             updateColliders();
 
             if (Math.abs(directionX) > Math.abs(directionY)) {
@@ -106,8 +123,6 @@ public class MeleeEnemy extends Enemy {
                 currentAnimation = directionY > 0 ? animations.get("upWalk") : animations.get("downWalk");
             }
         } else if (following) {
-
-            //decides how long until the path si recalculated (rn 500 millisec)
             if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
                 System.out.println("recalculating");
                 currentPath = findPlayerPath(colManager);
@@ -115,7 +130,6 @@ public class MeleeEnemy extends Enemy {
             }
             if (currentPath == null || currentPath.isEmpty()) {
                 System.out.println("can't find path, roaming now");
-//                currentAnimation = animations.get("downIdle");
                 following = false;
                 roaming = true;
                 return;
@@ -126,7 +140,7 @@ public class MeleeEnemy extends Enemy {
             if (path != null && !path.isEmpty()) {
                 Node nextNode;
 
-                if (path.size()>2) {
+                if (path.size() > 2) {
                     nextNode = path.get(1);
                 } else {
                     nextNode = path.get(0);
@@ -147,7 +161,6 @@ public class MeleeEnemy extends Enemy {
 
                 updateColliders();
 
-                //makes sure that it updates once the node is reached
                 if (length < movementSpeed) {
                     currentPath.remove(0);
                 }
@@ -169,23 +182,20 @@ public class MeleeEnemy extends Enemy {
         };
 
         if (roaming) {
-            //finds random positon
             if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
-                movement = (int)(5 * Math.random());
+                movement = (int) (5 * Math.random());
                 lastMovementUpdateTime = TimeUtils.millis();
             }
-            //constatnyly move in that directoin
+
             float newX = this.position.x + (directions[movement].x * movementSpeed * 0.2f);
             float newY = this.position.y + (directions[movement].y * movementSpeed * 0.2f);
 
             Vector2 newPosition = new Vector2(newX, newY);
 
             int retryCount = 0;
-            //collision check
             while (!hasClearLineOfSight(this.position, newPosition, colManager) && retryCount < 5) {
-                movement = (int)(5 * Math.random());
+                movement = (int) (5 * Math.random());
 
-                //check again
                 newX = this.position.x + (directions[movement].x * movementSpeed * 0.3f);
                 newY = this.position.y + (directions[movement].y * movementSpeed * 0.3f);
 
@@ -205,7 +215,7 @@ public class MeleeEnemy extends Enemy {
             if (!directions[movement].equals(new Vector2(0, 0)))
                 lastDirection = directions[movement];
 
-            switch (movement)   {
+            switch (movement) {
                 case 0:
                     currentAnimation = animations.get("upWalk");
                     break;
@@ -219,23 +229,23 @@ public class MeleeEnemy extends Enemy {
                     currentAnimation = animations.get("rightWalk");
                     break;
                 case 4:
-                    if (lastDirection == null)  {
+                    if (lastDirection == null) {
                         currentAnimation = animations.get("downIdle");
                         break;
                     }
-                    if (lastDirection.x > 0)    {
+                    if (lastDirection.x > 0) {
                         currentAnimation = animations.get("rightIdle");
                         break;
                     }
-                    if (lastDirection.x < 0)    {
+                    if (lastDirection.x < 0) {
                         currentAnimation = animations.get("leftIdle");
                         break;
                     }
-                    if (lastDirection.y < 0)    {
+                    if (lastDirection.y < 0) {
                         currentAnimation = animations.get("downIdle");
                         break;
                     }
-                    if (lastDirection.y > 0)    {
+                    if (lastDirection.y > 0) {
                         currentAnimation = animations.get("upIdle");
                         break;
                     }
@@ -244,9 +254,17 @@ public class MeleeEnemy extends Enemy {
             updateScanRange();
         }
     }
+
     int movement = 0;
 
-
+    /**
+     * Checks if there is a clear line of sight between two positions.
+     *
+     * @param start      The starting position.
+     * @param end        The ending position.
+     * @param colManager The collision manager for handling collisions.
+     * @return True if there is a clear line of sight, otherwise false.
+     */
     private boolean hasClearLineOfSight(Vector2 start, Vector2 end, CollisionManager colManager) {
         float steps = 10;
         float stepX = (end.x - start.x) / steps;
@@ -265,11 +283,16 @@ public class MeleeEnemy extends Enemy {
         return true;
     }
 
-
+    /**
+     * Finds a path from the enemy's current position to the player's position using A* algorithm.
+     *
+     * @param colManager The collision manager for handling collisions.
+     * @return A list of nodes representing the path, or null if no path is found.
+     */
     private List<Node> findPlayerPath(CollisionManager colManager) {
         int maxNodes = 7840;
         Node start = new Node((int) this.position.x, (int) this.position.y, null, 0, 0);
-        Node goal = new Node((int) player.getPosition().x-8, (int) player.getPosition().y-8, null, 0, 0);
+        Node goal = new Node((int) player.getPosition().x - 8, (int) player.getPosition().y - 8, null, 0, 0);
 
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fCost));
         Set<Node> closedSet = new HashSet<>();
@@ -314,8 +337,13 @@ public class MeleeEnemy extends Enemy {
         return null;
     }
 
-
-
+    /**
+     * Retrieves the neighboring nodes of a given node.
+     *
+     * @param node       The node to find neighbors for.
+     * @param colManager The collision manager for handling collisions.
+     * @return A list of neighboring nodes.
+     */
     private List<Node> getNeighbors(Node node, CollisionManager colManager) {
         List<Node> neighbors = new ArrayList<>();
         int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
@@ -333,16 +361,36 @@ public class MeleeEnemy extends Enemy {
         return neighbors;
     }
 
+    /**
+     * Calculates the Euclidean distance between two nodes.
+     *
+     * @param a The first node.
+     * @param b The second node.
+     * @return The distance between the two nodes.
+     */
     private double distanceBetween(Node a, Node b) {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
 
+    /**
+     * Calculates the heuristic (estimated cost) from a node to the goal node.
+     *
+     * @param a The current node.
+     * @param b The goal node.
+     * @return The heuristic value.
+     */
     private double heuristic(Node a, Node b) {
-        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)); // Euclidean distance
+        return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
 
-    //decides how many nodes get placed (ex. every 2 nodes), higher number = smoother movement (but leads to problems read bug sheet)
     int n = 5;
+
+    /**
+     * Reconstructs the path from the goal node back to the start node.
+     *
+     * @param node The goal node.
+     * @return A list of nodes representing the path.
+     */
     private List<Node> reconstructPath(Node node) {
         List<Node> path = new ArrayList<>();
         int count = 0;
@@ -358,18 +406,19 @@ public class MeleeEnemy extends Enemy {
         return path;
     }
 
+    /**
+     * Updates the scan range of the enemy based on its last movement direction.
+     */
     private void updateScanRange() {
         float offsetX = 0, offsetY = 0;
 
         if (lastDirection != null) {
             if (lastDirection.x > 0) {
-//                offsetX = 16;
                 scanRange.set(position.x + offsetX, position.y - scanrangeheight / 2f, scanrangewidth, scanrangeheight);
             } else if (lastDirection.x < 0) {
-                offsetX = -scanrangewidth +16;
+                offsetX = -scanrangewidth + 16;
                 scanRange.set(position.x + offsetX, position.y - scanrangeheight / 2f, scanrangewidth, scanrangeheight);
             } else if (lastDirection.y > 0) {
-//                offsetY = 16;
                 scanRange.set(position.x - scanrangewidth / 2f, position.y + offsetY, scanrangeheight, scanrangewidth);
             } else if (lastDirection.y < 0) {
                 offsetY = -scanrangeheight + 16;
@@ -378,9 +427,11 @@ public class MeleeEnemy extends Enemy {
         }
     }
 
-
     private boolean firstAttackReady = false;
 
+    /**
+     * Checks if the enemy is damaging the player and initiates an attack if conditions are met.
+     */
     @Override
     protected void checkDamaging() {
         if (damageCollider.overlaps(player.collider)) {
@@ -404,22 +455,38 @@ public class MeleeEnemy extends Enemy {
         }
     }
 
+    /**
+     * Renders the projectiles associated with the enemy. This method is currently empty.
+     *
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     protected void renderProjectiles(SpriteBatch batch) {
-
     }
 
+    /**
+     * Updates the projectiles associated with the enemy. This method is currently empty.
+     *
+     * @param delta The time elapsed since the last update.
+     */
     @Override
     protected void updateProjectiles(float delta) {
-
     }
 
     /// ENTITY METHODS
+
+    /**
+     * Heals the enemy. This method is currently empty.
+     */
     @Override
     public void heal() {
-
     }
 
+    /**
+     * Applies damage to the enemy and triggers knockback and sound effects.
+     *
+     * @param amount The amount of damage to apply.
+     */
     @Override
     public void takeDamage(float amount) {
         if (health > 0) {
@@ -437,11 +504,8 @@ public class MeleeEnemy extends Enemy {
         if (health == 0 && !isDead) {
             isDead = true;
             soundManager.onGameStateChange(mainState);
-            System.out.println("Enemy defeated!");
         }
     }
-
-
 
     @Override
     public float getHealth() {
@@ -455,7 +519,7 @@ public class MeleeEnemy extends Enemy {
 
     @Override
     public Vector2 getPosition() {
-        return position;
+        return null;
     }
 
     @Override

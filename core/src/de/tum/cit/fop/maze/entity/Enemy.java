@@ -17,7 +17,6 @@ import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 import java.util.*;
 
 public abstract class Enemy implements Entity {
-    // Common properties
     protected boolean isDead = false;
     protected Vector2 position;
     public Rectangle scanRange;
@@ -49,7 +48,17 @@ public abstract class Enemy implements Entity {
     protected float attackDuration = 0.3f;
     protected float attackTimeElapsed = 0f;
 
-
+    /**
+     * Constructs an Enemy object with the specified position, player reference, HUD, sound manager, animations, and health.
+     *
+     * @param x           The x-coordinate of the enemy's initial position.
+     * @param y           The y-coordinate of the enemy's initial position.
+     * @param player      The player object that the enemy interacts with.
+     * @param hud         The HUD object for displaying game information.
+     * @param soundManager The sound manager for playing sounds.
+     * @param animations  A map of animations for the enemy.
+     * @param health      The initial health of the enemy.
+     */
     public Enemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations, int health) {
         this.player = player;
         this.position = new Vector2(x, y);
@@ -68,7 +77,6 @@ public abstract class Enemy implements Entity {
         this.hurtParticle = new ParticleEffect();
         this.hurtParticle.load(Gdx.files.internal("particles/effects/Particle Park Blood.p"), Gdx.files.internal("particles/images"));
 
-        // Initialize chase and main states
         chaseState.put("crackles", 0);
         chaseState.put("wind", 1);
         chaseState.put("piano", 1);
@@ -88,13 +96,17 @@ public abstract class Enemy implements Entity {
         mainState.put("slowerDrums", 1);
     }
 
-    // Common methods
+    /**
+     * Updates the enemy's state based on the elapsed time and collision manager.
+     *
+     * @param delta     The time elapsed since the last update.
+     * @param colManager The collision manager for handling collisions.
+     */
     public void update(float delta, CollisionManager colManager) {
         hurtParticle.update(delta);
         animationTime += delta;
 
         if (isDead) return;
-
 
         if (knockbackDuration > 0) {
             position.add(knockbackVelocity.x * delta, knockbackVelocity.y * delta);
@@ -126,6 +138,11 @@ public abstract class Enemy implements Entity {
         updateProjectiles(delta);
     }
 
+    /**
+     * Renders the enemy on the screen using the provided sprite batch.
+     *
+     * @param batch The sprite batch used for rendering.
+     */
     public void render(SpriteBatch batch) {
         hurtParticle.draw(batch);
 
@@ -151,6 +168,9 @@ public abstract class Enemy implements Entity {
         renderProjectiles(batch);
     }
 
+    /**
+     * Updates the colliders (scan range and damage collider) based on the enemy's current position.
+     */
     public void updateColliders() {
         this.scanRange.setX(this.position.x - scanRange.getWidth() / 2f + 8);
         this.scanRange.setY(this.position.y - scanRange.getHeight() / 2f + 4);
@@ -159,13 +179,29 @@ public abstract class Enemy implements Entity {
         this.damageCollider.setY(this.position.y - 5);
     }
 
-    // Abstract methods for subclasses to implement
+    /**
+     * Initiates an attack action. This method must be implemented by subclasses.
+     */
     protected abstract void attack();
 
+    /**
+     * Updates the enemy's movement based on the collision manager. This method must be implemented by subclasses.
+     *
+     * @param colManager The collision manager for handling collisions.
+     */
     protected abstract void updateMovement(CollisionManager colManager);
 
+    /**
+     * Checks if the enemy is damaging the player or other entities. This method must be implemented by subclasses.
+     */
     protected abstract void checkDamaging();
 
+    /**
+     * Applies knockback to the enemy based on the source position and strength.
+     *
+     * @param sourcePosition The position from which the knockback originates.
+     * @param strength       The strength of the knockback.
+     */
     public void applyKnockback(Vector2 sourcePosition, float strength) {
         Vector2 knockbackDirection = new Vector2(position.x - sourcePosition.x, position.y - sourcePosition.y).nor();
 
@@ -174,8 +210,17 @@ public abstract class Enemy implements Entity {
         knockbackTimeElapsed = 0;
     }
 
+    /**
+     * Renders the projectiles associated with the enemy. This method must be implemented by subclasses.
+     *
+     * @param batch The sprite batch used for rendering.
+     */
     protected abstract void renderProjectiles(SpriteBatch batch);
-    protected abstract void updateProjectiles(float delta);
 
-        // Other common methods (e.g., applyKnockback, takeDamage, etc.) can remain here
+    /**
+     * Updates the projectiles associated with the enemy. This method must be implemented by subclasses.
+     *
+     * @param delta The time elapsed since the last update.
+     */
+    protected abstract void updateProjectiles(float delta);
 }

@@ -14,6 +14,14 @@ public class Projectile {
     private float speed;
     private boolean active;
 
+    /**
+     * Constructs a new Projectile with the specified position, direction, and speed.
+     *
+     * @param x         The initial x-coordinate of the projectile.
+     * @param y         The initial y-coordinate of the projectile.
+     * @param direction The direction vector of the projectile.
+     * @param speed     The speed of the projectile.
+     */
     public Projectile(float x, float y, Vector2 direction, float speed) {
         this.position = new Vector2(x, y);
         this.velocity = direction.nor().scl(speed);
@@ -22,6 +30,11 @@ public class Projectile {
         this.active = true;
     }
 
+    /**
+     * Updates the projectile's position and checks if it is out of bounds.
+     *
+     * @param delta The time elapsed since the last update.
+     */
     public void update(float delta) {
         if (!active) return;
         position.add(velocity.x * delta, velocity.y * delta);
@@ -32,6 +45,11 @@ public class Projectile {
         }
     }
 
+    /**
+     * Renders the projectile on the screen if it is active.
+     *
+     * @param batch The SpriteBatch used for rendering.
+     */
     public void render(SpriteBatch batch) {
         Texture texture = new Texture("white.png");
         TextureRegion textureRegion = new TextureRegion(texture);
@@ -40,14 +58,27 @@ public class Projectile {
         }
     }
 
+    /**
+     * Checks if the projectile is active.
+     *
+     * @return True if the projectile is active, false otherwise.
+     */
     public boolean isActive() {
         return active;
     }
 
+    /**
+     * Returns the collider of the projectile.
+     *
+     * @return The Rectangle representing the projectile's collider.
+     */
     public Rectangle getCollider() {
         return collider;
     }
 
+    /**
+     * Deactivates the projectile.
+     */
     public void deactivate() {
         this.active = false;
     }

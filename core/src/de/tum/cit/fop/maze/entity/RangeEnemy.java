@@ -16,14 +16,27 @@ import java.util.*;
 
 public class RangeEnemy extends Enemy {
     private List<Projectile> projectiles = new ArrayList<>();
-
     private Rectangle shootingRange;
 
+    /**
+     * Constructs a RangeEnemy object with the specified position, player reference, HUD, sound manager, animations, and health.
+     *
+     * @param x           The x-coordinate of the enemy's initial position.
+     * @param y           The y-coordinate of the enemy's initial position.
+     * @param player      The player object that the enemy interacts with.
+     * @param hud         The HUD object for displaying game information.
+     * @param soundManager The sound manager for playing sounds.
+     * @param animations  A map of animations for the enemy.
+     * @param health      The initial health of the enemy.
+     */
     public RangeEnemy(float x, float y, Player player, HUD hud, SoundManager soundManager, Map<String, Animation<TextureRegion>> animations, int health) {
         super(x, y, player, hud, soundManager, animations, health);
-        shootingRange = new Rectangle(position.x-140, position.y-140, 2*140, 2*140);
+        shootingRange = new Rectangle(position.x - 140, position.y - 140, 2 * 140, 2 * 140);
     }
 
+    /**
+     * Initiates an attack on the player. The enemy will face the player and fire a projectile.
+     */
     @Override
     protected void attack() {
         attacking = true;
@@ -42,37 +55,30 @@ public class RangeEnemy extends Enemy {
 
         Vector2 direction = new Vector2(directionX, directionY).nor();
         projectiles.add(new Projectile(position.x, position.y, direction, 200f));
-
-//        player.takeDamage(0.25f);
-//        player.redEffectTime = 0f;
-//        player.isRedEffectActive = true;
-//        player.applyKnockback(getPosition(), 150);
-//
-//        hud.updateHearts(player.getHealth());
-//        if (player.getHealth() % 1 == 0) {
-//            player.startFlickering(cooldownTime);
-//        }
     }
-
 
     private long lastMovementUpdateTime = 0, movementDelay = 500;
     private boolean attacking = false;
 
+    /**
+     * Updates the enemy's movement based on the player's position and collision manager.
+     *
+     * @param colManager The collision manager for handling collisions.
+     */
     @Override
     public void updateMovement(CollisionManager colManager) {
         float distanceX = player.getPosition().x - this.position.x;
         float distanceY = player.getPosition().y - this.position.y;
         float distance = (float) Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-//        if (scanRange.overlaps(player.collider) && !following && hasClearLineOfSight(position, player.getPosition(), colManager)) {
         if (scanRange.overlaps(player.collider) && !following) {
             roaming = false;
             following = true;
             soundManager.onGameStateChange(chaseState);
-        } else if (scanRange.overlaps(player.collider) && following)    {
+        } else if (scanRange.overlaps(player.collider) && following) {
             soundManager.onGameStateChange(chaseState);
         }
-        if (distance > 140.0f&& following) {
+        if (distance > 140.0f && following) {
             following = false;
             soundManager.onGameStateChange(mainState);
             roaming = true;
@@ -104,8 +110,8 @@ public class RangeEnemy extends Enemy {
                 directionY /= length;
             }
 
-            this.position.x += directionX * movementSpeed*0.5f;
-            this.position.y += directionY * movementSpeed*0.5f;
+            this.position.x += directionX * movementSpeed * 0.5f;
+            this.position.y += directionY * movementSpeed * 0.5f;
             updateColliders();
 
             if (Math.abs(directionX) > Math.abs(directionY)) {
@@ -114,16 +120,11 @@ public class RangeEnemy extends Enemy {
                 currentAnimation = directionY > 0 ? animations.get("upWalk") : animations.get("downWalk");
             }
         } else if (following) {
-
-            //decides how long until the path si recalculated (rn 500 millisec)
             if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
-                System.out.println("recalculating");
                 currentPath = findPlayerPath(colManager);
                 lastMovementUpdateTime = TimeUtils.millis();
             }
             if (currentPath == null || currentPath.isEmpty()) {
-                System.out.println("can't find path, roaming now");
-//                currentAnimation = animations.get("downIdle");
                 following = false;
                 roaming = true;
                 return;
@@ -134,7 +135,7 @@ public class RangeEnemy extends Enemy {
             if (path != null && !path.isEmpty()) {
                 Node nextNode;
 
-                if (path.size()>2) {
+                if (path.size() > 2) {
                     nextNode = path.get(1);
                 } else {
                     nextNode = path.get(0);
@@ -155,7 +156,6 @@ public class RangeEnemy extends Enemy {
 
                 updateColliders();
 
-                //makes sure that it updates once the node is reached
                 if (length < movementSpeed) {
                     currentPath.remove(0);
                 }
@@ -177,23 +177,20 @@ public class RangeEnemy extends Enemy {
         };
 
         if (roaming) {
-            //finds random positon
             if (TimeUtils.millis() - lastMovementUpdateTime >= movementDelay) {
-                movement = (int)(5 * Math.random());
+                movement = (int) (5 * Math.random());
                 lastMovementUpdateTime = TimeUtils.millis();
             }
-            //constatnyly move in that directoin
+
             float newX = this.position.x + (directions[movement].x * movementSpeed * 0.2f);
             float newY = this.position.y + (directions[movement].y * movementSpeed * 0.2f);
 
             Vector2 newPosition = new Vector2(newX, newY);
 
             int retryCount = 0;
-            //collision check
             while (!hasClearLineOfSight(this.position, newPosition, colManager) && retryCount < 5) {
-                movement = (int)(5 * Math.random());
+                movement = (int) (5 * Math.random());
 
-                //check again
                 newX = this.position.x + (directions[movement].x * movementSpeed * 0.3f);
                 newY = this.position.y + (directions[movement].y * movementSpeed * 0.3f);
 
@@ -207,13 +204,12 @@ public class RangeEnemy extends Enemy {
                 updateColliders();
             } else {
                 currentAnimation = animations.get("downIdle");
-                System.out.println("stuck");
             }
 
             if (!directions[movement].equals(new Vector2(0, 0)))
                 lastDirection = directions[movement];
 
-            switch (movement)   {
+            switch (movement) {
                 case 0:
                     currentAnimation = animations.get("upWalk");
                     break;
@@ -227,23 +223,23 @@ public class RangeEnemy extends Enemy {
                     currentAnimation = animations.get("rightWalk");
                     break;
                 case 4:
-                    if (lastDirection == null)  {
+                    if (lastDirection == null) {
                         currentAnimation = animations.get("downIdle");
                         break;
                     }
-                    if (lastDirection.x > 0)    {
+                    if (lastDirection.x > 0) {
                         currentAnimation = animations.get("rightIdle");
                         break;
                     }
-                    if (lastDirection.x < 0)    {
+                    if (lastDirection.x < 0) {
                         currentAnimation = animations.get("leftIdle");
                         break;
                     }
-                    if (lastDirection.y < 0)    {
+                    if (lastDirection.y < 0) {
                         currentAnimation = animations.get("downIdle");
                         break;
                     }
-                    if (lastDirection.y > 0)    {
+                    if (lastDirection.y > 0) {
                         currentAnimation = animations.get("upIdle");
                         break;
                     }
@@ -252,9 +248,17 @@ public class RangeEnemy extends Enemy {
             updateScanRange();
         }
     }
+
     int movement = 0;
 
-
+    /**
+     * Checks if there is a clear line of sight between two positions.
+     *
+     * @param start      The starting position.
+     * @param end        The ending position.
+     * @param colManager The collision manager for handling collisions.
+     * @return True if there is a clear line of sight, otherwise false.
+     */
     private boolean hasClearLineOfSight(Vector2 start, Vector2 end, CollisionManager colManager) {
         float steps = 10;
         float stepX = (end.x - start.x) / steps;
@@ -273,11 +277,16 @@ public class RangeEnemy extends Enemy {
         return true;
     }
 
-
+    /**
+     * Finds a path from the enemy's current position to the player's position using A* algorithm.
+     *
+     * @param colManager The collision manager for handling collisions.
+     * @return A list of nodes representing the path, or null if no path is found.
+     */
     private List<Node> findPlayerPath(CollisionManager colManager) {
         int maxNodes = 7840;
         Node start = new Node((int) this.position.x, (int) this.position.y, null, 0, 0);
-        Node goal = new Node((int) player.getPosition().x-8, (int) player.getPosition().y-8, null, 0, 0);
+        Node goal = new Node((int) player.getPosition().x - 8, (int) player.getPosition().y - 8, null, 0, 0);
 
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(n -> n.fCost));
         Set<Node> closedSet = new HashSet<>();
@@ -322,8 +331,13 @@ public class RangeEnemy extends Enemy {
         return null;
     }
 
-
-
+    /**
+     * Retrieves the neighboring nodes of a given node.
+     *
+     * @param node       The node to find neighbors for.
+     * @param colManager The collision manager for handling collisions.
+     * @return A list of neighboring nodes.
+     */
     private List<Node> getNeighbors(Node node, CollisionManager colManager) {
         List<Node> neighbors = new ArrayList<>();
         int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
@@ -341,16 +355,36 @@ public class RangeEnemy extends Enemy {
         return neighbors;
     }
 
+    /**
+     * Calculates the Euclidean distance between two nodes.
+     *
+     * @param a The first node.
+     * @param b The second node.
+     * @return The distance between the two nodes.
+     */
     private double distanceBetween(Node a, Node b) {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
 
+    /**
+     * Calculates the heuristic (estimated cost) from a node to the goal node.
+     *
+     * @param a The current node.
+     * @param b The goal node.
+     * @return The heuristic value.
+     */
     private double heuristic(Node a, Node b) {
         return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
     }
 
-    //decides how many nodes get placed (ex. every 2 nodes), higher number = smoother movement (but leads to problems read bug sheet)
     int n = 5;
+
+    /**
+     * Reconstructs the path from the goal node back to the start node.
+     *
+     * @param node The goal node.
+     * @return A list of nodes representing the path.
+     */
     private List<Node> reconstructPath(Node node) {
         List<Node> path = new ArrayList<>();
         int count = 0;
@@ -366,18 +400,19 @@ public class RangeEnemy extends Enemy {
         return path;
     }
 
+    /**
+     * Updates the scan range of the enemy based on its last movement direction.
+     */
     private void updateScanRange() {
         float offsetX = 0, offsetY = 0;
 
         if (lastDirection != null) {
             if (lastDirection.x > 0) {
-//                offsetX = 16;
                 scanRange.set(position.x + offsetX, position.y - scanrangeheight / 2f, scanrangewidth, scanrangeheight);
             } else if (lastDirection.x < 0) {
-                offsetX = -scanrangewidth +16;
+                offsetX = -scanrangewidth + 16;
                 scanRange.set(position.x + offsetX, position.y - scanrangeheight / 2f, scanrangewidth, scanrangeheight);
             } else if (lastDirection.y > 0) {
-//                offsetY = 16;
                 scanRange.set(position.x - scanrangewidth / 2f, position.y + offsetY, scanrangeheight, scanrangewidth);
             } else if (lastDirection.y < 0) {
                 offsetY = -scanrangeheight + 16;
@@ -386,6 +421,11 @@ public class RangeEnemy extends Enemy {
         }
     }
 
+    /**
+     * Updates the projectiles associated with the enemy.
+     *
+     * @param delta The time elapsed since the last update.
+     */
     @Override
     public void updateProjectiles(float delta) {
         for (Projectile projectile : projectiles) {
@@ -393,9 +433,14 @@ public class RangeEnemy extends Enemy {
         }
         projectiles.removeIf(projectile -> !projectile.isActive());
 
-        shootingRange.setPosition(position.x-140, position.y-140);
+        shootingRange.setPosition(position.x - 140, position.y - 140);
     }
 
+    /**
+     * Renders the projectiles associated with the enemy.
+     *
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void renderProjectiles(SpriteBatch batch) {
         for (Projectile projectile : projectiles) {
@@ -403,22 +448,22 @@ public class RangeEnemy extends Enemy {
         }
     }
 
+    /**
+     * Checks if the enemy is damaging the player and initiates an attack if conditions are met.
+     */
     @Override
     protected void checkDamaging() {
-
         ArrayList<Projectile> activeShots = new ArrayList<>();
         projectiles.stream().filter(Projectile::isActive).forEach(activeShots::add);
 
-        if (shootingRange.overlaps(player.collider))   {
-            System.out.println("in range");
+        if (shootingRange.overlaps(player.collider)) {
             if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1_000_000_000L) {
-                System.out.println("shooting");
                 attack();
                 lastDamageTime = TimeUtils.nanoTime();
             }
         }
 
-        for (Projectile projectile : activeShots)   {
+        for (Projectile projectile : activeShots) {
             if (projectile.getCollider().overlaps(player.collider)) {
                 player.takeDamage(0.25f);
                 player.redEffectTime = 0f;
@@ -432,33 +477,22 @@ public class RangeEnemy extends Enemy {
                 projectile.deactivate();
             }
         }
-//        if (damageCollider.overlaps(player.collider)) {
-//            if (!firstAttackReady) {
-//                float firstAttackDelay = 0.5f;
-//                com.badlogic.gdx.utils.Timer.schedule(new Timer.Task() {
-//                    @Override
-//                    public void run() {
-//                        firstAttackReady = true;
-//                    }
-//                }, firstAttackDelay);
-//                return;
-//            }
-//
-//            if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1_000_000_000L) {
-//                attack();
-//                lastDamageTime = TimeUtils.nanoTime();
-//            }
-//        } else {
-//            firstAttackReady = false;
-//        }
     }
 
     /// ENTITY METHODS
+
+    /**
+     * Heals the enemy. This method is currently empty.
+     */
     @Override
     public void heal() {
-
     }
 
+    /**
+     * Applies damage to the enemy and triggers knockback and sound effects.
+     *
+     * @param amount The amount of damage to apply.
+     */
     @Override
     public void takeDamage(float amount) {
         if (health > 0) {
@@ -476,86 +510,155 @@ public class RangeEnemy extends Enemy {
         if (health == 0 && !isDead) {
             isDead = true;
             soundManager.onGameStateChange(mainState);
-            System.out.println("Enemy defeated!");
         }
     }
 
-
-
+    /**
+     * Gets the current health of the enemy.
+     *
+     * @return The current health of the enemy.
+     */
     @Override
     public float getHealth() {
         return 0;
     }
 
+    /**
+     * Sets the health of the enemy.
+     *
+     * @param health The new health value.
+     */
     @Override
     public void setHealth(float health) {
-
     }
 
+    /**
+     * Gets the current position of the enemy.
+     *
+     * @return The current position of the enemy.
+     */
     @Override
     public Vector2 getPosition() {
         return position;
     }
 
+    /**
+     * Sets the position of the enemy.
+     *
+     * @param position The new position of the enemy.
+     */
     @Override
     public void setPosition(Vector2 position) {
-
     }
 
+    /**
+     * Checks if the enemy is following the player.
+     *
+     * @return True if the enemy is following the player, otherwise false.
+     */
     @Override
     public boolean isFollowing() {
         return false;
     }
 
+    /**
+     * Sets whether the enemy is following the player.
+     *
+     * @param following True to make the enemy follow the player, otherwise false.
+     */
     @Override
     public void setFollowing(boolean following) {
-
     }
 
+    /**
+     * Gets the armor value of the enemy.
+     *
+     * @return The armor value of the enemy.
+     */
     @Override
     public int getArmor() {
         return 0;
     }
 
+    /**
+     * Sets the armor value of the enemy.
+     *
+     * @param armor The new armor value.
+     */
     @Override
     public void setArmor(int armor) {
-
     }
 
+    /**
+     * Gets the list of power-ups associated with the enemy.
+     *
+     * @return The list of power-ups.
+     */
     @Override
     public List<Powerup> getPowerUps() {
         return List.of();
     }
 
+    /**
+     * Sets the list of power-ups associated with the enemy.
+     *
+     * @param powerUps The new list of power-ups.
+     */
     @Override
     public void setPowerUps(List<Powerup> powerUps) {
-
     }
 
+    /**
+     * Gets the amount of money the enemy has.
+     *
+     * @return The amount of money.
+     */
     @Override
     public int getMoney() {
         return 0;
     }
 
+    /**
+     * Sets the amount of money the enemy has.
+     *
+     * @param money The new amount of money.
+     */
     @Override
     public void setMoney(int money) {
-
     }
 
+    /**
+     * Saves the current state of the enemy to a file.
+     *
+     * @param filename The name of the file to save the state to.
+     */
     @Override
     public void saveState(String filename) {
-
     }
 
+    /**
+     * Loads the state of the enemy from a file.
+     *
+     * @param filename The name of the file to load the state from.
+     */
     @Override
     public void loadState(String filename) {
-
     }
 
+    /**
+     * Gets the shooting range of the enemy.
+     *
+     * @return The shooting range of the enemy.
+     */
     public Rectangle getShootingRange() {
         return shootingRange;
     }
 
+    /**
+     * Sets the shooting range of the enemy.
+     *
+     * @param shootingRange The new shooting range.
+     */
     public void setShootingRange(Rectangle shootingRange) {
         this.shootingRange = shootingRange;
     }

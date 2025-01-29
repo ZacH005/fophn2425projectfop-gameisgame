@@ -107,7 +107,7 @@ public class GameScreen implements Screen {
 
     public GameScreen(ScreenManager game, String mapPath,SoundManager soundManager) {
         this.enemyManager = new EnemyManager();
-        cameraZoom = 1f;
+        cameraZoom = 0.8f;
 
         this.mapPath = mapPath;
         shapeRenderer = new ShapeRenderer();
