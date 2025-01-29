@@ -561,6 +561,7 @@ public class GameScreen implements Screen {
             showDebugOverlay = !showDebugOverlay;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+
             isPaused = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {

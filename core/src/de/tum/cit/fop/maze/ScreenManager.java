@@ -194,7 +194,7 @@ public class ScreenManager extends Game {
             // if the level is completed don't open it
             if(tmxFiles.size == user.getCompletedLevels().size()){
                 user.resetCompletedLevels();
-                this.setScreen(new MenuScreen(this,soundManager));
+                goToCredits();
                 break;
             }
             else{
@@ -238,7 +238,7 @@ public class ScreenManager extends Game {
 
         if(user.getCompletedLevels().size()==counter){
             user.saveUserData("user_data.ser");
-            goToMenu();
+            goToCredits();
         }
 
         else {
@@ -284,7 +284,14 @@ public class ScreenManager extends Game {
             menuScreen = null;
         }
     }
-
+    // go to credits
+    public void goToCredits(){
+        this.setScreen(new CreditScreen(this));
+        if (menuScreen != null) {
+            menuScreen.dispose();
+            menuScreen = null;
+        }
+    }
     /// go to Pause
 //    public void goToPause() {
 ////        Vector2 positionOfThePlayerBeforePause = gameScreen.getPlayer().getPosition();

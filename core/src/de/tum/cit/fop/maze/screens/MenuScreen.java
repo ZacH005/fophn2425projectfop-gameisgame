@@ -141,6 +141,16 @@ public class MenuScreen implements Screen {
                 game.goToSettings(); // Change to the game screen when button is pressed
             }
         });
+        TextButton goToCreditsButton = new TextButton("Credits", game.getSkin());
+        table.add(goToCreditsButton).width(300).row();
+        goToCreditsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundManager.playSound("click");
+                game.goToCredits(); // Change to the game screen when button is pressed
+            }
+        });
+
 
         TextButton exitGameButton = new TextButton("Exit Game", game.getSkin());
         table.add(exitGameButton).width(300).row();
