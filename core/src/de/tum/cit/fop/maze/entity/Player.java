@@ -399,18 +399,22 @@ public class Player implements Entity, Serializable {
                     inWater=true;
                     if (!isTakingDamage) {
                         startTakingDamage();
+
                     }
-                } else {
+
+                }
+                else {
                     stopTakingDamage();
                     inWater=false;
                 }
             }
         }
+
     }
 
     private void startTakingDamage() {
         isTakingDamage = true;
-
+        setSprinting(false);
         speed = 55;
         damageTask = new Timer.Task() {
             @Override
@@ -421,10 +425,12 @@ public class Player implements Entity, Serializable {
                 }
         };
 
-        Timer.schedule(damageTask, 0, 1f);
+            Timer.schedule(damageTask, 0, 1f);
+
     }
 
-    private void stopTakingDamage() {
+    public void stopTakingDamage() {
+//
         if (damageTask != null) {
             damageTask.cancel();
             damageTask = null;

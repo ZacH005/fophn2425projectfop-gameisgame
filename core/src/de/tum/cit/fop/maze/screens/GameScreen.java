@@ -288,6 +288,7 @@ public class GameScreen implements Screen {
                 player.saveState("playerstate.txt");
                 soundManager.playSound("losing sound");
                 game.setScreen(new GameOverScreen(game));
+
             }
 
             soundManager.playKeySound();

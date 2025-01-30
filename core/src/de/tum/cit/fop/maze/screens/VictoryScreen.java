@@ -62,6 +62,8 @@ public class VictoryScreen implements Screen {
      */
     @Override
     public void show() {
+
+        // Create a table for layout
         var camera = new OrthographicCamera();
         camera.zoom = 1f;
         Viewport viewport = new ScreenViewport(camera);
@@ -118,6 +120,7 @@ public class VictoryScreen implements Screen {
             CreditsButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    game.getUser().resetCompletedLevels();
                     game.goToCredits();
                 }
             });

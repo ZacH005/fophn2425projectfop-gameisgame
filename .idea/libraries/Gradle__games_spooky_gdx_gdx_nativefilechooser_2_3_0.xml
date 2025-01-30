@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: games.spooky.gdx:gdx-nativefilechooser:2.3.0" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="games.spooky.gdx" artifactId="gdx-nativefilechooser" version="2.3.0" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/games.spooky.gdx/gdx-nativefilechooser/2.3.0/e025ca234c2c280b7a8ef6f9c6275debc195bb47/gdx-nativefilechooser-2.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
