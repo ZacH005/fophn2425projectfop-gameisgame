@@ -27,7 +27,6 @@ public class DesktopLauncher {
 				Math.round(0.8f * displayMode.width),
 				Math.round(0.8f * displayMode.height)
 		);
-		config.setFullscreenMode(displayMode);
 		config.useVsync(true); // Enable vertical sync
 		config.setForegroundFPS(60); // Set the foreground frames per second
 
