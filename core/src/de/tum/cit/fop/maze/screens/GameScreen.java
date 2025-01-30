@@ -171,11 +171,10 @@ public class GameScreen implements Screen {
                 region.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
             }
         });
-
-        if (mapPath.endsWith("UTutorial.tmx")) {
-            hud = new HUD(game.getSpriteBatch(), game, player, true);
-        } else {
-            hud = new HUD(game.getSpriteBatch(), game, player, false);
+        if(mapPath.endsWith("Tutorial.tmx")){
+            hud = new HUD(game.getSpriteBatch(), game, player,true);
+        }else{
+            hud = new HUD(game.getSpriteBatch(), game, player,false);
         }
 
         enemies = new ArrayList<>();
@@ -386,7 +385,15 @@ public class GameScreen implements Screen {
 
         trapexplosion();
 
-        enemies.forEach(enemy1 -> enemy1.render(game.getSpriteBatch()));
+        enemies.forEach(enemy1 -> {
+            if(enemy1 instanceof RangeEnemy){
+                game.getSpriteBatch().setColor(0f,0f,1f,1f);
+                enemy1.render(game.getSpriteBatch());
+                game.getSpriteBatch().setColor(1f,1f,1f,1f);
+            }else {
+                enemy1.render(game.getSpriteBatch());
+            }
+        });
         player.render(game.getSpriteBatch());
 
         particleEffect.update(Gdx.graphics.getDeltaTime());
