@@ -51,7 +51,7 @@ public class Projectile {
      * @param batch The SpriteBatch used for rendering.
      */
     public void render(SpriteBatch batch) {
-        Texture texture = new Texture("white.png");
+        Texture texture = new Texture("icons/New Piskel (1).png");
         TextureRegion textureRegion = new TextureRegion(texture);
         if (active) {
             batch.draw(textureRegion, position.x, position.y, 8, 8);

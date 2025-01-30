@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import de.tum.cit.fop.maze.SoundManager;
+import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -452,11 +453,11 @@ public class RangeEnemy extends Enemy {
      * Checks if the enemy is damaging the player and initiates an attack if conditions are met.
      */
     @Override
-    protected void checkDamaging() {
+    protected void checkDamaging(CollisionManager colManager) {
         ArrayList<Projectile> activeShots = new ArrayList<>();
         projectiles.stream().filter(Projectile::isActive).forEach(activeShots::add);
 
-        if (shootingRange.overlaps(player.collider)) {
+        if (shootingRange.overlaps(player.collider) && hasClearLineOfSight(position, player.getPosition(), colManager)) {
             if (TimeUtils.nanoTime() - lastDamageTime >= cooldownTime * 1_000_000_000L) {
                 attack();
                 lastDamageTime = TimeUtils.nanoTime();
@@ -475,7 +476,8 @@ public class RangeEnemy extends Enemy {
                     player.startFlickering(cooldownTime);
                 }
                 projectile.deactivate();
-            }
+            } else if (colManager.checkMapCollision(projectile.getCollider()) != null)
+                projectile.deactivate();
         }
     }
 

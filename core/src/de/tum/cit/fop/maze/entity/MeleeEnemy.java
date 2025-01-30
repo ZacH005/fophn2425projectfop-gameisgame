@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import de.tum.cit.fop.maze.SoundManager;
+import de.tum.cit.fop.maze.abilities.Collectable;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.arbitrarymap.CollisionManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -433,7 +434,7 @@ public class MeleeEnemy extends Enemy {
      * Checks if the enemy is damaging the player and initiates an attack if conditions are met.
      */
     @Override
-    protected void checkDamaging() {
+    protected void checkDamaging(CollisionManager collisionManager) {
         if (damageCollider.overlaps(player.collider)) {
             if (!firstAttackReady) {
                 float firstAttackDelay = 0.5f;

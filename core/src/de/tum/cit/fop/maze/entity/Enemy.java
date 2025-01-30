@@ -134,7 +134,7 @@ public abstract class Enemy implements Entity {
             hurting = false;
         }
 
-        checkDamaging();
+        checkDamaging(colManager);
         updateProjectiles(delta);
     }
 
@@ -194,7 +194,7 @@ public abstract class Enemy implements Entity {
     /**
      * Checks if the enemy is damaging the player or other entities. This method must be implemented by subclasses.
      */
-    protected abstract void checkDamaging();
+    protected abstract void checkDamaging(CollisionManager colManager);
 
     /**
      * Applies knockback to the enemy based on the source position and strength.
