@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="25" nextobjectid="173">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="25" nextobjectid="184">
  <tileset firstgid="1" source="Objects_animated3.tsx"/>
  <tileset firstgid="1717" source="Objects.tsx"/>
  <tileset firstgid="3829" source="details.tsx"/>
@@ -3367,7 +3367,7 @@
  </layer>
  <layer id="18" name="additives" width="120" height="67">
   <data encoding="base64" compression="zlib">
-   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
+   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
   </data>
  </layer>
  <objectgroup id="19" name="CollisionObjects">
@@ -3751,17 +3751,17 @@
     <property name="type" value="Trap"/>
    </properties>
   </object>
-  <object id="115" x="209" y="430.5" width="19" height="28.5">
+  <object id="115" x="215" y="430.5" width="13" height="24.8333">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="116" x="227" y="445.5" width="28.5" height="16.5">
+  <object id="116" x="234.667" y="445.5" width="20.8333" height="11.8333">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="117" x="261.5" y="459.5" width="27" height="182.5">
+  <object id="117" x="268.833" y="459.5" width="19.6667" height="182.5">
    <properties>
     <property name="type" value="Water"/>
    </properties>
@@ -3791,32 +3791,32 @@
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="123" x="210.5" y="559" width="51" height="80.5">
+  <object id="123" x="221.5" y="571.667" width="46" height="67.8333">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="124" x="243.5" y="470.5" width="16.5" height="88">
+  <object id="124" x="251.5" y="470.5" width="16.1667" height="88">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="125" x="147" y="433" width="24.5" height="28">
+  <object id="125" x="131.667" y="445.333" width="37.1667" height="11">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="126" x="129" y="452" width="11" height="184.5">
+  <object id="126" x="119.667" y="452" width="12.6667" height="174.833">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="127" x="146.5" y="565" width="26" height="71">
+  <object id="127" x="132.833" y="571" width="33" height="57">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="128" x="16.5" y="479.5" width="111" height="156">
+  <object id="128" x="16.5" y="479.5" width="102" height="145.333">
    <properties>
     <property name="type" value="Water"/>
    </properties>
@@ -3831,22 +3831,22 @@
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="131" x="211.5" y="640" width="28" height="191.5">
+  <object id="131" x="222.5" y="640" width="17" height="191.5">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="132" x="85.5" y="677" width="120" height="51.5">
+  <object id="132" x="93.8333" y="682" width="128" height="46.5">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="133" x="118.5" y="738.5" width="87" height="93.5">
+  <object id="133" x="125.833" y="730.5" width="79.6667" height="112.167">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="134" x="14" y="639" width="30" height="91">
+  <object id="134" x="14" y="627.333" width="23" height="102.667">
    <properties>
     <property name="type" value="Water"/>
    </properties>
@@ -3856,12 +3856,12 @@
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="136" x="12.5" y="837.5" width="32" height="171.5">
+  <object id="136" x="12.5" y="841.167" width="25" height="167.833">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="137" x="86.5" y="831.5" width="138.5" height="74">
+  <object id="137" x="94.8333" y="842.833" width="130.167" height="62.6667">
    <properties>
     <property name="type" value="Water"/>
    </properties>
@@ -3871,7 +3871,7 @@
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="139" x="227.5" y="928" width="328.5" height="14">
+  <object id="139" x="227.5" y="928" width="328.5" height="11.3333">
    <properties>
     <property name="type" value="Water"/>
    </properties>
@@ -3897,12 +3897,12 @@
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="145" x="46" y="980" width="76.5" height="33">
+  <object id="145" x="35" y="985.333" width="82.8333" height="27.6667">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="146" x="51" y="1014" width="176" height="9">
+  <object id="146" x="51" y="1015.33" width="176" height="7.66667">
    <properties>
     <property name="type" value="Water"/>
    </properties>
@@ -3958,6 +3958,26 @@
     <property name="type" value="Wall"/>
    </properties>
   </object>
+  <object id="173" x="771.333" y="498" width="8.66667" height="9.33333">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
+  <object id="174" x="836.333" y="465.667" width="7.66667" height="10">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
+  <object id="175" x="913.333" y="498" width="12.3333" height="9.33333">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
+  <object id="176" x="993.333" y="464.667" width="11.6667" height="12">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="20" name="PowerUpObjects">
   <object id="82" x="1083" y="98">
@@ -4002,6 +4022,12 @@
    </properties>
    <point/>
   </object>
+  <object id="179" x="1864" y="872">
+   <properties>
+    <property name="type" value="SpeedUp"/>
+   </properties>
+   <point/>
+  </object>
  </objectgroup>
  <objectgroup id="21" name="EnemyObjects">
   <object id="150" x="64" y="823.5">
@@ -4043,6 +4069,36 @@
   <object id="166" x="1425" y="352">
    <properties>
     <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="177" x="1550.67" y="852">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="180" x="1453.33" y="694.667">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="181" x="1518.67" y="706.667">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="182" x="1381.33" y="822.667">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="183" x="1578.67" y="690.667">
+   <properties>
+    <property name="type" value="Range"/>
    </properties>
    <point/>
   </object>
