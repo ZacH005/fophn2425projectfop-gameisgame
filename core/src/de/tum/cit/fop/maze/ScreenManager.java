@@ -24,26 +24,21 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-//bananas comment
+
 /**
  * The ScreenManager class represents the core of the Maze Runner game.
  * It manages the screens and global resources like SpriteBatch and Skin.
  */
 public class ScreenManager extends Game {
-    // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
     private SettingsScreen settingsScreen;
     private PauseOverlay pauseScreen;
     private LevelSelectorScreen levelSelectorScreen;
 
-    // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
-
-    // UI Skin
     private Skin skin;
 
-    // Character Animations
     private Animation<TextureRegion> characterDownAnimation;
     private Animation<TextureRegion> characterUpAnimation;
     private Animation<TextureRegion> characterRightAnimation;
@@ -61,21 +56,11 @@ public class ScreenManager extends Game {
     private Animation<TextureRegion> runLeftAnimation;
     private Animation<TextureRegion> runRightAnimation;
 
-    // Music
     private Music backgroundMusic;
     private SoundManager soundManager;
-    private Map<String,Integer> mainState = new HashMap<String,Integer>();
+    private Map<String, Integer> mainState = new HashMap<>();
     private float passedVolumeSettingToPause = 0.1234f;
 
-    public float getPassedVolumeSettingToPause() {
-        return passedVolumeSettingToPause;
-    }
-
-    public void setPassedVolumeSettingToPause(float passedVolumeSettingToPause) {
-        this.passedVolumeSettingToPause = passedVolumeSettingToPause;
-    }
-
-    // User and Game State
     private User user;
 
     /**
@@ -88,54 +73,59 @@ public class ScreenManager extends Game {
         this.soundManager = new SoundManager();
     }
 
+    /**
+     * Returns the main state of the game.
+     *
+     * @return A map containing the main state of the game.
+     */
     public Map<String, Integer> getMainState() {
         return mainState;
     }
 
+    /**
+     * Returns the current game screen.
+     *
+     * @return The current GameScreen instance.
+     */
     public GameScreen getGameScreen() {
         return gameScreen;
     }
 
     /**
-     * Called when the game is created. Initializes the SpriteBatch and Skin.
+     * Called when the game is created. Initializes the SpriteBatch, Skin, and loads necessary resources.
      */
     @Override
     public void create() {
-        // Load existing user data, or use a default constructor to create a new one
         user = User.loadUserData("user_data.ser");
         if (user == null) {
-            // Set default username if no data found
             user = new User("Player1");
         }
-        ///sound layers
-        soundManager.loadMusicLayer("bass","music/themes/Bass2.mp3");
-        soundManager.loadMusicLayer("piano","music/themes/Piano2.mp3");
-        soundManager.loadMusicLayer("drums","music/themes/Drums2.mp3");
-        soundManager.loadMusicLayer("slowerDrums","music/themes/slowerdrums.mp3");
-        soundManager.loadMusicLayer("pad","music/themes/Pad2.mp3");
-        soundManager.loadMusicLayer("strings","music/themes/Strings2.mp3");
-        soundManager.loadMusicLayer("wind","music/themes/Wind2.mp3");
-        soundManager.loadMusicLayer("crackles","music/themes/Crackles2.mp3");
 
-        ///sfxs
-        soundManager.loadSound("losing sound","music/losing_sound.mp3");
+        soundManager.loadMusicLayer("bass", "music/themes/Bass2.mp3");
+        soundManager.loadMusicLayer("piano", "music/themes/Piano2.mp3");
+        soundManager.loadMusicLayer("drums", "music/themes/Drums2.mp3");
+        soundManager.loadMusicLayer("slowerDrums", "music/themes/slowerdrums.mp3");
+        soundManager.loadMusicLayer("pad", "music/themes/Pad2.mp3");
+        soundManager.loadMusicLayer("strings", "music/themes/Strings2.mp3");
+        soundManager.loadMusicLayer("wind", "music/themes/Wind2.mp3");
+        soundManager.loadMusicLayer("crackles", "music/themes/Crackles2.mp3");
 
-        soundManager.loadSound("xplsv","music/sfxs/xplsv.mp3");
-
-        soundManager.loadSound("mcCollectKey_sfx","music/sfxs/mcCollectKey2.mp3");
-        soundManager.loadSound("mcCollectSpeedUp_sfx","music/sfxs/mcPickSpeedUp.mp3");
-        soundManager.loadSound("mcCollectHeart_sfx","music/sfxs/mcPickHeart.mp3");
-        soundManager.loadSound("mcPunch_sfx","music/sfxs/mcPunch.mp3");
-        soundManager.loadSound("mcDeath_sfx","music/sfxs/mcDeath.mp3");
-        soundManager.loadSound("mcHitWithAxe_sfx","music/sfxs/mcHitsEnemyWithAxe.mp3");
-        soundManager.loadSound("mcDoor_sfx","music/sfxs/mcDoor.mp3");
-        soundManager.loadSound("mcOpenBigDoor_sfx","music/sfxs/mcOpenBigDoor.mp3");
-        soundManager.loadSound("mcOpenNormalDoor_sfx","music/sfxs/mcOpenNormalDoor.mp3");
-        soundManager.loadSound("mcUsePowerUp_sfx","music/sfxs/mcUsePowerUp.mp3");
-        soundManager.loadSound("footstep_sfx","music/footstep_sfx.mp3");
-        soundManager.loadSound("mcHurt_sfx","music/sfxs/mcHurt.mp3");
-        soundManager.loadSound("enemyDeath_sfx","music/sfxs/EnemyDeath.mp3");
-        soundManager.loadSound("click","music/UI/menuSelect.mp3");
+        soundManager.loadSound("losing sound", "music/losing_sound.mp3");
+        soundManager.loadSound("xplsv", "music/sfxs/xplsv.mp3");
+        soundManager.loadSound("mcCollectKey_sfx", "music/sfxs/mcCollectKey2.mp3");
+        soundManager.loadSound("mcCollectSpeedUp_sfx", "music/sfxs/mcPickSpeedUp.mp3");
+        soundManager.loadSound("mcCollectHeart_sfx", "music/sfxs/mcPickHeart.mp3");
+        soundManager.loadSound("mcPunch_sfx", "music/sfxs/mcPunch.mp3");
+        soundManager.loadSound("mcDeath_sfx", "music/sfxs/mcDeath.mp3");
+        soundManager.loadSound("mcHitWithAxe_sfx", "music/sfxs/mcHitsEnemyWithAxe.mp3");
+        soundManager.loadSound("mcDoor_sfx", "music/sfxs/mcDoor.mp3");
+        soundManager.loadSound("mcOpenBigDoor_sfx", "music/sfxs/mcOpenBigDoor.mp3");
+        soundManager.loadSound("mcOpenNormalDoor_sfx", "music/sfxs/mcOpenNormalDoor.mp3");
+        soundManager.loadSound("mcUsePowerUp_sfx", "music/sfxs/mcUsePowerUp.mp3");
+        soundManager.loadSound("footstep_sfx", "music/footstep_sfx.mp3");
+        soundManager.loadSound("mcHurt_sfx", "music/sfxs/mcHurt.mp3");
+        soundManager.loadSound("enemyDeath_sfx", "music/sfxs/EnemyDeath.mp3");
+        soundManager.loadSound("click", "music/UI/menuSelect.mp3");
         soundManager.loadSound("enemyHurt", "music/hitHurt.wav");
         soundManager.loadSound("mineRock1", "music/sfx/mineRock1.mp3");
         soundManager.loadSound("mineRock2", "music/sfx/mineRock2.mp3");
@@ -143,45 +133,41 @@ public class ScreenManager extends Game {
         soundManager.loadSound("playerHurt", "music/game_sfx/MC_sfx/hitHurt.wav");
         soundManager.loadSound("gemBreak", "music/sfxs/Gembr.mp3");
 
-        /// key sound
         soundManager.loadKeySound("music/themes/Axe_nearby.mp3");
-        /// state definition
-        mainState.put("crackles",1);
-        mainState.put("wind",1);
-        mainState.put("piano",0);
-        mainState.put("strings",0);
-        mainState.put("pad",0);
-        mainState.put("drums",0);
-        mainState.put("bass",1);
 
-        skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
-        spriteBatch = new SpriteBatch(); // Create SpriteBatch
-        this.loadCharacterAnimation(); // Load character animation
+        mainState.put("crackles", 1);
+        mainState.put("wind", 1);
+        mainState.put("piano", 0);
+        mainState.put("strings", 0);
+        mainState.put("pad", 0);
+        mainState.put("drums", 0);
+        mainState.put("bass", 1);
 
-//        //MUSIC
-//        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/main ost.mp3"));
-//        backgroundMusic.setLooping(true);
-//        //muting it for now
-//        backgroundMusic.setVolume(0);
-//        backgroundMusic.play();
+        skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json"));
+        spriteBatch = new SpriteBatch();
+        this.loadCharacterAnimation();
 
         soundManager.playAllLayers();
-        goToMenu(); // Navigate to the menu screen
+        goToMenu();
     }
 
-    /*** Switches to the menu screen.*/
+    /**
+     * Switches to the menu screen.
+     */
     public void goToMenu() {
-        this.setScreen(new MenuScreen(this,soundManager)); // Set the current screen to MenuScreen
+        this.setScreen(new MenuScreen(this, soundManager));
         if (gameScreen != null) {
-            gameScreen.dispose(); // Dispose the game screen if it exists
+            gameScreen.dispose();
             gameScreen = null;
         }
     }
 
+    /**
+     * Switches to the game screen and loads the appropriate level.
+     */
     public void goToGame() {
         soundManager.onGameStateChange(mainState);
 
-        // loading all maps
         FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
         Array<FileHandle> tmxFiles = new Array<>();
         for (FileHandle file : levelsDirectory.list()) {
@@ -189,53 +175,65 @@ public class ScreenManager extends Game {
                 tmxFiles.add(file);
             }
         }
-        //sort levels
+
         tmxFiles.sort(Comparator.comparing(file -> ((FileHandle) file).nameWithoutExtension()).reversed());
         user.getCompletedLevels().sort(Comparator.reverseOrder());
-        //getting the first map that isn't completed by the user.
-        for(FileHandle file : tmxFiles) {
-            // if the level is completed don't open it
-            if(tmxFiles.size == user.getCompletedLevels().size()){
+
+        for (FileHandle file : tmxFiles) {
+            if (tmxFiles.size == user.getCompletedLevels().size()) {
                 user.resetCompletedLevels();
                 goToCredits();
                 break;
+            } else {
+                if (user.getCompletedLevels().contains(file.name())) {
+                    continue;
+                } else {
+                    GameScreen newGameScreen = new GameScreen(this, ("TiledMaps/" + file.name()), soundManager);
+                    newGameScreen.getPlayer().loadState("playerstate.txt");
+                    this.setScreen(newGameScreen);
+                    System.out.println("loaded :" + file.name() + " map");
+                }
             }
-            else{
-            if(user.getCompletedLevels().contains(file.name())){
-                continue;
-            }
-            // if a level isn't played then this the one we go to intuitively
-
-            else{
-                GameScreen newGameScreen = new GameScreen(this, ("TiledMaps/"+file.name()),soundManager);
-                newGameScreen.getPlayer().loadState("playerstate.txt");
-                this.setScreen(newGameScreen);
-                System.out.println("loaded :"+file.name()+" map");
-
-            }}
-
         }
-         // Set the current screen to GameScreen
 
         if (menuScreen != null) {
-            menuScreen.dispose(); // Dispose the menu screen if it exists
+            menuScreen.dispose();
             menuScreen = null;
         }
-        if (pauseScreen != null)    {
+        if (pauseScreen != null) {
             pauseScreen.dispose();
             pauseScreen = null;
         }
     }
 
+    /**
+     * Passes volme settings between all screens and when reloading/loading int oa level.
+     * @param passedVolumeSettingToPause
+     */
 
-    /** go to next level **/
+    public void setPassedVolumeSettingToPause(float passedVolumeSettingToPause) {
+        this.passedVolumeSettingToPause = passedVolumeSettingToPause;
+    }
+
+    /**
+     * Getter for the passed volumestting variable.
+     * @return
+     */
+
+    public float getPassedVolumeSettingToPause() {
+        return passedVolumeSettingToPause;
+    }
+
+    /**
+     * Switches to the next level or credits screen if all levels are completed.
+     */
     public void goToNextLevel() {
         FileHandle levelsDirectory = Gdx.files.local("assets/TiledMaps");
         System.out.println(levelsDirectory);
         int counter = 0;
         for (FileHandle file : levelsDirectory.list()) {
             if (file.extension().equals("tmx")) {
-             counter++;
+                counter++;
             }
         }
 
@@ -243,208 +241,116 @@ public class ScreenManager extends Game {
         System.out.println(levelsDirectory);
         System.out.println(counter);
 
-        if(user.getCompletedLevels().size()==counter){
+        if (user.getCompletedLevels().size() == counter) {
             user.saveUserData("user_data.ser");
             goToCredits();
-        }
-
-        else {
+        } else {
             goToGame();
         }
     }
 
-
-//    /** restart game**/
-//    /// helper method to clear temporary files.
-//    public static void resetFile(String filePath) {
-//        // added the channel lock to restrict access to this file while rewriting it
-//        try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
-//             FileChannel channel = raf.getChannel();
-//             FileLock lock = channel.lock()) {
-//            // Truncate the file to zero length
-//            raf.setLength(0);
-//
-//        } catch (IOException e) {
-//            System.out.println("An error occurred while resetting the file: " + e.getMessage());
-//        }
-//    }
-//
-//    public void restartGame() {
-//        /// dispose of the current game screen if necessary
-//        if (getScreen() != null) {
-//            getScreen().dispose();
-//        }
-//        /// reset objects-states in the map
-//        resetFile("playerstate.txt");
-//        System.out.println("wrote to file");
-//        resetFile("enemystate.txt");
-//        System.out.println("wrote to file");
-//        // if the level isn't completed the goToGame will just go to the last unplayed level
-//        goToGame();
-//    }
-
-    /// go to settings
-    public void goToSettings()  {
+    /**
+     * Switches to the settings screen.
+     */
+    public void goToSettings() {
         this.setScreen(new SettingsScreen(this));
         if (menuScreen != null) {
             menuScreen.dispose();
             menuScreen = null;
         }
     }
-    // go to credits
-    public void goToCredits(){
+
+    /**
+     * Switches to the credits screen.
+     */
+    public void goToCredits() {
         this.setScreen(new CreditScreen(this));
         if (menuScreen != null) {
             menuScreen.dispose();
             menuScreen = null;
         }
     }
-    /// go to Pause
-//    public void goToPause() {
-////        Vector2 positionOfThePlayerBeforePause = gameScreen.getPlayer().getPosition();
-//
-//        if (pauseScreen == null) {
-//            pauseScreen = new PauseOverlay(this); // Reuse existing PauseOverlay
-//        }
-//        this.setScreen(pauseScreen);
-//
-//    }
 
-    /// go to map selector
+    /**
+     * Switches to the level selector screen.
+     */
     public void goToLevelSelector() {
         if (levelSelectorScreen != null) {
-            levelSelectorScreen.dispose(); // Create the level selector screen
+            levelSelectorScreen.dispose();
         }
-        this.setScreen(new LevelSelectorScreen(this)); // Set the current screen to LevelSelectorScreen
+        this.setScreen(new LevelSelectorScreen(this));
     }
 
-    /** saves user data **/
+    /**
+     * Saves the user data to a file.
+     */
     public void saveUserData() {
         if (user != null) {
             user.saveUserData("user_data.ser");
         }
     }
 
-    /** sets user preferences **/
+    /**
+     * Sets user preferences and saves them.
+     *
+     * @param preferences A map containing user preferences.
+     */
     public void setPreferences(Map<String, Object> preferences) {
         if (user != null) {
             user.setPreferences(preferences);
-            saveUserData();  // Save preferences after setting them
+            saveUserData();
         }
     }
 
-    /// map loader
+    /**
+     * Loads a specific level and switches to the game screen.
+     *
+     * @param levelName The name of the level to load.
+     */
     public void loadLevel(String levelName) {
-        // Load the level by loading the .tmx file
         TmxMapLoader mapLoader = new TmxMapLoader();
         TiledMap map = mapLoader.load("assets/TiledMaps/" + levelName + ".tmx");
 
-
-        this.setScreen(new GameScreen(this, "assets/TiledMaps/" + levelName + ".tmx",soundManager)); // Change to a GameScreen that uses the loaded map
+        this.setScreen(new GameScreen(this, "assets/TiledMaps/" + levelName + ".tmx", soundManager));
     }
 
-//    private void loadCharacterAnimation() {
-//        Texture walkSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/walk.png"));
-//
-//        int frameWidth = 16, frameHeight = 16, walkAnimationFrames = 8, y = 32, idleAnimationFrames = 4;
-//
-//        for (int i = 0; i <= 2; i++)    {
-//            // libGDX internal Array instead of ArrayList because of performance
-//            Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
-//
-//            // Add all frames to the animation
-//            int offset = 32;
-//
-//            for (int col = 0; col < walkAnimationFrames; col++) {
-//                walkFrames.add(new TextureRegion(walkSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
-//            }
-//            switch (y)  {
-//                case 112:
-//                    characterDownAnimation = new Animation<>(0.05f, walkFrames);
-//                    break;
-//                case 32:
-//                    characterRightAnimation = new Animation<>(0.05f, walkFrames);
-//                    Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
-//                    for (TextureRegion t : walkFrames)  {
-//                        TextureRegion flippedFrame = new TextureRegion(t);
-//                        flippedFrame.flip(true, false);
-//                        leftWalkFrames.add(flippedFrame);
-//                    }
-//                    characterLeftAnimation = new Animation<>(0.05f, leftWalkFrames);
-//                    break;
-//                case 192:
-//
-//                    characterUpAnimation = new Animation<>(0.05f, walkFrames);
-//                    break;
-//            }
-//            y += frameHeight + 64;
-//        }
-//
-//        y=32;
-//        Texture idleSheet = new Texture(Gdx.files.internal("TiledMaps/tilesets/newCaves/Hana Caraka - Base Character [sample]/idle.png"));
-//
-//        for (int i = 0; i <= 2; i++)    {
-//            Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
-//
-//            int offset = 32;
-//
-//            for (int col = 0; col < idleAnimationFrames; col++) {
-//                idleFrames.add(new TextureRegion(idleSheet, offset+col*(frameWidth+64), y, frameWidth, frameHeight));
-//            }
-//            switch (y)  {
-//                case 32:
-//                    characterIdleAnimation = new Animation<>(0.1f, idleFrames);
-//                    break;
-//            }
-//            y += frameHeight + 64;
-//        }
-//    }
-
-
+    /**
+     * Loads character animations from a sprite sheet.
+     */
     private void loadCharacterAnimation() {
         Texture walkSheet = new Texture(Gdx.files.internal("animations/player/FinalAnimAdjusted2.png"));
 
         int frameWidth = 64, frameHeight = 64, walkAnimationFrames = 9, idleAnimationFrames = 2, y = 0;
 
-        for (int i = 0; i <= 50; i++)    {
-            // libGDX internal Array instead of ArrayList because of performance
+        for (int i = 0; i <= 50; i++) {
             Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> idleFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> attackLeftFrames = new Array<>(TextureRegion.class);
             Array<TextureRegion> runningframes = new Array<>(TextureRegion.class);
 
-
             for (int col = 0; col < walkAnimationFrames; col++) {
-                walkFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
+                walkFrames.add(new TextureRegion(walkSheet, col * (frameWidth), y, frameWidth, frameHeight));
             }
             for (int col = 0; col < idleAnimationFrames; col++) {
-                idleFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
+                idleFrames.add(new TextureRegion(walkSheet, col * (frameWidth), y, frameWidth, frameHeight));
             }
             for (int col = 0; col < 6; col++) {
-                attackLeftFrames.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
+                attackLeftFrames.add(new TextureRegion(walkSheet, col * (frameWidth), y, frameWidth, frameHeight));
             }
             for (int col = 0; col < 8; col++) {
-                runningframes.add(new TextureRegion(walkSheet, col*(frameWidth), y, frameWidth, frameHeight));
+                runningframes.add(new TextureRegion(walkSheet, col * (frameWidth), y, frameWidth, frameHeight));
             }
-            switch (y)  {
+            switch (y) {
                 case 640:
                     characterDownAnimation = new Animation<>(0.05f, walkFrames);
                     break;
                 case 704:
                     characterRightAnimation = new Animation<>(0.05f, walkFrames);
-//                    Array<TextureRegion> leftWalkFrames = new Array<>(TextureRegion.class);
-//                    for (TextureRegion t : walkFrames)  {
-//                        TextureRegion flippedFrame = new TextureRegion(t);
-//                        flippedFrame.flip(true, false);
-//                        leftWalkFrames.add(flippedFrame);
-//                    }
-//                    characterLeftAnimation = new Animation<>(0.05f, leftWalkFrames);
                     break;
                 case 576:
                     characterLeftAnimation = new Animation<>(0.05f, walkFrames);
                     break;
                 case 512:
-
                     characterUpAnimation = new Animation<>(0.05f, walkFrames);
                     break;
                 case 0:
@@ -488,34 +394,74 @@ public class ScreenManager extends Game {
         }
     }
 
+    /**
+     * Returns the run-up animation.
+     *
+     * @return The run-up animation.
+     */
     public Animation<TextureRegion> getRunUpAnimation() {
         return runUpAnimation;
     }
 
+    /**
+     * Returns the run-down animation.
+     *
+     * @return The run-down animation.
+     */
     public Animation<TextureRegion> getRunDownAnimation() {
         return runDownAnimation;
     }
 
+    /**
+     * Returns the run-left animation.
+     *
+     * @return The run-left animation.
+     */
     public Animation<TextureRegion> getRunLeftAnimation() {
         return runLeftAnimation;
     }
 
+    /**
+     * Returns the run-right animation.
+     *
+     * @return The run-right animation.
+     */
     public Animation<TextureRegion> getRunRightAnimation() {
         return runRightAnimation;
     }
 
+    /**
+     * Returns the character's up attack animation.
+     *
+     * @return The character's up attack animation.
+     */
     public Animation<TextureRegion> getcharacterUpAttackAnimation() {
         return characterUpAttackAnimation;
     }
 
+    /**
+     * Returns the character's down attack animation.
+     *
+     * @return The character's down attack animation.
+     */
     public Animation<TextureRegion> getcharacterDownAttackAnimation() {
         return characterDownAttackAnimation;
     }
 
+    /**
+     * Returns the character's right attack animation.
+     *
+     * @return The character's right attack animation.
+     */
     public Animation<TextureRegion> getCharacterRightAttackAnimation() {
         return characterRightAttackAnimation;
     }
 
+    /**
+     * Returns the character's left attack animation.
+     *
+     * @return The character's left attack animation.
+     */
     public Animation<TextureRegion> getCharacterLeftAttackAnimation() {
         return characterLeftAttackAnimation;
     }
@@ -525,80 +471,157 @@ public class ScreenManager extends Game {
      */
     @Override
     public void dispose() {
+        if (user != null) {
+            user.saveUserData("user_data.ser");
+        }
 
-            if (user != null) {
-                user.saveUserData("user_data.ser");
-            }
-
-            getScreen().hide(); // Hide the current screen
-            getScreen().dispose(); // Dispose the current screen
-            spriteBatch.dispose(); // Dispose the spriteBatch
-            skin.dispose(); // Dispose the skin
-            soundManager.dispose();
+        getScreen().hide();
+        getScreen().dispose();
+        spriteBatch.dispose();
+        skin.dispose();
+        soundManager.dispose();
     }
 
-    // Getters methods
-
+    /**
+     * Returns the sound manager.
+     *
+     * @return The sound manager.
+     */
     public SoundManager getSoundManager() {
         return soundManager;
     }
 
+    /**
+     * Returns the UI skin.
+     *
+     * @return The UI skin.
+     */
     public Skin getSkin() {
         return skin;
     }
 
+    /**
+     * Returns the character's down animation.
+     *
+     * @return The character's down animation.
+     */
     public Animation<TextureRegion> getCharacterDownAnimation() {
         return characterDownAnimation;
     }
 
+    /**
+     * Returns the character's up animation.
+     *
+     * @return The character's up animation.
+     */
     public Animation<TextureRegion> getCharacterUpAnimation() {
         return characterUpAnimation;
     }
 
+    /**
+     * Returns the character's right animation.
+     *
+     * @return The character's right animation.
+     */
     public Animation<TextureRegion> getCharacterRightAnimation() {
         return characterRightAnimation;
     }
 
+    /**
+     * Returns the character's left animation.
+     *
+     * @return The character's left animation.
+     */
     public Animation<TextureRegion> getCharacterLeftAnimation() {
         return characterLeftAnimation;
     }
 
+    /**
+     * Returns the character's up attack animation.
+     *
+     * @return The character's up attack animation.
+     */
     public Animation<TextureRegion> getCharacterUpAttackAnimation() {
         return characterUpAttackAnimation;
     }
 
+    /**
+     * Returns the character's down attack animation.
+     *
+     * @return The character's down attack animation.
+     */
     public Animation<TextureRegion> getCharacterDownAttackAnimation() {
         return characterDownAttackAnimation;
     }
 
+    /**
+     * Returns the character's right idle animation.
+     *
+     * @return The character's right idle animation.
+     */
     public Animation<TextureRegion> getCharacterRightIdleAnimation() {
         return characterRightIdleAnimation;
     }
 
+    /**
+     * Returns the character's left idle animation.
+     *
+     * @return The character's left idle animation.
+     */
     public Animation<TextureRegion> getCharacterLeftIdleAnimation() {
         return characterLeftIdleAnimation;
     }
 
+    /**
+     * Returns the character's down idle animation.
+     *
+     * @return The character's down idle animation.
+     */
     public Animation<TextureRegion> getCharacterDownIdleAnimation() {
         return characterDownIdleAnimation;
     }
 
+    /**
+     * Returns the character's up idle animation.
+     *
+     * @return The character's up idle animation.
+     */
     public Animation<TextureRegion> getCharacterUpIdleAnimation() {
         return characterUpIdleAnimation;
     }
 
+    /**
+     * Returns the sprite batch used for drawing textures.
+     *
+     * @return The sprite batch.
+     */
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
     }
 
+    /**
+     * Returns the background music currently playing.
+     *
+     * @return The background music.
+     */
     public Music getBackgroundMusic() {
         return backgroundMusic;
     }
 
+    /**
+     * Sets the background music to the specified music.
+     *
+     * @param backgroundMusic The music to set as background music.
+     */
     public void setBackgroundMusic(Music backgroundMusic) {
         this.backgroundMusic = backgroundMusic;
     }
 
+    /**
+     * Returns the user associated with the game.
+     *
+     * @return The user.
+     */
     public User getUser() {
         return user;
     }

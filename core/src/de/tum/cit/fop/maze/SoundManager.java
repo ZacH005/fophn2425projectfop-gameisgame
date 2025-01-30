@@ -7,138 +7,222 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages sound effects and music layers for the game.
+ * This class handles loading, playing, and controlling the volume of sounds and music.
+ */
 public class SoundManager implements Disposable {
     private HashMap<String, Sound> soundEffects;
-    private HashMap<String, Music> musicLayers; // Music layers
-    private HashMap<String, Boolean> layerMuteStates; // Mute state of each layer
+    private HashMap<String, Music> musicLayers;
+    private HashMap<String, Boolean> layerMuteStates;
     private float musicVolume = 0.5f;
-    // for the key sound
     private Music keySound;
     private float sfxVolume = 1.0f;
 
+    /**
+     * Constructs a new SoundManager and initializes the data structures.
+     */
     public SoundManager() {
         soundEffects = new HashMap<>();
         musicLayers = new HashMap<>();
         layerMuteStates = new HashMap<>();
     }
 
-    // load key sound
+    /**
+     * Loads the key sound from the specified file path.
+     *
+     * @param filePath the path to the key sound file.
+     */
     public void loadKeySound(String filePath) {
         keySound = Gdx.audio.newMusic(Gdx.files.internal(filePath));
     }
-    // set the key sound volume on its own.
+
+    /**
+     * Sets the volume of the key sound.
+     *
+     * @param volume the volume level to set (0.0 to 1.0).
+     */
     public void setKeySoundVolume(float volume) {
         keySound.setVolume(volume);
     }
+
+    /**
+     * Plays the key sound and sets it to loop continuously.
+     */
     public void playKeySound() {
         keySound.play();
         keySound.setLooping(true);
     }
+
+    /**
+     * Returns the current volume of the key sound.
+     *
+     * @return the volume of the key sound.
+     */
     public float getKeySoundVolume() {
         return keySound.getVolume();
     }
 
-    // Load a sound effect
+    /**
+     * Loads a sound effect and associates it with a name.
+     *
+     * @param name     the name to associate with the sound effect.
+     * @param filePath the path to the sound effect file.
+     */
     public void loadSound(String name, String filePath) {
         soundEffects.put(name, Gdx.audio.newSound(Gdx.files.internal(filePath)));
     }
 
-    // Play a sound effect
+    /**
+     * Plays the sound effect associated with the specified name.
+     *
+     * @param name the name of the sound effect to play.
+     */
     public void playSound(String name) {
         Sound sound = soundEffects.get(name);
-        System.out.println(name);
         if (sound != null) {
             sound.play(sfxVolume);
         }
     }
 
-    public Sound getSound(String name)  {
+    /**
+     * Returns the sound effect associated with the specified name.
+     *
+     * @param name the name of the sound effect.
+     * @return the Sound object, or null if not found.
+     */
+    public Sound getSound(String name) {
         return soundEffects.get(name);
     }
 
-    // Load music layers
+    /**
+     * Loads a music layer and associates it with a name.
+     *
+     * @param name     the name to associate with the music layer.
+     * @param filePath the path to the music file.
+     */
     public void loadMusicLayer(String name, String filePath) {
         Music music = Gdx.audio.newMusic(Gdx.files.internal(filePath));
         musicLayers.put(name, music);
-        layerMuteStates.put(name, false); // Default state: not muted
+        layerMuteStates.put(name, false);
     }
 
-    // Play all layers simultaneously
+    /**
+     * Plays all loaded music layers simultaneously.
+     */
     public void playAllLayers() {
         for (String layerName : musicLayers.keySet()) {
             Music music = musicLayers.get(layerName);
             if (music != null) {
                 music.setLooping(true);
                 if (!layerMuteStates.get(layerName)) {
-                    music.setVolume(musicVolume); // Only set volume for unmuted layers
+                    music.setVolume(musicVolume);
                 } else {
-                    music.setVolume(0); // Ensure muted layers stay silent
+                    music.setVolume(0);
                 }
                 music.play();
             }
         }
     }
 
-    // Mute or unmute a music layer
+    /**
+     * Sets the mute state for a specific music layer.
+     *
+     * @param layerName the name of the music layer.
+     * @param mute      true to mute the layer, false to unmute.
+     */
     public void setLayerMuteState(String layerName, boolean mute) {
         Music music = musicLayers.get(layerName);
         if (music != null) {
             layerMuteStates.put(layerName, mute);
-            music.setVolume(mute ? 0.0f : musicVolume); // Adjust volume based on mute state
+            music.setVolume(mute ? 0.0f : musicVolume);
         }
     }
 
-    // Adjust mute states based on game state changes
+    /**
+     * Adjusts the mute states of music layers based on the game state.
+     *
+     * @param layerStates a map containing the mute states for each layer.
+     */
     public void onGameStateChange(Map<String, Integer> layerStates) {
         for (Map.Entry<String, Integer> entry : layerStates.entrySet()) {
             String layerName = entry.getKey();
             Integer state = entry.getValue();
-            boolean mute = state == 0; // 0 means muted, 1 means not muted
+            boolean mute = state == 0;
             setLayerMuteState(layerName, mute);
         }
     }
 
-    // Set music volume without unmuting muted layers
+    /**
+     * Sets the volume for all unmuted music layers.
+     *
+     * @param volume the volume level to set (0.0 to 1.0).
+     */
     public void setMusicVolume(float volume) {
         musicVolume = volume;
         setSfxVolume(musicVolume);
         for (String layerName : musicLayers.keySet()) {
             Music music = musicLayers.get(layerName);
             if (music != null && !layerMuteStates.get(layerName)) {
-                music.setVolume(musicVolume); // Only update volume for unmuted layers
+                music.setVolume(musicVolume);
             }
         }
     }
 
-    // Set volume for a specific music layer
+    /**
+     * Sets the volume for a specific music layer.
+     *
+     * @param layerName the name of the music layer.
+     * @param volume    the volume level to set (0.0 to 1.0).
+     */
     public void setLayerVolume(String layerName, float volume) {
         Music music = musicLayers.get(layerName);
-        if (music != null) {
-            if (!layerMuteStates.get(layerName)) { // Ensure the layer is not muted
-                music.setVolume(volume);
-            }
+        if (music != null && !layerMuteStates.get(layerName)) {
+            music.setVolume(volume);
         }
     }
+
+    /**
+     * Returns the current volume of a specific music layer.
+     *
+     * @param layerName the name of the music layer.
+     * @return the volume of the music layer.
+     */
     public float getLayerVolume(String layerName) {
         Music music = musicLayers.get(layerName);
-        float vol = music.getVolume();
-        return vol;
+        return music.getVolume();
     }
 
-    // Set SFX volume
+    /**
+     * Sets the volume for sound effects.
+     *
+     * @param volume the volume level to set (0.0 to 1.0).
+     */
     public void setSfxVolume(float volume) {
         sfxVolume = volume;
     }
 
+    /**
+     * Returns the current music volume.
+     *
+     * @return the music volume.
+     */
     public float getMusicVolume() {
         return musicVolume;
     }
 
+    /**
+     * Returns the current sound effects volume.
+     *
+     * @return the sound effects volume.
+     */
     public float getSfxVolume() {
         return sfxVolume;
     }
 
-    // Dispose all loaded sounds and music
+    /**
+     * Disposes of all loaded sounds and music to free up resources.
+     */
     @Override
     public void dispose() {
         for (Sound sound : soundEffects.values()) {
@@ -149,4 +233,3 @@ public class SoundManager implements Disposable {
         }
     }
 }
-

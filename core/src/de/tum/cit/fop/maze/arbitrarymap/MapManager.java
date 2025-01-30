@@ -2,10 +2,8 @@ package de.tum.cit.fop.maze.arbitrarymap;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import de.tum.cit.fop.maze.SoundManager;
 import de.tum.cit.fop.maze.abilities.HeartUp;
@@ -13,11 +11,13 @@ import de.tum.cit.fop.maze.abilities.Key;
 import de.tum.cit.fop.maze.abilities.Powerup;
 import de.tum.cit.fop.maze.abilities.SpeedUp;
 import de.tum.cit.fop.maze.entity.Door;
-import de.tum.cit.fop.maze.entity.Enemy;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages the map and its objects, such as collision objects, doors, power-ups, and enemies.
+ */
 public class MapManager {
     private TiledMap map;
     private List<RectangleMapObject> collisionObjects = new ArrayList<>();
@@ -26,8 +26,13 @@ public class MapManager {
     private List<RectangleMapObject> eventObjects = new ArrayList<>();
     private List<RectangleMapObject> enemies = new ArrayList<>();
     private SoundManager soundManager;
-    //    private List<Rectangle> trapObjects = new ArrayList<>();
 
+    /**
+     * Constructs a MapManager and loads objects from the provided TiledMap.
+     *
+     * @param tiledMap     The tiled map containing game objects.
+     * @param soundManager The sound manager for handling sound effects.
+     */
     public MapManager(TiledMap tiledMap, SoundManager soundManager) {
         this.map = tiledMap;
         this.soundManager = soundManager;
@@ -36,35 +41,37 @@ public class MapManager {
         loadDoorObjects();
         loadEventObjects();
         loadEnemies();
-
     }
 
+    /**
+     * Loads collision objects from the map layer.
+     */
     private void loadCollisionObjects() {
         MapObjects objects = map.getLayers().get("CollisionObjects").getObjects();
-
         for (MapObject object : objects) {
             if (object instanceof RectangleMapObject rectObj) {
                 collisionObjects.add(rectObj);
-            } else if (object instanceof EllipseMapObject circleObj)    {
-
             }
         }
     }
 
-    private void loadDoorObjects()  {
+    /**
+     * Loads door objects from the map layer.
+     */
+    private void loadDoorObjects() {
         MapObjects objects = map.getLayers().get("DoorObjects").getObjects();
-
         for (MapObject object : objects) {
             if (object instanceof RectangleMapObject rectObj) {
-                Door newDoor = new Door(rectObj);
-                doorObjects.add(newDoor);
+                doorObjects.add(new Door(rectObj));
             }
         }
     }
 
+    /**
+     * Loads event objects from the map layer.
+     */
     private void loadEventObjects() {
         MapObjects objects = map.getLayers().get("EventObjects").getObjects();
-
         for (MapObject object : objects) {
             if (object instanceof RectangleMapObject rectObj) {
                 eventObjects.add(rectObj);
@@ -72,9 +79,11 @@ public class MapManager {
         }
     }
 
-    private void loadEnemies()  {
+    /**
+     * Loads enemy objects from the map layer.
+     */
+    private void loadEnemies() {
         MapObjects objects = map.getLayers().get("EnemyObjects").getObjects();
-
         for (MapObject object : objects) {
             if (object instanceof RectangleMapObject rectObj) {
                 enemies.add(rectObj);
@@ -82,39 +91,23 @@ public class MapManager {
         }
     }
 
-
-
-//    private void loadTrapObjects()  {
-//        MapObjects objects = map.getLayers().get("TrapObjects").getObjects();
-//
-//        for (MapObject object : objects)    {
-//            if (object instanceof RectangleMapObject rectObj)   {
-//                trapObjects.add(rectObj.getRectangle());
-//            }
-//        }
-//    }
-
+    /**
+     * Loads power-up objects from the map layer and assigns them appropriate types.
+     */
     private void loadPowerupObjects() {
         MapObjects objects = map.getLayers().get("PowerUpObjects").getObjects();
-
         for (MapObject object : objects) {
-//            System.out.println(object);
             if (object instanceof RectangleMapObject rectObj) {
                 Rectangle rectangle = rectObj.getRectangle();
                 Powerup powerup = null;
-
                 String type = object.getProperties().get("type", String.class);
-//                System.out.println("Adding powerup");
-
                 if ("SpeedUp".equals(type)) {
-                    powerup = new SpeedUp(rectangle.x, rectangle.y,this.soundManager);
+                    powerup = new SpeedUp(rectangle.x, rectangle.y, this.soundManager);
                 } else if ("HeartUp".equals(type)) {
-                    powerup = new HeartUp(rectangle.x, rectangle.y,this.soundManager);
+                    powerup = new HeartUp(rectangle.x, rectangle.y, this.soundManager);
+                } else if ("Key".equals(type)) {
+                    powerup = new Key(rectangle.x, rectangle.y, this.soundManager);
                 }
-                 else if("Key".equals(type)) {
-                     powerup = new Key(rectangle.x, rectangle.y,this.soundManager);
-                }
-
                 if (powerup != null) {
                     powerups.add(powerup);
                 }
@@ -122,35 +115,57 @@ public class MapManager {
         }
     }
 
+    /**
+     * Returns the list of power-ups in the map.
+     *
+     * @return A list of power-ups.
+     */
     public List<Powerup> getPowerups() {
         return powerups;
     }
 
+    /**
+     * Returns the list of collision objects in the map.
+     *
+     * @return A list of collision objects.
+     */
     public List<RectangleMapObject> getCollisionObjects() {
         return collisionObjects;
     }
 
-//    public List<Rectangle> getTrapObjects() {
-//        return trapObjects;
-//    }
-
+    /**
+     * Returns the tiled map associated with this manager.
+     *
+     * @return The tiled map.
+     */
     public TiledMap getMap() {
         return map;
     }
 
+    /**
+     * Returns the list of enemy objects in the map.
+     *
+     * @return A list of enemy objects.
+     */
     public List<RectangleMapObject> getEnemies() {
         return enemies;
     }
 
-    public List<Door> getDoorObjects()    {
+    /**
+     * Returns the list of door objects in the map.
+     *
+     * @return A list of door objects.
+     */
+    public List<Door> getDoorObjects() {
         return doorObjects;
     }
 
+    /**
+     * Returns the list of event objects in the map.
+     *
+     * @return A list of event objects.
+     */
     public List<RectangleMapObject> getEventObjects() {
         return eventObjects;
     }
-
-
-
 }
-
