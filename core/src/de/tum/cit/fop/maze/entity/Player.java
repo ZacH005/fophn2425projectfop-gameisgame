@@ -404,7 +404,6 @@ public class Player implements Entity, Serializable {
 
                 }
                 else {
-                    isTakingDamage =false;
                     stopTakingDamage();
                     inWater=false;
                 }
@@ -415,7 +414,7 @@ public class Player implements Entity, Serializable {
 
     private void startTakingDamage() {
         isTakingDamage = true;
-
+        setSprinting(false);
         speed = 55;
         damageTask = new Timer.Task() {
             @Override
