@@ -181,8 +181,6 @@ public class ScreenManager extends Game {
 
         for (FileHandle file : tmxFiles) {
             if (tmxFiles.size == user.getCompletedLevels().size()) {
-                user.resetCompletedLevels();
-                goToCredits();
                 break;
             } else {
                 if (user.getCompletedLevels().contains(file.name())) {
