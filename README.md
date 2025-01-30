@@ -1,22 +1,41 @@
 
-# Semester Project
+# 🎮 Semester Project: Top-Down Maze Runner (2D Game)
 
-A Top-Down Maze Runner, Thrill, 2D game made using libGdx framework and programmed completely in Java. 
+A **thrilling** top-down **maze runner** game built using the **LibGDX framework** and programmed in **Java**.
 
-## How to run the game
-Clone the project and run it in any JAVA IDE e.g. IntelliJ IDEA
-## How to play the game
-When you reach the gate after you collect all gems, you win the level. If you run into an enemy , you will get hurt. THe enemies are running across the screen at random locations and random speeds. Use the arrow keys to move left, right, forward or backward or WASD. Use the Spacebar key or the left mouse button to attack. You can break a cracked wall after you collect a golden axe. The water is toxic and it will hurt you. There are skull-bombs, be careful not to hit them because they will hurt you too. 
-# Tools used in this game
-### 1. LIBGDX Framework
-### 2. IntelliJ IDEA
-### 3. Tiled Level Editor
-### 4. Universal LPC Spritesheet Generator 
-### 5. Particle Effects By Raeleus & Crykn
-### 6. Fruity Loops Studio 20
-### 7. Piskel Sprite Editor
+## 🚀 How to Run the Game
+1. **Clone the repository**:
+   ```sh
+   git clone https://go39pen@artemis.tum.de/git/FOPHN2425PROJECTFOP/fophn2425projectfop-gameisgame.git
+2. **Open the project in any Java IDE (e.g., IntelliJ IDEA).**
+3. **If you are on Windows or Linux, please remove the -XstartOnFirstThread VM option in the run configuration:**
+## 🕹️ How to Play
+### **Step 1: Objective**
+- Collect all **gems** and reach the **exit gate** to complete the level.
+- Avoid **enemies**, **toxic water**, and **skullbombs**—they will hurt you!
+### **Step 2: Instructions**
+- **Explore the maze** while collecting items.
+- **Avoid or defeat enemies** by attacking them.
+- **Use power-ups** (e.g., Golden Axe to break walls).
+- **Find the exit gate** after collecting all necessary items.
+### **Step 3: Controls**
+- **Arrow Keys / WASD** → Move **left, right, up, down**.
+- **Spacebar / Left Mouse Click** → Attack.
 
-# Project Structure 
+### **Step 4: Game Mechanics**
+- Collect a **Golden Axe** to break cracked walls.
+- Avoid **toxic water** as it damages you.
+- Watch out for **skull-bombs**—they explode!
+## 🛠️ Tools & Technologies Used
+1. **LibGDX Framework** → Game engine for rendering, physics, and input handling.
+2. **IntelliJ IDEA** → Java IDE used for development.
+3. **Tiled Level Editor** → Software for designing and creating game levels.
+4. **Universal LPC Spritesheet Generator** → Tool for generating character sprites.
+5. **Particle Effects by Raeleus & Crykn** → Used for creating visual effects.
+6. **Fruity Loops Studio 20** → Software for composing background music and sound effects.
+7. **Piskel Sprite Editor** → Pixel art tool used for creating sprites.
+
+## 📂 Project Structure 
 
 ```
 
@@ -43,43 +62,53 @@ When you reach the gate after you collect all gems, you win the level. If you ru
 │   ├───resources
 │   └───src
 ```
-# Class Hierarchy
-The game follows an MVC-inspired structure with different layers:
-## Assets
-Contains the media used in the game
-## Main Entry Point
-#### DesktopLauncher (in de.tum.cit.fop.maze)
-Initializes the game window and starts the ScreenManager.
-## Game Core
-### Managers
-Manages different game screens (Main Menu, Gameplay, Game Over).
 
-Manages different instrumental layers and sound effects.
+---
 
-Manages Maps and collision
+## 🔎 Class Hierarchy
+The game follows an **MVC-inspired architecture**, dividing logic into different layers:
 
-### Screens
-Contains the main views and logic.
+### 📁 **Assets**
+- Stores all **media files** (images, sounds, music, animations).
 
-### Entity
-Contains the logic for the main characters and the enemies
-Including the mechanisms to save the infromation related to the objects that are generated from the subclasses of the entity class.
+### 🏁 **Main Entry Point**
+#### `DesktopLauncher` (Located in `de.tum.cit.fop.maze`)
+- Initializes the game window.
+- Starts the `ScreenManager`.
 
-### Abilities
-Contains the logic for the Collectables and the PowerUps
-Including the mechanisms to spawn and despawn the objects that are generated from the subclasses of the Collectable class.
+### 🎮 **Game Core**
+#### 📌 **Managers**
+- **Screen Manager** → Handles different game screens (Main Menu, Gameplay, Game Over).
+- **Sound Manager** → Controls music and sound effects.
+- **Map Manager** → Handles level design and collision detection.
 
-![UML Diagram](srcFinal.png)
+#### 🖥️ **Screens**
+- Contains the main UI views and game logic.
 
-## EXTRA FEATURES
-### 1. Vertical Reorchestration
-### 2. Projectile-Thrower Entity
-### 3. Pathfidning / Entity Automation
-### 4. Offline File Handling
-### 5. Static & Interactive Particle System Implementation
-### 6. Post-Dispose Interactivity With Entities
-### 7. Dual-Nature Collision System 
-### 8. Customized Animations For Entities
-### 9. Customized SFX & Music
-### 10. Interactive Output Unit Control
-### 11. Multi-Layered Batched UI
+#### 🦸 **Entity System**
+- Defines **player, enemies, and NPCs**.
+- Stores object-related data and behaviors.
+
+#### ✨ **Abilities**
+- Manages **collectibles and power-ups**.
+- Implements **spawn & despawn mechanics** for items.
+
+### 📝 UML Diagram:
+![UML Diagram](./srcFinal.png)
+
+---
+
+## 🎯 Extra Features
+✅ **Vertical Reorchestration** (Dynamic soundtrack changes).  
+✅ **Projectile-Throwing Enemies** (Advanced AI).  
+✅ **Pathfinding & Entity Automation** (Enemies follow paths).  
+✅ **Offline File Handling** (Save game progress).  
+✅ **Static & Interactive Particle Systems** (Enhanced visuals).  
+✅ **Post-Dispose Interactivity** (NPCs retain behaviors).  
+✅ **Dual-Nature Collision System** (Improved physics).  
+✅ **Custom Animations for Entities**.  
+✅ **Unique Sound Effects & Music**.  
+✅ **Multi-Layered Batched UI System** (Improved UI performance).
+
+---
+
