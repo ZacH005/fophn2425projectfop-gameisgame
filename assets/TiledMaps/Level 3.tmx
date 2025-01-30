@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="25" nextobjectid="185">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="25" nextobjectid="195">
  <tileset firstgid="1" source="Objects_animated3.tsx"/>
  <tileset firstgid="1717" source="Objects.tsx"/>
  <tileset firstgid="3829" source="details.tsx"/>
@@ -3998,7 +3998,7 @@
    </properties>
    <point/>
   </object>
-  <object id="85" x="1659" y="441">
+  <object id="85" x="1666.37" y="447.32">
    <properties>
     <property name="type" value="Key"/>
    </properties>
@@ -4028,7 +4028,31 @@
    </properties>
    <point/>
   </object>
-  <object id="184" x="1785.33" y="498.667">
+  <object id="184" x="1856" y="736">
+   <properties>
+    <property name="type" value="Key"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="185" x="1632.87" y="445.929">
+   <properties>
+    <property name="type" value="SpeedUp"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="186" x="1282.05" y="423.28">
+   <properties>
+    <property name="type" value="HeartUp"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="189" x="1295.62" y="341.88">
+   <properties>
+    <property name="type" value="Key"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="191" x="1742.87" y="320.342">
    <properties>
     <property name="type" value="Key"/>
    </properties>
@@ -4103,6 +4127,36 @@
    <point/>
   </object>
   <object id="183" x="1578.67" y="690.667">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="187" x="1421.79" y="398.86">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="188" x="1416.36" y="283.544">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="192" x="1130" y="369.235">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="193" x="1153.69" y="720.357">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="194" x="1160.65" y="491.849">
    <properties>
     <property name="type" value="Range"/>
    </properties>
