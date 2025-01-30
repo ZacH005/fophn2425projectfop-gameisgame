@@ -3471,7 +3471,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="25" name="EventObjects" visible="0">
+ <objectgroup id="25" name="EventObjects">
   <properties>
    <property name="type" value="Finish"/>
   </properties>
