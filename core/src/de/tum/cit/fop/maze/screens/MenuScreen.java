@@ -80,7 +80,7 @@ public class MenuScreen implements Screen {
         menuState.put("bass", 0);
         menuState.put("slowerDrums", 1);
 
-        table2.add(new Label("Blind Cave Game!", game.getSkin(), "title")).padBottom((float) viewport.getScreenHeight() / 2);
+        table2.add(new Label("Salt Mine Dungeons!", game.getSkin(), "title")).padBottom((float) viewport.getScreenHeight() / 2);
 
         if (game.getUser().getCompletedLevels().isEmpty()) {
             TextButton startNewGameButton = new TextButton("Start New Game", game.getSkin());
