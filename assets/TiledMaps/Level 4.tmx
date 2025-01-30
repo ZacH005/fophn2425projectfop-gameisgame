@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="26" nextobjectid="173">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="26" nextobjectid="206">
  <tileset firstgid="1" source="Objects.tsx"/>
  <tileset firstgid="2113" name="water_coasts" tilewidth="16" tileheight="16" tilecount="1403" columns="23">
   <image source="water_coasts.png" width="368" height="976"/>
@@ -3471,7 +3471,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="25" name="EventObjects">
+ <objectgroup id="25" name="EventObjects" visible="0">
   <properties>
    <property name="type" value="Finish"/>
   </properties>
@@ -3605,6 +3605,72 @@
    <point/>
   </object>
   <object id="171" x="1635" y="871">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="195" x="886" y="400">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="196" x="873.333" y="475.333">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="197" x="1086.67" y="144">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="198" x="1294.67" y="670.667">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="199" x="1383.33" y="668.667">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="200" x="1429.33" y="758">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="201" x="1348" y="829.333">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="202" x="1271.33" y="767.333">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="203" x="1214" y="736">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="204" x="1401.33" y="879.333">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="205" x="1472" y="812">
    <properties>
     <property name="type" value="Slime"/>
    </properties>
@@ -4082,5 +4148,111 @@
   <object id="147" x="1845.33" y="80.1667" width="33.6667" height="30"/>
   <object id="148" x="1204" y="270" width="38" height="32.6667"/>
   <object id="149" x="1460.25" y="416.75" width="36.5" height="30.75"/>
+  <object id="173" x="144" y="436.667" width="22.6667" height="15.3333">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="174" x="134.667" y="455.333" width="4" height="17.3333">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="175" x="25.3333" y="472.667" width="104" height="92.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="176" x="24" y="568.667" width="133.333" height="62">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="177" x="224" y="570" width="81.3333" height="46.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="178" x="248.667" y="494" width="60" height="70.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="179" x="341.333" y="612" width="31.3333" height="30.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="180" x="84.6667" y="682.667" width="168.667" height="38.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="181" x="126" y="744" width="142" height="91.3333">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="182" x="91.3333" y="843.333" width="102" height="62.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="183" x="25.3333" y="888" width="90" height="42.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="184" x="22" y="847.333" width="15.3333" height="30">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="185" x="17.3333" y="982.667" width="97.3333" height="26.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="186" x="230.667" y="986.667" width="378" height="21.3333">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="187" x="236" y="926.667" width="306.667" height="10.6667">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="188" x="14.6667" y="664" width="26" height="58.6667"/>
+  <object id="189" x="218" y="626.667" width="14.6667" height="49.3333">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="190" x="17.6667" y="942.333" width="15.3333" height="30">
+   <properties>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="191" x="194.667" y="544.667" width="7.33333" height="11.3333">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
+  <object id="192" x="179.333" y="641.333" width="8.66667" height="7.33333">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
+  <object id="193" x="66" y="659.333" width="11.3333" height="8">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
+  <object id="194" x="49.3333" y="722" width="12" height="10.6667">
+   <properties>
+    <property name="type" value="Trap"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

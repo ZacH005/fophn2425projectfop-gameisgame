@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="25" nextobjectid="44">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="25" nextobjectid="45">
  <tileset firstgid="1" source="Objects.tsx"/>
  <tileset firstgid="2113" name="Water_detilazation" tilewidth="16" tileheight="16" tilecount="2886" columns="37">
   <image source="water_detilazation.png" width="592" height="1248"/>
@@ -3342,17 +3342,17 @@
  </layer>
  <layer id="13" name="Cracks" width="120" height="67">
   <data encoding="base64" compression="zlib">
-   eJzt2LENwkAMBdBbJyuQbWAQUsMgUMOCuEkRiSYiliXz3gDWydY/yR4DAAAA9rtNY9yn6leQ5RWzfZtvmlP0di7sr/xuHd2Pc9S6FPZXfreO7kdWfq9RczG3cln5fUTNp/m2JLu9yS4A1Ft3sOpbCjnWHaz6lgKQxd2gN3eD/yDHvX3Lsd2jN7tHb+bbm/+5N/kFAAAAAAAAAAAAAAAAAAAAAOAXH98OIW4=
+   eJzt2LENwkAQBMBvxy1AN7gQHEMhEOMGueQzZ9g8WmYKOFnaX0t3rQEAAADwTaeptfM0+ivobpXFfcc8LjVrlu/PeFUW6455HNXfa81cvJvhjurvo2Y+5RtJd7PpLgCM13cwt5RMfQdzSwFSuRtkczf4D3qcbavHdo9sdo9s8s3m/5xNfwEAAAAAAAAAAAAAAAAAAAAA+MQb7TobMg==
   </data>
  </layer>
  <layer id="14" name="Cracks2" width="120" height="67">
   <data encoding="base64" compression="zlib">
-   eJzt2FsNgDAMAMDZwQK4ATfgBgyyBAX7WEqbOwNNuvSxtgYAAAD8zbq0ti1x8c8e+wqMX93ec3sE5vfusR/vO010/TJXdP0yV7b6Na/HZKtf8xoA4GPvrc3eCwBkk+2OzJhsd2TG+F/Wpj/Xpj/Xpj/X5v4HAAAAAAAAAAAAAAAAAAAAAMz2AmuAFzY=
+   eJzt2FENgDAMBcDamQVwA27ADRhkFvaxjDZ3Cl6yvKZrBAAAAPA3W4vY2+oUzHL0tz29b1n6W5v+1patv1fPeifKu1q2/j4965soLwDALPbe2uy9AEA22e7IjMl2R2aM/2Vt5nNt5nNt5nNt7n8AAAAAAAAAAAAAAAAAAAAAwGwfcpYUGA==
   </data>
  </layer>
- <layer id="15" name="Anim" width="120" height="67">
+ <layer id="15" name="Anim" width="120" height="67" visible="0">
   <data encoding="base64" compression="zlib">
-   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgx9oAAB
+   eJzt17EJACAMAMGsY+E47ueoprUWUcIdpA98k0QAAAAAAAAAAMBfetuHWkbbBwAAXsu7dObvMV/vwR361qZvbfrWpi8AAAAAAAAAAAAAAAAAAAAAACcW/4cNtQ==
   </data>
  </layer>
  <layer id="16" name="brivks4" width="120" height="67">
@@ -3517,6 +3517,11 @@
     <property name="type" value="Wall"/>
    </properties>
   </object>
+  <object id="44" x="0" y="449.5" width="6.5" height="28.5">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="22" name="PowerUpObjects">
   <object id="32" x="206" y="453">
@@ -3525,7 +3530,7 @@
    </properties>
    <point/>
   </object>
-  <object id="33" x="1204" y="398">
+  <object id="33" x="1143.5" y="449">
    <properties>
     <property name="type" value="Key"/>
    </properties>

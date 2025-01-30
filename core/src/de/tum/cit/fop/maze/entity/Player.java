@@ -30,6 +30,7 @@ public class Player implements Entity, Serializable {
     private int maxGems = 0;
     private boolean isTakingDamage = false;
     private Timer.Task damageTask;
+    private boolean isDead=false;
 
     private int currentTileX;
     private int currentTileY;
@@ -409,12 +410,15 @@ public class Player implements Entity, Serializable {
 
     private void startTakingDamage() {
         isTakingDamage = true;
-        speed /= 2;
+
+        speed = 55;
         damageTask = new Timer.Task() {
             @Override
             public void run() {
-                takeDamage(0.25f);
-            }
+                if(!isDead) {
+                    takeDamage(0.25f);
+                }
+                }
         };
 
         Timer.schedule(damageTask, 0, 1f);
@@ -426,7 +430,7 @@ public class Player implements Entity, Serializable {
             damageTask = null;
         }
         if (isTakingDamage) {
-            speed *= 2;
+            speed = 110;
             setSprinting(false);
         }
         isTakingDamage = false;
@@ -623,6 +627,9 @@ public class Player implements Entity, Serializable {
     @Override
     public void takeDamage(float x) {
         health -= x;
+        if(health==0){
+            isDead=true;
+        }
         soundManager.playSound("playerHurt");
         hurtParticle.setPosition(position.x + width / 2, position.y + height / 2);
         hurtParticle.reset();

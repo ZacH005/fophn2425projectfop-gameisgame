@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="26" nextobjectid="269">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="120" height="67" tilewidth="16" tileheight="16" infinite="0" nextlayerid="26" nextobjectid="276">
  <tileset firstgid="1" source="details.tsx"/>
  <tileset firstgid="561" name="water_coasts" tilewidth="16" tileheight="16" tilecount="1403" columns="23">
   <image source="water_coasts.png" width="368" height="976"/>
@@ -6577,7 +6577,7 @@
  </layer>
  <layer id="7" name="ground" width="120" height="67">
   <data encoding="base64" compression="zlib">
-   eJztnEtv00AURkcDqBt+AbDCErRL2iUPseShQgSbhhWg0goEAlYQlVZhAysKovD3WOQ/sEVcKzNisOxm/JAzvj1H+mRbGVtKzr2OI3syWzFmFsQzW6kODIcqd/jVwXEe8Tt88Ksb/OoGv7qp4xHXwyPGLz2tm9DjpjXmveS+ZGTxqwHv9Z5kIvkq2ZHs4jd5Yq+ptsXlM8k3O9/vtuX8PARi/e6Jzw+SDcm+5AC/gyDW73fxeSS5I3ko+YnfQdDk9y8+hwN+dYNf3eBXN7jUDX510/T83DbQD/jVDX51g1/d9O11yxoztst+1yeHvv2+Frdv8Nsbffv9JG4/47c3Fvnwz2u8cEu/PrLtPEM/lLn07jaD5zU+uqVff1cYi980Cd16l6+cu4l7XmNdclVyzd3fz5eHbqz3/FzyqIZr6Ietgssc7y7fvmXnz+I8cPf1/f39u4WxU+c61jH0w3bEtc5jGfOkkKcV++1y7ZQUex37PcBvUtC/uqF/dRPTv/4aOcyE/h0EMf1bB/o3LWL6tw70b1rQv7qhf3VD/+rGzyv6EaTJ9pfVeS5lxlyW/LpozKos17J/r4U5m/2fsjFlgeXgP//r4uqG5Lf4/SO5ucBdXcewHGL7r8ox/Zs2bfzWCSwH/OoGv7rBr27wqxv86ga/usGvbvCrm649nsqMOS05k+E3Bbr2e068npdcwG9r2sw38pQ5aOP3inhdl2zgtxXjjuYbhXXhaVIvfP92z3HzjXIWzTcq1sXI7dekXqB7ivONYsZOA0fFuqiql7LjFOsF0iGsi7bH8PUyxrNq8v9ueItf1by0ZkoP62WHHlbNPn5Vg1/94BcATjp/AaxQU2Y=
+   eJztnM1u00AURkcDqBueANhlw5Z2WbqnoEIEm4YVrUqroiJgBVFpFTawglYtvGCepNfKjDRYdjv+0WR8e470ybYytpScexMn9mS+Ysw8iGe+Uh8YDnXu8KuD6zzid/jgVzf41Q1+ddPEI66HR4xfelo3occta8w3ySvJ2OJXA97rS8lUcibZlxzgN3tiz6n2xOV7ybld7LdpeX8eArF+j8Xnd8ma5ERyit9BEOv3QnxeSp5L3kj+4XcQtPn+i8/hgF/d4Fc3+NUNLnWDX920fX/uGkgDfnWDX93gVzepvW5bYyZ22c/69pDa7ydx+xm/yUjt96e4/YXfZNzkw9+v8cEt/frYdvMMaahy6d1tBfdr/HBLv/61NBa/eRK69S4/OndTd7/GqmRd8tRd3y+Wf9xY7/lQ8raBa0jDdsllgXdXbD+zi3txXrvr+v76/ovS2JlzHesY0rAXca7zTsbslLJbs98B505Zcdyz31P8ZgX9qxv6Vzcx/evPkcNM6d9BENO/TaB/8yKmf5tA/+YF/asb+lc39K9u/Lyiv0HabP9+vEjVb5H+sTD3R/+nakxVYDn4139jFOe3yjN+8yW2/+oc079508Vvk8BywK9u8Ksb/OoGv7rBr27wqxv86ga/uunb452RMXcl90b4zYG+/T4Qrw8lj/DbmS7zjTxVDrr4fSJeVyVr+O3EpKf5RmFdeNrUC5+//XPdfKOCm+Ybleti7PZrUy/QP+X5RjFjZ4Gjcl3U1UvVccr1AvkQ1kXXY/h6meBZNcV/N3zBr2qOrJnRw3rZp4dVc4Jf1eBXP/gFgNvOFauZVnI=
   </data>
  </layer>
  <layer id="8" name="darker_surface1" width="120" height="67">
@@ -6607,12 +6607,12 @@
  </layer>
  <layer id="20" name="bricks" width="120" height="67">
   <data encoding="base64" compression="zlib">
-   eJzt1tlJQ0EAheHpIMn1wRq8uR24PURftAmRqFHLiUs5buW4VSB4wk0FYoiM3weHeR34GZhSAAAAAAAAAAAAAACgLoOmlGE2yppso1n3jfhN2+m5k+1me9m+vlW5SM9ZdpldZdf6VmWenjfZbXaX3etblYf0fMyesufsRd+qvKbnW/aefWSf+gIAAAAAAD80a0s5b9d9C1Zh2vbTty6TrpTjru96uhz1GKTtWdd3PdG2Oov3+zUu5SjnQbfu27AKm+l6qO2/sZXWY72rpW/dFn2n2TAb6VydyfKvtfh3ecf1mvh3AQAAAAAA/FnfnGQhYg==
+   eJzt2LlNA0EYhuHJQE58EBATYm8H5ggMCTSBkAED5XCVw1UOZwNI/NY6J2E0MH4e6dOmI71aaXZTAv6bz5XSJyCnzmrpEwAAAAAAAAAAP9nolD4BOY31BYAqdAcp9WL92CC2Nih9In7TOHpuxbZjO7FdfYvJ8X10Fj1nsfPYRexS32JyfB9dRc/r2E3sNnanb1Xuo+dD7DH2FHvWtyov0fM19hZ7j33oC1n4/1w3/58BAAAAoDUbpnQ6LH0KcpgO2+lbl0mT0mHTdj1ejHp0o+1J03Y90rY68/f3a5TSQTz3mtKnIYf16Lqv7dLYjNYjvaulb93mfaexXqyvc3Umi7vW/N7lPa7XxL0LAAAAAADgz/oGUxAjuw==
   </data>
  </layer>
  <layer id="2" name="Elevated" width="120" height="67">
   <data encoding="base64" compression="zlib">
-   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
+   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
   </data>
  </layer>
  <layer id="3" name="Opening" width="120" height="67">
@@ -6664,617 +6664,622 @@
   </object>
  </objectgroup>
  <objectgroup id="17" name="CollisionObjects">
-  <object id="12" x="374" y="161" width="57" height="68.6667">
+  <object id="12" x="368.667" y="161.333" width="59.6667" height="63.3334">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="13" x="432.333" y="161" width="194" height="72">
+  <object id="13" x="429.666" y="161.333" width="194" height="63">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="14" x="328.667" y="32.6667" width="44" height="196.667">
+  <object id="14" x="330.334" y="33" width="37.3333" height="192">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="21" x="0.75" y="73.75" width="47.75" height="37.5">
+  <object id="21" x="-1.91667" y="74.0833" width="47.75" height="37.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="22" x="49.5" y="62.75" width="46" height="32.5">
+  <object id="22" x="46.5" y="63.75" width="46.6667" height="32.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="23" x="96.75" y="22.75" width="48.25" height="55">
+  <object id="23" x="94.0833" y="23.0833" width="48.25" height="59">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="24" x="146.25" y="0.25" width="28.75" height="60">
+  <object id="24" x="143.583" y="0.583333" width="28.75" height="62.3333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="25" x="175.75" y="-1.5" width="30.75" height="47.5">
+  <object id="25" x="173.083" y="-1.16667" width="30.75" height="48.8333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="26" x="208.25" y="-3" width="31.5" height="67">
+  <object id="26" x="205.583" y="-2.66667" width="32.8333" height="65">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="27" x="243.5" y="-1.5" width="14.5" height="28.25">
+  <object id="27" x="239.5" y="-1.16667" width="15.8333" height="28.25">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="28" x="257" y="0.5" width="17" height="44.5">
+  <object id="28" x="254.333" y="0.833333" width="17" height="44.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="29" x="278.25" y="1" width="25.5" height="61.75">
+  <object id="29" x="271.917" y="1.33333" width="29.1667" height="61.75">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="30" x="307.25" y="0.5" width="20.25" height="45.5">
+  <object id="30" x="301.25" y="0.833333" width="23.5833" height="45.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="31" x="294.667" y="-43.3333" width="0.666667" height="1.33333">
+  <object id="31" x="292" y="-43" width="0.666667" height="1.33333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="36" x="333.333" y="-0.666667" width="1587.67" height="48">
+  <object id="36" x="326" y="-0.333334" width="1592.34" height="48">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="37" x="586.667" y="48" width="41.3333" height="112">
+  <object id="37" x="584" y="48.3333" width="39.3333" height="112">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="38" x="698.667" y="47.3333" width="41.3333" height="80.6667">
+  <object id="38" x="701.334" y="47.6666" width="31.6666" height="123.667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="39" x="90.6667" y="286.667" width="407.667" height="67.3333">
+  <object id="39" x="88" y="287" width="407.667" height="67.3333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="40" x="0" y="216.667" width="20" height="234.667">
+  <object id="40" x="-2.66667" y="217" width="20" height="234.667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="41" x="22" y="226.667" width="11.3333" height="212.667">
+  <object id="41" x="19.3333" y="227" width="11.3333" height="212.667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="42" x="31.3333" y="240" width="32" height="171.333">
+  <object id="42" x="28.6666" y="240.333" width="32" height="171.333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="43" x="64" y="265.333" width="32.6667" height="100">
+  <object id="43" x="61.3333" y="265.666" width="32.6667" height="100">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="44" x="-1078.79" y="-393.939">
+  <object id="44" x="-1081.46" y="-393.606">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="45" x="206" y="432" width="18.5" height="31.5">
-   <properties>
-    <property name="type" value="Wall"/>
-   </properties>
-  </object>
-  <object id="46" x="225" y="442.5" width="14.5" height="22.5">
-   <properties>
-    <property name="type" value="Wall"/>
-   </properties>
-  </object>
-  <object id="47" x="239.5" y="448.5" width="21.5" height="191">
+  <object id="45" x="214.833" y="432.333" width="7" height="23.5">
    <properties>
     <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="48" x="262.5" y="463.5" width="42" height="178.5">
+  <object id="46" x="222.333" y="442.833" width="24" height="14.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="49" x="304" y="480" width="15.5" height="161">
+  <object id="47" x="248.333" y="448.833" width="10" height="191">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="50" x="204.5" y="560.5" width="33.5" height="80">
+  <object id="48" x="259.833" y="463.833" width="42" height="178.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="51" x="143" y="430.5" width="34" height="33.5">
+  <object id="49" x="301.333" y="480.333" width="15.5" height="161">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="52" x="64" y="447.5" width="20" height="192">
+  <object id="50" x="217.333" y="569.833" width="30.5" height="71">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="53" x="83" y="463" width="60" height="178">
+  <object id="51" x="140.333" y="430.833" width="24.5" height="24.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="54" x="128" y="447.5" width="13" height="15">
+  <object id="52" x="61.3333" y="447.833" width="20" height="192">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="55" x="144" y="559" width="32" height="81.5">
+  <object id="53" x="80.3333" y="463.333" width="52" height="178">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="56" x="25" y="479" width="37.5" height="160.5">
+  <object id="54" x="125.333" y="447.833" width="13" height="15">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="57" x="49" y="464" width="14" height="15.5">
+  <object id="55" x="131.833" y="565.833" width="35.5" height="75">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="58" x="322.5" y="745.333" width="47.1667" height="84.5">
+  <object id="56" x="15" y="479.333" width="44.8333" height="160.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="59" x="328.333" y="736.333" width="41.6667" height="9">
+  <object id="57" x="46.3333" y="464.333" width="14" height="15.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="60" x="353" y="688.667" width="40" height="42.6667">
+  <object id="58" x="319.833" y="745.666" width="47.1667" height="84.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="62" x="388" y="672" width="87.6667" height="14.6667">
+  <object id="59" x="325.666" y="736.666" width="41.6667" height="9">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="64" x="402.5" y="814.5" width="122.5" height="60">
+  <object id="60" x="350.333" y="689" width="40" height="42.6667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="65" x="370.5" y="789" width="22.5" height="58.5">
+  <object id="62" x="385.333" y="672.333" width="87.6667" height="14.6667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="66" x="535.5" y="779" width="41.5" height="81">
+  <object id="64" x="399.833" y="814.833" width="122.5" height="60">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="67" x="580" y="783" width="26.5" height="45">
+  <object id="65" x="367.833" y="789.333" width="22.5" height="58.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="68" x="536" y="752.5" width="37.5" height="22.5">
+  <object id="66" x="532.833" y="779.333" width="41.5" height="81">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="70" x="509.5" y="717.5" width="47.5" height="29.5">
+  <object id="67" x="577.333" y="783.333" width="26.5" height="45">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="71" x="479" y="687.5" width="46" height="25">
+  <object id="68" x="533.333" y="752.833" width="37.5" height="22.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="73" x="637.5" y="689.5" width="58" height="79">
+  <object id="70" x="506.833" y="717.833" width="47.5" height="29.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="74" x="592.5" y="651.5" width="40" height="85">
+  <object id="71" x="476.333" y="687.833" width="46" height="25">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="75" x="556" y="630.5" width="32" height="69.5">
+  <object id="73" x="634.833" y="689.833" width="58" height="79">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="76" x="531.5" y="571.5" width="21.5" height="97.5">
+  <object id="74" x="589.833" y="651.833" width="40" height="85">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="77" x="555" y="562" width="147.5" height="14">
+  <object id="75" x="553.333" y="630.833" width="32" height="69.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="80" x="706.5" y="530.5" width="27" height="362">
+  <object id="76" x="528.833" y="571.833" width="21.5" height="97.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="82" x="707.5" y="883.5" width="345.5" height="62">
+  <object id="77" x="552.333" y="562.333" width="147.5" height="14">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="84" x="774" y="726" height="1">
+  <object id="80" x="703.833" y="530.833" width="27" height="362">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="85" x="687.333" y="380.667" width="356" height="67.3333">
+  <object id="82" x="704.833" y="883.833" width="345.5" height="62">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="87" x="1004" y="0" width="37.3333" height="386.667">
+  <object id="84" x="771.333" y="726.333" height="1">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="88" x="708" y="528.667" width="346.667" height="64.6667">
+  <object id="85" x="696.333" y="384.334" width="344.333" height="64">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="90" x="1213" y="142" width="42.5" height="34">
+  <object id="87" x="1003.67" y="0.333333" width="35" height="386.667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="92" x="1213" y="31.6667" width="38" height="108">
+  <object id="88" x="705.333" y="529" width="346.667" height="64.6667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="93" x="1214" y="178.667" width="41" height="872">
+  <object id="90" x="1210.33" y="142.333" width="42.5" height="34">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="100" x="1254" y="80" width="434" height="69">
+  <object id="92" x="1210.33" y="32" width="38" height="108">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="101" x="1689" y="80" width="46" height="260">
+  <object id="93" x="1211.33" y="179" width="41" height="872">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="102" x="1738" y="273" width="187" height="66">
+  <object id="100" x="1251.33" y="80.3333" width="434" height="69">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="103" x="1259" y="176" width="306" height="69">
+  <object id="101" x="1686.33" y="80.3333" width="46" height="260">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="104" x="1566" y="175" width="35" height="357">
+  <object id="102" x="1735.33" y="273.333" width="187" height="66">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="105" x="1258" y="463" width="307" height="68">
+  <object id="103" x="1256.33" y="176.333" width="306" height="69">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="106" x="1700" y="383" width="222" height="66">
+  <object id="104" x="1563.33" y="175.333" width="35" height="357">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="107" x="1698" y="453" width="223" height="75">
+  <object id="105" x="1255.33" y="463.333" width="307" height="68">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="108" x="1362" y="592" width="413" height="69">
+  <object id="106" x="1697.33" y="383.333" width="222" height="66">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="109" x="1326" y="593" width="37" height="394">
+  <object id="107" x="1695.33" y="453.333" width="223" height="75">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="110" x="1364" y="929" width="78" height="66">
+  <object id="108" x="1359.33" y="592.333" width="413" height="69">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="111" x="1739" y="661" width="42" height="202">
+  <object id="109" x="1323.33" y="593.333" width="37" height="394">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="112" x="1783" y="800" width="137" height="64">
+  <object id="110" x="1361.33" y="929.333" width="78" height="66">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="113" x="1053" y="527" width="36" height="419">
+  <object id="111" x="1736.33" y="661.333" width="42" height="202">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="115" x="1090" y="882" width="15" height="170">
+  <object id="112" x="1780.33" y="800.333" width="137" height="64">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="116" x="1066" y="949" width="23" height="107">
+  <object id="113" x="1050.33" y="527.333" width="36" height="419">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="120" x="1" y="893.25" width="15.5" height="18.25">
+  <object id="115" x="1087.33" y="882.333" width="15" height="170">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="121" x="16.5" y="911.5" width="48" height="17">
+  <object id="116" x="1063.33" y="949.333" width="23" height="107">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="122" x="63.75" y="896.25" width="16.25" height="16">
+  <object id="120" x="-1.66667" y="904.583" width="15.5" height="136.583">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="123" x="79.5" y="879.5" width="81.25" height="16.75">
+  <object id="121" x="13.8333" y="922.333" width="48" height="116.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="124" x="160" y="895.75" width="32" height="16.5">
+  <object id="122" x="61.0833" y="914.583" width="16.25" height="124">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="125" x="193" y="912" width="47.5" height="16.25">
+  <object id="123" x="76.8333" y="889.833" width="81.25" height="149.417">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="127" x="239.75" y="928.25" width="32.5" height="15.5">
+  <object id="124" x="157.333" y="905.583" width="32" height="134.333">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="128" x="288.5" y="912.25" width="16" height="15.25">
+  <object id="125" x="190.333" y="922.833" width="47.5" height="117.083">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="129" x="303.5" y="896.25" width="32.25" height="15.5">
+  <object id="127" x="237.083" y="937.083" width="32.5" height="103.667">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="130" x="320.25" y="911.5" width="16.5" height="16.25">
+  <object id="128" x="285.833" y="922.083" width="16" height="117.75">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="131" x="335.75" y="927.75" width="48" height="14.75">
+  <object id="129" x="300.833" y="905.583" width="32.25" height="134.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="132" x="384.5" y="912.75" width="32.25" height="15.75">
+  <object id="131" x="333.083" y="937.583" width="48" height="102.583">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="133" x="400.25" y="896.25" width="79.25" height="16">
+  <object id="132" x="381.833" y="923.083" width="32.25" height="115.75">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="134" x="479.75" y="912.25" width="32.5" height="15.5">
+  <object id="133" x="397.583" y="904.083" width="79.25" height="136.5">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="135" x="511.75" y="927.75" width="48.5" height="16">
+  <object id="134" x="477.083" y="923.583" width="32.5" height="115.167">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="136" x="560" y="943.25" width="30.25" height="16.75">
+  <object id="135" x="509.083" y="939.083" width="48.5" height="100.333">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="137" x="591.5" y="977" width="16.75" height="45.5">
+  <object id="136" x="557.333" y="950.583" width="30.25" height="90.4167">
    <properties>
-    <property name="type" value="Wall"/>
+    <property name="type" value="Water"/>
+   </properties>
+  </object>
+  <object id="137" x="588.833" y="977.333" width="10.25" height="63.5">
+   <properties>
+    <property name="type" value="Water"/>
    </properties>
   </object>
-  <object id="138" x="588.25" y="960.5" width="7.75" height="14.75">
+  <object id="138" x="585.583" y="960.833" width="0.25" height="14.75">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="141" x="526.667" y="863.333" width="54" height="22.6667">
+  <object id="141" x="524" y="863.666" width="54" height="22.6667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="142" x="608.667" y="738" width="24" height="26.6667">
+  <object id="142" x="606" y="738.333" width="24" height="26.6667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="144" x="698.75" y="448.5" width="37" height="17">
+  <object id="144" x="696.083" y="448.833" width="37" height="17">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="145" x="771.25" y="498" width="9.5" height="8.75">
+  <object id="145" x="768.583" y="498.333" width="9.5" height="8.75">
    <properties>
     <property name="type" value="Trap"/>
    </properties>
   </object>
-  <object id="146" x="834.25" y="467.25" width="10.75" height="7">
+  <object id="146" x="831.583" y="467.583" width="10.75" height="7">
    <properties>
     <property name="type" value="Trap"/>
    </properties>
   </object>
-  <object id="147" x="913" y="499.25" width="11.75" height="7.25">
+  <object id="147" x="910.333" y="499.583" width="11.75" height="7.25">
    <properties>
     <property name="type" value="Trap"/>
    </properties>
   </object>
-  <object id="148" x="993.25" y="466.25" width="11.75" height="8.75">
+  <object id="148" x="990.583" y="466.583" width="11.75" height="8.75">
    <properties>
     <property name="type" value="Trap"/>
    </properties>
   </object>
-  <object id="149" x="1013.25" y="448.5" width="21.5" height="9.75">
+  <object id="149" x="1010.58" y="448.833" width="21.5" height="9.75">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="150" x="1043.25" y="420.75" width="8" height="28.5">
+  <object id="150" x="1040.58" y="421.083" width="8" height="28.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="151" x="1065" y="485.75" width="16.25" height="27.25">
+  <object id="151" x="1062.33" y="486.083" width="16.25" height="27.25">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="152" x="1065.67" y="46.6667" width="29.3333" height="26.3333">
+  <object id="152" x="1063" y="47" width="29.3333" height="26.3333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="153" x="1125.67" y="47.6667" width="28" height="23.6667">
+  <object id="153" x="1123" y="48" width="28" height="23.6667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="154" x="1174.33" y="45.3333" width="31.6667" height="25.3333">
+  <object id="154" x="1171.66" y="45.6666" width="31.6667" height="25.3333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="155" x="1066.33" y="266.333" width="27.3333" height="26.6667">
+  <object id="155" x="1063.66" y="266.666" width="27.3333" height="26.6667">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="177" x="704" y="208" width="32" height="224">
+  <object id="177" x="701.333" y="208.333" width="32" height="224">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="178" x="704" y="128" width="32" height="80">
+  <object id="178" x="701.333" y="172.333" width="32" height="36">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="183" x="755" y="264" width="61.5" height="51.5">
+  <object id="183" x="752.333" y="264.333" width="61.5" height="51.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="186" x="839" y="223" width="42.5" height="42.5">
+  <object id="186" x="836.333" y="223.333" width="42.5" height="42.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="187" x="918" y="266" width="54" height="41.5">
+  <object id="187" x="915.333" y="266.333" width="54" height="41.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="188" x="753" y="330.5" width="56" height="42">
+  <object id="188" x="750.333" y="330.833" width="56" height="42">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="189" x="910.5" y="330" width="61.5" height="42">
+  <object id="189" x="907.833" y="330.333" width="61.5" height="42">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="192" x="854" y="302" width="33" height="33">
+  <object id="192" x="851.333" y="302.333" width="33" height="33">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="196" x="1843.25" y="893" width="17" height="73.5">
+  <object id="196" x="1840.58" y="893.333" width="17" height="73.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="197" x="1843.25" y="893.5" width="54.25" height="68.25">
+  <object id="197" x="1840.58" y="893.833" width="54.25" height="68.25">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="198" x="1883.5" y="894.25" width="14.5" height="72.5">
+  <object id="198" x="1880.83" y="894.583" width="14.5" height="72.5">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="266" x="0" y="0" height="1072">
+  <object id="266" x="-2.66667" y="0.333333" height="1072">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="267" x="0" y="1040" width="1920" height="32">
+  <object id="267" x="-2.66667" y="1040.33" width="1920" height="32">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
   </object>
-  <object id="268" x="1920" y="0" width="1.33333" height="1065.33">
+  <object id="268" x="1905.67" y="1.42109e-14" width="14" height="1065.33">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
+  <object id="270" x="-2.66667" y="111.667" width="8.66667" height="105.333">
+   <properties>
+    <property name="type" value="Wall"/>
+   </properties>
+  </object>
+  <object id="271" x="-3.33333" y="451" width="4.66667" height="621.333">
    <properties>
     <property name="type" value="Wall"/>
    </properties>
@@ -7305,6 +7310,12 @@
    </properties>
    <point/>
   </object>
+  <object id="269" x="463.333" y="263.333">
+   <properties>
+    <property name="type" value="Key"/>
+   </properties>
+   <point/>
+  </object>
  </objectgroup>
  <objectgroup id="18" name="BreakableWalls">
   <object id="18" x="375.5" y="128.25" width="61.25" height="128"/>
@@ -7323,7 +7334,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="15" name="DoorObjects">
+ <objectgroup id="15" name="DoorObjects" locked="1">
   <object id="9" x="375.849" y="225.758" width="60.4849" height="29.9394">
    <properties>
     <property name="doorCollider" type="object" value="12"/>
@@ -7375,6 +7386,30 @@
    <point/>
   </object>
   <object id="236" x="475" y="494">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="272" x="1643.5" y="303.5">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="273" x="1757" y="568.5">
+   <properties>
+    <property name="type" value="Slime"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="274" x="1623.5" y="160.5">
+   <properties>
+    <property name="type" value="Range"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="275" x="1367" y="563.5">
    <properties>
     <property name="type" value="Slime"/>
    </properties>
