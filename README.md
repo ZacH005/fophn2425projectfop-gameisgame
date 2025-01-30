@@ -99,16 +99,16 @@ The game follows an **MVC-inspired architecture**, dividing logic into different
 ---
 
 ## 🎯 Extra Features
-✅ **Vertical Reorchestration** (Dynamic soundtrack changes).  
-✅ **Projectile-Throwing Enemies** (Advanced AI).  
-✅ **Pathfinding & Entity Automation** (Enemies follow paths).  
-✅ **Offline File Handling** (Save game progress).  
-✅ **Static & Interactive Particle Systems** (Enhanced visuals).  
-✅ **Post-Dispose Interactivity** (NPCs retain behaviors).  
-✅ **Dual-Nature Collision System** (Improved physics).  
-✅ **Custom Animations for Entities**.  
-✅ **Unique Sound Effects & Music**.  
-✅ **Multi-Layered Batched UI System** (Improved UI performance).
+✅ **Vertical Reorchestration**<br>
+✅ **Projectile-Throwing Enemies**<br>
+✅ **Pathfinding & Entity Automation**<br>
+✅ **Offline File Handling**<br>
+✅ **Static & Interactive Particle Systems**<br>
+✅ **Post-Dispose Interactivity**<br>
+✅ **Dual-Nature Collision System**<br>
+✅ **Custom Animations for Entities**<br>
+✅ **Unique Sound Effects & Music**<br>
+✅ **Multi-Layered Batched UI System**
 
 ---
 
